@@ -1,0 +1,3 @@
+1:from dataclasses import dataclass, field
+11:@dataclass
+12:class TradeRecord:

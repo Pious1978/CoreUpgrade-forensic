@@ -1,0 +1,15 @@
+{
+    "artifact_type": "reproducibility_certification",
+    "artifact_id": "art_bf0fca8cc31c",
+    "schema_version": "1.0",
+    "generated_at": "2026-08-01T13:21:16.561628+00:00",
+    "generated_by": "ReproducibilityIntegrityGate",
+    "platform_version": "1.0.0",
+    "architecture_version": "1.0",
+    "payload_fingerprint": "772799c772b0",
+    "artifact_fingerprint": "aaabf227337e",
+    "payload": {
+        "status": "VERIFIED",
+        "input_stability": "PASSED"
+    }
+}

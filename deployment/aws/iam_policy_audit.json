@@ -1,0 +1,14 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowAuditAnchorKeyAccess",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Sign",
+        "kms:GetPublicKey"
+      ],
+      "Resource": "arn:aws:kms:ap-south-1:ACCOUNT_ID:key/AUDIT_ANCHOR_KEY_UUID"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+    "artifact_type": "research_validity_certificate",
+    "artifact_id": "art_ff9d349f27cd",
+    "schema_version": "1.0",
+    "generated_at": "2026-08-01T13:20:06.662692+00:00",
+    "generated_by": "ResearchAlphaValidityGate",
+    "platform_version": "1.0.0",
+    "architecture_version": "1.0",
+    "payload_fingerprint": "a595f4308869",
+    "artifact_fingerprint": "43953af70b92",
+    "payload": {
+        "signal_id": "MOMENTUM_STRAT_01",
+        "verdict": "PASS",
+        "oos_sharpe": 1.82,
+        "deflated_sharpe": 1.35,
+        "capacity_limit": 80000000
+    }
+}

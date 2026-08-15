@@ -1,0 +1,22 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowExecutionGateSigningOnly",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Sign"
+      ],
+      "Resource": "arn:aws:kms:ap-south-1:ACCOUNT_ID:key/EXECUTION_GATE_KEY_UUID"
+    },
+    {
+      "Sid": "AllowExecutionGatePublicKeyRead",
+      "Effect": "Allow",
+      "Action": [
+        "kms:GetPublicKey",
+        "kms:DescribeKey"
+      ],
+      "Resource": "arn:aws:kms:ap-south-1:ACCOUNT_ID:key/EXECUTION_GATE_KEY_UUID"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+"""
+Execution Certification Registry (Thin Theorem Class Tuple Provider)
+
+Authority:
+    Execution Layer Governance Registry
+"""
+from typing import Tuple, Type
+from execution.certification.contracts.empirical_theorem import EmpiricalTheorem
+
+from execution.certification.theorem_eventstore_immutability_001 import EventStoreImmutabilityTheorem
+from execution.certification.theorem_replay_determinism_001 import ReplayDeterminismTheorem
+from execution.certification.theorem_empty_stream_001 import EmptyStreamReplayTheorem
+from execution.certification.theorem_partial_fill_001 import PartialFillTheorem
+from execution.certification.theorem_reconciliation_purity_001 import ReconciliationPurityTheorem
+from execution.certification.theorem_ems_adapter_boundary_001 import EMSAdapterBoundaryTheorem
+from execution.certification.theorem_ems_translation_001 import EMSTranslationTheorem
+from execution.certification.theorem_event_ingestion_001 import EventIngestionTheorem
+from execution.certification.theorem_event_order_consistency_001 import EventOrderConsistencyTheorem
+from execution.certification.theorem_execution_derivation_001 import ExecutionDerivationTheorem
+from execution.certification.theorem_order_authorization_001 import OrderAuthorizationTheorem
+from execution.certification.theorem_order_replay_001 import OrderReplayTheorem
+from execution.certification.theorem_order_state_transition_001 import OrderStateTransitionTheorem
+
+class ExecutionTheoremRegistry:
+    """
+    Pure structural registry holding the canonical tuple of all certified empirical theorems.
+    Manifest compilation and cryptographic signing are delegated entirely to ManifestBuilder.
+    """
+    _REGISTRY: Tuple[Type[EmpiricalTheorem], ...] = (
+        EventStoreImmutabilityTheorem,
+        ReplayDeterminismTheorem,
+        EmptyStreamReplayTheorem,
+        PartialFillTheorem,
+        ReconciliationPurityTheorem,
+        EMSAdapterBoundaryTheorem,
+        EMSTranslationTheorem,
+        EventIngestionTheorem,
+        EventOrderConsistencyTheorem,
+        ExecutionDerivationTheorem,
+        OrderAuthorizationTheorem,
+        OrderReplayTheorem,
+        OrderStateTransitionTheorem,
+    )
+
+    @classmethod
+    def all(cls) -> Tuple[Type[EmpiricalTheorem], ...]:
+        return cls._REGISTRY
