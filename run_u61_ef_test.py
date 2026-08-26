@@ -10,13 +10,6 @@ from risk.contracts.risk_check_request import RiskCheckRequest, OrderSide as Ris
 from risk.policies.risk_policy import RiskPolicy
 from event_store.memory_store import InMemoryEventStore
 
-from portfolio.contracts.portfolio_certificate import (
-    PortfolioCertificate,
-    OptimizerIdentity,
-    PortfolioExposure,
-    TargetWeight,
-    ConstraintEvaluation,
-)
 from portfolio.contracts.certified_strategy_contract import CertifiedStrategyContract
 from portfolio.contracts.holdings_snapshot_contract import (
     HoldingsSnapshotContract,
@@ -27,6 +20,7 @@ from portfolio.engines.rebalance_orchestration_service import (
     RebalanceOrchestrationService,
 )
 from portfolio.engines.portfolio_valuation_engine import PortfolioValuationEngine
+from portfolio.engines.portfolio_certificate_issuer import PortfolioCertificateIssuer
 
 timestamp = datetime(2026, 8, 23, 12, 0, tzinfo=timezone.utc)
 
@@ -80,21 +74,6 @@ service = create_order_execution_service(
 
 print("=== BUILDING FIXTURES & TRANSLATING BOUNDARIES ===")
 
-certificate = PortfolioCertificate(
-    portfolio_id="PORT-001",
-    timestamp=timestamp,
-    alpha_vector_hash="alpha-001",
-    universe_hash="universe-001",
-    risk_hash="risk-001",
-    optimizer_identity=OptimizerIdentity("opt-1", "1.0", "hash-1"),
-    exposure=PortfolioExposure(Decimal("0.9"), Decimal("0.1")),
-    target_weights=(TargetWeight("AAPL", Decimal("0.25")),),
-    constraint_evaluations=(
-        ConstraintEvaluation("R1", "PASS", Decimal("0.1"), Decimal("0.2")),
-    ),
-    certified=True,
-)
-
 # ---------------------------------------------------------------------------
 # CANONICAL PORTFOLIO -> REBALANCE -> EXECUTION -> OMS SPINE
 # ---------------------------------------------------------------------------
@@ -125,6 +104,15 @@ portfolio_contract = PortfolioBuilder().build(
     },
     timestamp=timestamp,
 )
+
+# Certificate is now genuinely issued from the real, validated portfolio_contract,
+# not hand-built as an unrelated fixture. See PortfolioCertificateIssuer's
+# docstring for exactly which fields are real vs. explicitly-labeled placeholders.
+certificate_issuer = PortfolioCertificateIssuer()
+certificate = certificate_issuer.issue(portfolio_contract)
+print(f"DEBUG certificate.certified = {certificate.certified}")
+print(f"DEBUG certificate.exposure = {certificate.exposure}")
+print(f"DEBUG certificate.target_weights = {certificate.target_weights}")
 
 holdings_snapshot = HoldingsSnapshotContract(
     snapshot_id="SNAP-001",
