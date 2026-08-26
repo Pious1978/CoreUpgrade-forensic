@@ -109,9 +109,14 @@ RETRY_DELAY = 5
 PIPELINE_STAGES = [
 
     # Data Layer
-    "Universe_Updater.py",
+    #
+    # Universe_Updater.py intentionally excluded - its live NSE fetch
+    # proved unreliable (a partial/incomplete response caused it to
+    # incorrectly treat 268 actively-trading stocks as delisted, deleting
+    # real data). Keep the universe update manual until it has a sanity
+    # check against implausibly large single-day changes.
 
-    "Market_Data_Cache.py",
+    "bhav_to_parquet_converter.py",
 
 
     # Market Intelligence
@@ -153,7 +158,12 @@ PIPELINE_STAGES = [
 
     # Risk Layer
 
-    "Risk_Positioning_Engine.py"
+    "Risk_Positioning_Engine.py",
+
+
+    # Execution Planning
+
+    "Execution_Plan_Generator.py"
 
 ]
 
