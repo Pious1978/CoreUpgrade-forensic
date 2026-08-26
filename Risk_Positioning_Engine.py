@@ -85,15 +85,15 @@ class RiskPositioningEngine:
         rw.pattern_confidence,
 
 
-        ep.pivot_price,
-        ep.pivot_confidence,
-        ep.atr_14
+        cp.pivot_price,
+        cp.confidence AS pivot_confidence,
+        NULL AS atr_14
 
 
         FROM research_watchlist rw
 
 
-        LEFT JOIN execution_plan ep
+        LEFT JOIN consensus_pivots cp
 
 
         ON REPLACE(
@@ -105,10 +105,12 @@ class RiskPositioningEngine:
         =
         
         REPLACE(
-            UPPER(ep.ticker),
+            UPPER(cp.ticker),
             '.NS',
             ''
         )
+
+        AND cp.date = (SELECT MAX(date) FROM consensus_pivots)
 
 
         WHERE rw.Readiness =
