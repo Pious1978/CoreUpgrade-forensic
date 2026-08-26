@@ -116,6 +116,8 @@ class RiskPositioningEngine:
         WHERE rw.Readiness =
         'Immediate Trigger Watch'
 
+        AND rw.Date = (SELECT MAX(Date) FROM research_watchlist)
+
 
         """
 
