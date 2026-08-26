@@ -29,3 +29,16 @@ parquet_cache/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Forensic shell artifacts — excluded from working repository
++
+bool
+dict
+Dict[str
+findstr
+powershell
+python
+set
+str
+Terminal
+Tuple[Type[EmpiricalTheorem]

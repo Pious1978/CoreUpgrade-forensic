@@ -1,0 +1,1348 @@
+==============================================================================================================
+CoreUpgrade - STATIC EXECUTION ARCHITECTURE FORENSIC TRACE
+==============================================================================================================
+Repository root: C:\Users\GS102\OneDrive\Research\Invest\BETA\CoreUpgrade
+Python: 3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]
+==============================================================================================================
+1. MODULE / PACKAGE COLLISIONS
+==============================================================================================================
+No module/package collisions detected.
+
+==============================================================================================================
+2. SYMBOL DEFINITIONS
+==============================================================================================================
+SYNTAX ERROR: promotion\result_types.py: invalid non-printable character U+FEFF (result_types.py, line 1)
+SYNTAX ERROR: promotion\__init__.py: invalid non-printable character U+FEFF (__init__.py, line 1)
+SYNTAX ERROR: src\gateway\protocol.py: invalid syntax (protocol.py, line 1)
+SYNTAX ERROR: portfolio\construction\constraint_registry.py: invalid syntax (constraint_registry.py, line 49)
+SYNTAX ERROR: execution\certification\theorem_empty_stream_001.py: invalid non-printable character U+FEFF (theorem_empty_stream_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_ems_adapter_boundary_001.py: invalid non-printable character U+FEFF (theorem_ems_adapter_boundary_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_ems_translation_001.py: invalid non-printable character U+FEFF (theorem_ems_translation_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_eventstore_immutability_001.py: invalid non-printable character U+FEFF (theorem_eventstore_immutability_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_event_ingestion_001.py: invalid non-printable character U+FEFF (theorem_event_ingestion_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_event_order_consistency_001.py: invalid non-printable character U+FEFF (theorem_event_order_consistency_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_execution_derivation_001.py: invalid non-printable character U+FEFF (theorem_execution_derivation_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_order_authorization_001.py: invalid non-printable character U+FEFF (theorem_order_authorization_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_order_replay_001.py: invalid non-printable character U+FEFF (theorem_order_replay_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_order_state_transition_001.py: invalid non-printable character U+FEFF (theorem_order_state_transition_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_partial_fill_001.py: invalid non-printable character U+FEFF (theorem_partial_fill_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_reconciliation_purity_001.py: invalid non-printable character U+FEFF (theorem_reconciliation_purity_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_replay_determinism_001.py: invalid non-printable character U+FEFF (theorem_replay_determinism_001.py, line 1)
+SYNTAX ERROR: execution\certification\registry\manifest.py: invalid non-printable character U+FEFF (manifest.py, line 1)
+SYNTAX ERROR: execution\certification\registry\__init__.py: invalid non-printable character U+FEFF (__init__.py, line 1)
+SYNTAX ERROR: execution\certification\engine\theorem\_executor.py: invalid non-printable character U+FEFF (_executor.py, line 1)
+SYNTAX ERROR: contracts\portfolio\portfolio_intent.py: unexpected indent (portfolio_intent.py, line 2)
+SYNTAX ERROR: contracts\research\research_signal.py: unexpected indent (research_signal.py, line 2)
+
+SYMBOL: BrokerAdapter
+  ClassDef        vsc\broker.py:4
+  ClassDef        oms\adapters\broker_adapter.py:8
+  !!! DUPLICATE DEFINITIONS !!!
+
+SYMBOL: BrokerInterface
+  ClassDef        brokers\broker_interface.py:11
+  ClassDef        contracts\broker\broker_interface.py:8
+  !!! DUPLICATE DEFINITIONS !!!
+
+SYMBOL: DecisionToExecution
+  NOT DEFINED
+
+SYMBOL: ExecutionGateway
+  ClassDef        execution\gateway.py:16
+  ClassDef        execution\events\gateway.py:13
+  !!! DUPLICATE DEFINITIONS !!!
+
+SYMBOL: ExecutionIntent
+  ClassDef        execution\contracts\execution_intent.py:8
+
+SYMBOL: ExecutionIntentContract
+  NOT DEFINED
+
+SYMBOL: ExecutionPlanContract
+  ClassDef        contracts\execution.py:5
+  ClassDef        contracts\execution_plan.py:5
+  ClassDef        vsc\contracts.py:60
+  ClassDef        contracts\execution\execution_plan.py:11
+  !!! DUPLICATE DEFINITIONS !!!
+
+SYMBOL: ExecutionResultContract
+  ClassDef        contracts\execution.py:16
+  ClassDef        vsc\contracts.py:74
+  ClassDef        contracts\execution\execution_result.py:23
+  !!! DUPLICATE DEFINITIONS !!!
+
+SYMBOL: ExecutionToResult
+  NOT DEFINED
+
+SYMBOL: OrderIntentContract
+  ClassDef        oms\contracts\order_intent.py:19
+
+SYMBOL: OrderManager
+  ClassDef        execution\oms\order_manager.py:36
+
+SYMBOL: PaperBroker
+  ClassDef        vsc\broker.py:9
+  ClassDef        brokers\paper\broker_adapter.py:16
+  ClassDef        brokers\paper\paper_broker.py:27
+  !!! DUPLICATE DEFINITIONS !!!
+
+SYMBOL: PromotionGraph
+  ClassDef        promotion\graph.py:21
+
+SYMBOL: VSCPipeline
+  ClassDef        vsc\pipeline.py:130
+
+==============================================================================================================
+3. IMPORTS OF TARGET SYMBOLS
+==============================================================================================================
+SYNTAX ERROR: promotion\result_types.py: invalid non-printable character U+FEFF (result_types.py, line 1)
+SYNTAX ERROR: promotion\__init__.py: invalid non-printable character U+FEFF (__init__.py, line 1)
+SYNTAX ERROR: src\gateway\protocol.py: invalid syntax (protocol.py, line 1)
+SYNTAX ERROR: portfolio\construction\constraint_registry.py: invalid syntax (constraint_registry.py, line 49)
+SYNTAX ERROR: execution\certification\theorem_empty_stream_001.py: invalid non-printable character U+FEFF (theorem_empty_stream_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_ems_adapter_boundary_001.py: invalid non-printable character U+FEFF (theorem_ems_adapter_boundary_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_ems_translation_001.py: invalid non-printable character U+FEFF (theorem_ems_translation_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_eventstore_immutability_001.py: invalid non-printable character U+FEFF (theorem_eventstore_immutability_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_event_ingestion_001.py: invalid non-printable character U+FEFF (theorem_event_ingestion_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_event_order_consistency_001.py: invalid non-printable character U+FEFF (theorem_event_order_consistency_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_execution_derivation_001.py: invalid non-printable character U+FEFF (theorem_execution_derivation_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_order_authorization_001.py: invalid non-printable character U+FEFF (theorem_order_authorization_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_order_replay_001.py: invalid non-printable character U+FEFF (theorem_order_replay_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_order_state_transition_001.py: invalid non-printable character U+FEFF (theorem_order_state_transition_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_partial_fill_001.py: invalid non-printable character U+FEFF (theorem_partial_fill_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_reconciliation_purity_001.py: invalid non-printable character U+FEFF (theorem_reconciliation_purity_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_replay_determinism_001.py: invalid non-printable character U+FEFF (theorem_replay_determinism_001.py, line 1)
+SYNTAX ERROR: execution\certification\registry\manifest.py: invalid non-printable character U+FEFF (manifest.py, line 1)
+SYNTAX ERROR: execution\certification\registry\__init__.py: invalid non-printable character U+FEFF (__init__.py, line 1)
+SYNTAX ERROR: execution\certification\engine\theorem\_executor.py: invalid non-printable character U+FEFF (_executor.py, line 1)
+SYNTAX ERROR: contracts\portfolio\portfolio_intent.py: unexpected indent (portfolio_intent.py, line 2)
+SYNTAX ERROR: contracts\research\research_signal.py: unexpected indent (research_signal.py, line 2)
+contracts\bootstrap.py:11
+  from contracts.execution import ExecutionPlanContract
+execution\gateway.py:6
+  from .broker_interface import BrokerInterface
+promotion\health.py:3
+  from .graph import PromotionGraph
+promotion\plan.py:3
+  from .graph import PromotionGraph
+vsc\broker.py:2
+  from contracts.execution import ExecutionPlanContract
+vsc\broker.py:2
+  from contracts.execution import ExecutionResultContract
+vsc\invariants.py:5
+  from contracts.execution import ExecutionPlanContract
+vsc\invariants.py:5
+  from contracts.execution import ExecutionResultContract
+vsc\pipeline.py:9
+  from contracts.execution import ExecutionPlanContract
+vsc\pipeline.py:9
+  from contracts.execution import ExecutionResultContract
+vsc\pipeline.py:13
+  from .broker import BrokerAdapter
+vsc\pipeline.py:13
+  from .broker import PaperBroker
+vsc\test_multi_factor_governance.py:5
+  from .pipeline import VSCPipeline
+vsc\test_portfolio_construction.py:6
+  from .pipeline import VSCPipeline
+vsc\test_promotion_flow.py:6
+  from .pipeline import VSCPipeline
+vsc\test_real_research_flow.py:6
+  from .pipeline import VSCPipeline
+vsc\test_risk_aware_portfolio.py:8
+  from .pipeline import VSCPipeline
+vsc\test_vsc.py:3
+  from .pipeline import VSCPipeline
+tests\integration\test_duplicate_intent_flow.py:7
+  from oms.adapters.broker_adapter import BrokerAdapter
+tests\integration\test_duplicate_intent_flow.py:10
+  from oms.contracts.order_intent import OrderIntentContract
+tests\integration\test_execution_flow.py:6
+  from oms.adapters.broker_adapter import BrokerAdapter
+tests\integration\test_execution_flow.py:9
+  from oms.contracts.order_intent import OrderIntentContract
+tests\integration\test_risk_rejection_flow.py:6
+  from oms.adapters.broker_adapter import BrokerAdapter
+tests\integration\test_risk_rejection_flow.py:9
+  from oms.contracts.order_intent import OrderIntentContract
+promotion\health\checker.py:3
+  from ..graph import PromotionGraph
+promotion\health\probes.py:2
+  from ..graph import PromotionGraph
+promotion\implementations\decision_to_execution.py:62
+  from contracts.execution import ExecutionPlanContract
+portfolio\projections\portfolio_projector.py:3
+  from oms.contracts.order_intent import OrderIntentContract
+portfolio\optimization\contracts\theorem_execution_intent_001.py:2
+  from execution.contracts.execution_intent import ExecutionIntent
+oms\engine\execution_engine.py:5
+  from oms.adapters.broker_adapter import BrokerAdapter
+oms\engine\order_management_engine.py:3
+  from oms.contracts.order_intent import OrderIntentContract
+oms\models\order.py:3
+  from oms.contracts.order_intent import OrderIntentContract
+oms\services\order_execution_service.py:9
+  from oms.contracts.order_intent import OrderIntentContract
+execution\events\gateway.py:5
+  from .broker_interface import BrokerInterface
+execution\replay\replay_engine.py:24
+  from execution.oms.order_manager import OrderManager
+event_store\models\order_snapshot.py:6
+  from oms.contracts.order_intent import OrderIntentContract
+event_store\projections\order_rehydrator.py:5
+  from oms.contracts.order_intent import OrderIntentContract
+brokers\paper\broker_adapter.py:4
+  from brokers.broker_interface import BrokerInterface
+brokers\paper\paper_broker.py:4
+  from brokers.broker_interface import BrokerInterface
+brokers\paper\__init__.py:1
+  from .paper_broker import PaperBroker
+brokers\paper\__init__.py:6
+  from .contracts import ExecutionResultContract
+
+==============================================================================================================
+4. DIRECT SYMBOL REFERENCES / CONSTRUCTION
+==============================================================================================================
+
+contracts\bootstrap.py
+  line 36    Name       ExecutionPlanContract
+
+execution\gateway.py
+  line 30    Name       BrokerInterface
+
+promotion\graph.py
+  line 75    Name       PromotionGraph
+
+promotion\health.py
+  line 17    Name       PromotionGraph
+
+promotion\plan.py
+  line 19    Name       PromotionGraph
+SYNTAX ERROR: promotion\result_types.py: invalid non-printable character U+FEFF (result_types.py, line 1)
+SYNTAX ERROR: promotion\__init__.py: invalid non-printable character U+FEFF (__init__.py, line 1)
+
+vsc\broker.py
+  line 9     Name       BrokerAdapter
+  line 6     Name       ExecutionResultContract
+  line 10    Name       ExecutionResultContract
+  line 6     Name       ExecutionPlanContract
+  line 10    Name       ExecutionPlanContract
+  line 11    Name       ExecutionResultContract
+
+vsc\invariants.py
+  line 30    Name       ExecutionPlanContract
+  line 31    Name       ExecutionResultContract
+
+vsc\pipeline.py
+  line 98    Name       ExecutionPlanContract
+  line 114   Name       ExecutionResultContract
+  line 100   Name       ExecutionPlanContract
+  line 111   Name       BrokerAdapter
+  line 114   Name       ExecutionPlanContract
+  line 118   Name       ExecutionResultContract
+  line 112   Name       PaperBroker
+  line 140   Name       ExecutionPlanContract
+  line 141   Name       ExecutionPlanContract
+  line 141   Name       ExecutionResultContract
+  line 142   Name       ExecutionResultContract
+
+vsc\test_multi_factor_governance.py
+  line 36    Name       VSCPipeline
+
+vsc\test_portfolio_construction.py
+  line 58    Name       VSCPipeline
+
+vsc\test_promotion_flow.py
+  line 47    Name       VSCPipeline
+
+vsc\test_real_research_flow.py
+  line 44    Name       VSCPipeline
+
+vsc\test_risk_aware_portfolio.py
+  line 61    Name       VSCPipeline
+
+vsc\test_vsc.py
+  line 30    Name       VSCPipeline
+
+tests\integration\test_duplicate_intent_flow.py
+  line 28    Name       BrokerAdapter
+  line 67    Name       OrderIntentContract
+  line 66    Name       OrderIntentContract
+
+tests\integration\test_execution_flow.py
+  line 33    Name       BrokerAdapter
+  line 79    Name       OrderIntentContract
+
+tests\integration\test_risk_rejection_flow.py
+  line 28    Name       BrokerAdapter
+  line 74    Name       OrderIntentContract
+SYNTAX ERROR: src\gateway\protocol.py: invalid syntax (protocol.py, line 1)
+
+promotion\health\checker.py
+  line 21    Name       PromotionGraph
+
+promotion\health\probes.py
+  line 9     Name       PromotionGraph
+
+promotion\implementations\decision_to_execution.py
+  line 84    Name       ExecutionPlanContract
+SYNTAX ERROR: portfolio\construction\constraint_registry.py: invalid syntax (constraint_registry.py, line 49)
+
+portfolio\projections\portfolio_projector.py
+  line 17    Name       OrderIntentContract
+
+portfolio\optimization\contracts\theorem_execution_intent_001.py
+  line 17    Name       ExecutionIntent
+
+oms\engine\execution_engine.py
+  line 25    Name       BrokerAdapter
+
+oms\engine\order_management_engine.py
+  line 18    Name       OrderIntentContract
+
+oms\models\order.py
+  line 43    Name       OrderIntentContract
+  line 20    Name       OrderIntentContract
+  line 28    Name       OrderIntentContract
+  line 21    Name       OrderIntentContract
+
+oms\services\order_execution_service.py
+  line 57    Name       OrderIntentContract
+  line 66    Name       OrderIntentContract
+  line 182   Name       OrderIntentContract
+  line 78    Name       OrderIntentContract
+  line 189   Name       OrderIntentContract
+SYNTAX ERROR: execution\certification\theorem_empty_stream_001.py: invalid non-printable character U+FEFF (theorem_empty_stream_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_ems_adapter_boundary_001.py: invalid non-printable character U+FEFF (theorem_ems_adapter_boundary_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_ems_translation_001.py: invalid non-printable character U+FEFF (theorem_ems_translation_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_eventstore_immutability_001.py: invalid non-printable character U+FEFF (theorem_eventstore_immutability_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_event_ingestion_001.py: invalid non-printable character U+FEFF (theorem_event_ingestion_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_event_order_consistency_001.py: invalid non-printable character U+FEFF (theorem_event_order_consistency_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_execution_derivation_001.py: invalid non-printable character U+FEFF (theorem_execution_derivation_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_order_authorization_001.py: invalid non-printable character U+FEFF (theorem_order_authorization_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_order_replay_001.py: invalid non-printable character U+FEFF (theorem_order_replay_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_order_state_transition_001.py: invalid non-printable character U+FEFF (theorem_order_state_transition_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_partial_fill_001.py: invalid non-printable character U+FEFF (theorem_partial_fill_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_reconciliation_purity_001.py: invalid non-printable character U+FEFF (theorem_reconciliation_purity_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_replay_determinism_001.py: invalid non-printable character U+FEFF (theorem_replay_determinism_001.py, line 1)
+
+execution\events\gateway.py
+  line 18    Name       BrokerInterface
+
+execution\replay\replay_engine.py
+  line 37    Name       OrderManager
+SYNTAX ERROR: execution\certification\registry\manifest.py: invalid non-printable character U+FEFF (manifest.py, line 1)
+SYNTAX ERROR: execution\certification\registry\__init__.py: invalid non-printable character U+FEFF (__init__.py, line 1)
+SYNTAX ERROR: execution\certification\engine\theorem\_executor.py: invalid non-printable character U+FEFF (_executor.py, line 1)
+
+event_store\models\order_snapshot.py
+  line 23    Name       OrderIntentContract
+
+event_store\projections\order_rehydrator.py
+  line 28    Name       OrderIntentContract
+SYNTAX ERROR: contracts\portfolio\portfolio_intent.py: unexpected indent (portfolio_intent.py, line 2)
+SYNTAX ERROR: contracts\research\research_signal.py: unexpected indent (research_signal.py, line 2)
+
+brokers\paper\broker_adapter.py
+  line 16    Name       BrokerInterface
+
+brokers\paper\paper_broker.py
+  line 27    Name       BrokerInterface
+
+==============================================================================================================
+5. ARCHITECTURE IMPORT GRAPH
+==============================================================================================================
+
+brokers.broker_interface
+  FILE: brokers\broker_interface.py
+  line 4    FROM brokers.enums IMPORT BrokerId
+  line 5    FROM brokers.paper.capabilities IMPORT BrokerCapabilities
+  line 6    FROM contracts.broker.account_contract IMPORT AccountContract
+  line 7    FROM contracts.broker.order_contract IMPORT OrderContract
+  line 8    FROM contracts.broker.position_contract IMPORT PositionContract
+  line 9    FROM execution.contracts.execution_report_contract IMPORT ExecutionReportContract
+
+contracts.accounting
+  FILE: contracts\accounting.py
+  line 5    FROM contracts.base_contract IMPORT BaseContract
+
+contracts.attribution
+  FILE: contracts\attribution.py
+  line 5    FROM contracts.base_contract IMPORT BaseContract
+
+contracts.backtest_result
+  FILE: contracts\backtest_result.py
+  line 7    FROM contracts.base_contract IMPORT BaseContract
+
+contracts.bootstrap
+  FILE: contracts\bootstrap.py
+  line 8    FROM contracts.registry IMPORT ContractRegistry
+  line 9    FROM contracts.research.research_signal IMPORT ResearchSignalContract
+  line 10   FROM contracts.portfolio.portfolio_intent IMPORT PortfolioIntentContract
+  line 11   FROM contracts.execution IMPORT ExecutionPlanContract
+
+contracts.capability_resolver
+  FILE: contracts\capability_resolver.py
+  line 9    FROM contracts.trust IMPORT TrustLevel
+  line 10   FROM contracts.capability IMPORT ContractCapability
+
+contracts.crypto
+  FILE: contracts\crypto.py
+  line 12   FROM contracts.exceptions IMPORT ContractIntegrityError
+  line 13   FROM contracts.canonical IMPORT to_canonical_dict
+  line 13   FROM contracts.canonical IMPORT CANONICAL_EXCLUDED_FIELDS
+
+contracts.event_contract
+  FILE: contracts\event_contract.py
+  line 10   FROM contracts.base_contract IMPORT BaseContract
+  line 11   FROM contracts.exceptions IMPORT ContractValidationError
+
+contracts.execution
+  FILE: contracts\execution.py
+  line 2    FROM contracts.base_contract IMPORT BaseContract
+
+contracts.execution_decision
+  FILE: contracts\execution_decision.py
+  line 5    FROM contracts.base_contract IMPORT BaseContract
+
+contracts.factory
+  FILE: contracts\factory.py
+  line 11   FROM contracts.base_contract IMPORT BaseContract
+  line 12   FROM contracts.registry IMPORT ContractRegistry
+  line 13   FROM contracts.crypto IMPORT HashAlgorithm
+  line 13   FROM contracts.crypto IMPORT compute_canonical_hash
+  line 14   FROM contracts.serializer IMPORT ContractSerializer
+  line 15   FROM contracts.exceptions IMPORT ContractSerializationError
+  line 15   FROM contracts.exceptions IMPORT ContractIntegrityError
+
+contracts.governance
+  FILE: contracts\governance.py
+  line 2    FROM contracts.base_contract IMPORT BaseContract
+
+contracts.learning
+  FILE: contracts\learning.py
+  line 3    FROM contracts.base_contract IMPORT BaseContract
+
+contracts.lifecycle_transition_service
+  FILE: contracts\lifecycle_transition_service.py
+  line 10   FROM contracts.base_contract IMPORT BaseContract
+  line 11   FROM contracts.state IMPORT ContractState
+  line 12   FROM contracts.trust IMPORT TrustLevel
+  line 13   FROM contracts.state_machine IMPORT validate_transition
+  line 14   FROM contracts.trust_machine IMPORT validate_trust_transition
+  line 15   FROM contracts.validators.lifecycle_policy IMPORT validate_state_trust_combination
+  line 16   FROM contracts.rebuilder IMPORT ContractRebuilder
+
+contracts.portfolio
+  FILE: contracts\portfolio.py
+  line 2    FROM contracts.base_contract IMPORT BaseContract
+
+contracts.portfolio_risk
+  FILE: contracts\portfolio_risk.py
+  line 5    FROM contracts.base_contract IMPORT BaseContract
+
+contracts.registry
+  FILE: contracts\registry.py
+  line 8    FROM contracts.base_contract IMPORT BaseContract
+  line 9    FROM contracts.exceptions IMPORT ContractRegistryError
+
+contracts.research
+  FILE: contracts\research.py
+  line 2    FROM contracts.base_contract IMPORT BaseContract
+
+contracts.serializer
+  FILE: contracts\serializer.py
+  line 10   FROM contracts.exceptions IMPORT ContractSerializationError
+
+contracts.state_machine
+  FILE: contracts\state_machine.py
+  line 8    FROM contracts.state IMPORT ContractState
+  line 9    FROM contracts.exceptions IMPORT ContractValidationError
+
+contracts.strategy_promotion
+  FILE: contracts\strategy_promotion.py
+  line 7    FROM contracts.base_contract IMPORT BaseContract
+
+contracts.strategy_validation
+  FILE: contracts\strategy_validation.py
+  line 5    FROM contracts.base_contract IMPORT BaseContract
+
+contracts.trust_machine
+  FILE: contracts\trust_machine.py
+  line 8    FROM contracts.trust IMPORT TrustLevel
+  line 9    FROM contracts.exceptions IMPORT ContractValidationError
+
+contracts.validator
+  FILE: contracts\validator.py
+  line 8    FROM contracts.base_contract IMPORT BaseContract
+  line 9    FROM contracts.exceptions IMPORT ContractValidationError
+  line 9    FROM contracts.exceptions IMPORT ContractIntegrityError
+
+execution.child_order
+  FILE: execution\child_order.py
+  line 2    FROM execution.order IMPORT Order
+
+execution.context
+  FILE: execution\context.py
+  line 3    FROM brokers.enums IMPORT Environment
+  line 3    FROM brokers.enums IMPORT BrokerId
+  line 3    FROM brokers.enums IMPORT ExecutionMode
+  line 4    FROM execution.capabilities.account_capabilities IMPORT AccountCapabilities
+
+execution.execution_simulator
+  FILE: execution\execution_simulator.py
+  line 3    FROM execution.order IMPORT Order
+  line 4    FROM execution.child_order IMPORT ChildOrderEngine
+  line 5    FROM execution.vwap IMPORT VWAPExecution
+
+execution.gateway
+  FILE: execution\gateway.py
+  line 3    FROM contracts.broker.order_contract IMPORT OrderContract
+  line 4    FROM contracts.broker.broker_response_contract IMPORT BrokerResponseContract
+  line 5    FROM contracts.broker.enums IMPORT OrderStatus
+
+execution.planner
+  FILE: execution\planner.py
+  line 1    FROM contracts.execution_decision IMPORT ExecutionDecisionContract
+  line 2    FROM execution.cost_model IMPORT ExecutionCostModel
+  line 3    FROM execution.strategies IMPORT ExecutionStrategySelector
+
+execution.reconciliation_engine
+  FILE: execution\reconciliation_engine.py
+  line 1    FROM contracts.broker.order_contract IMPORT OrderContract
+  line 2    FROM contracts.broker.broker_response_contract IMPORT BrokerResponseContract
+
+execution.response_validator
+  FILE: execution\response_validator.py
+  line 1    FROM contracts.broker.order_contract IMPORT OrderContract
+  line 2    FROM contracts.broker.broker_response_contract IMPORT BrokerResponseContract
+
+execution_gateway.reconciliation_engine
+  FILE: execution_gateway\reconciliation_engine.py
+  line 1    FROM execution.reconciliation_engine IMPORT ReconciliationEngine
+SYNTAX ERROR: promotion\result_types.py: invalid non-printable character U+FEFF (result_types.py, line 1)
+SYNTAX ERROR: promotion\__init__.py: invalid non-printable character U+FEFF (__init__.py, line 1)
+
+vsc.broker
+  FILE: vsc\broker.py
+  line 2    FROM contracts.execution IMPORT ExecutionPlanContract
+  line 2    FROM contracts.execution IMPORT ExecutionResultContract
+
+vsc.invariants
+  FILE: vsc\invariants.py
+  line 2    FROM contracts.research IMPORT ResearchSignalContract
+  line 3    FROM contracts.governance IMPORT ResearchApprovedContract
+  line 4    FROM contracts.portfolio IMPORT PortfolioIntentContract
+  line 4    FROM contracts.portfolio IMPORT PortfolioDecisionContract
+  line 5    FROM contracts.execution IMPORT ExecutionPlanContract
+  line 5    FROM contracts.execution IMPORT ExecutionResultContract
+  line 6    FROM contracts.learning IMPORT PerformanceFeedbackContract
+
+vsc.pipeline
+  FILE: vsc\pipeline.py
+  line 6    FROM contracts.research IMPORT ResearchSignalContract
+  line 7    FROM contracts.governance IMPORT ResearchApprovedContract
+  line 8    FROM contracts.portfolio IMPORT PortfolioIntentContract
+  line 8    FROM contracts.portfolio IMPORT PortfolioDecisionContract
+  line 9    FROM contracts.execution IMPORT ExecutionPlanContract
+  line 9    FROM contracts.execution IMPORT ExecutionResultContract
+  line 10   FROM contracts.learning IMPORT PerformanceFeedbackContract
+
+vsc.test_adversarial_validation
+  FILE: vsc\test_adversarial_validation.py
+  line 1    FROM contracts.strategy_validation IMPORT StrategyValidationContract
+
+vsc.test_attribution
+  FILE: vsc\test_attribution.py
+  line 4    FROM execution.planner IMPORT ExecutionIntelligenceEngine
+  line 5    FROM contracts.portfolio_risk IMPORT PortfolioRiskContract
+
+vsc.test_execution_intelligence
+  FILE: vsc\test_execution_intelligence.py
+  line 2    FROM contracts.portfolio_risk IMPORT PortfolioRiskContract
+  line 3    FROM execution.planner IMPORT ExecutionIntelligenceEngine
+
+vsc.test_persistence
+  FILE: vsc\test_persistence.py
+  line 3    FROM contracts.strategy_validation IMPORT StrategyValidationContract
+
+vsc.test_portfolio_accounting
+  FILE: vsc\test_portfolio_accounting.py
+  line 4    FROM contracts.accounting IMPORT TradeFillContract
+
+vsc.test_replay
+  FILE: vsc\test_replay.py
+  line 3    FROM contracts.strategy_validation IMPORT StrategyValidationContract
+
+vsc.test_research_validation
+  FILE: vsc\test_research_validation.py
+  line 7    FROM contracts.backtest_result IMPORT BacktestResultContract
+
+vsc.test_strategy_registry
+  FILE: vsc\test_strategy_registry.py
+  line 3    FROM contracts.strategy_promotion IMPORT StrategyPromotionContract
+
+promotion.implementations.decision_to_execution
+  FILE: promotion\implementations\decision_to_execution.py
+  line 3    FROM ..promotion_context IMPORT PromotionContext
+  line 62   FROM contracts.execution IMPORT ExecutionPlanContract
+
+promotion.implementations.execution_to_result
+  FILE: promotion\implementations\execution_to_result.py
+  line 3    FROM ..promotion_context IMPORT PromotionContext
+
+promotion.implementations.research_to_portfolio
+  FILE: promotion\implementations\research_to_portfolio.py
+  line 8    FROM contracts.lifecycle_transition_service IMPORT LifecycleTransitionService
+
+oms.adapters.broker_adapter
+  FILE: oms\adapters\broker_adapter.py
+  line 3    FROM oms.contracts.broker_order_status IMPORT BrokerOrderStatus
+  line 4    FROM oms.contracts.broker_submission_result IMPORT BrokerSubmissionResult
+  line 5    FROM oms.models.order IMPORT Order
+
+oms.contracts.broker_order_status
+  FILE: oms\contracts\broker_order_status.py
+  line 5    FROM oms.state_machine.order_state_machine IMPORT OrderState
+
+oms.engine.execution_engine
+  FILE: oms\engine\execution_engine.py
+  line 5    FROM oms.adapters.broker_adapter IMPORT BrokerAdapter
+  line 6    FROM oms.adapters.exceptions IMPORT BrokerIntegrationError
+  line 6    FROM oms.adapters.exceptions IMPORT BrokerOrderRejectionError
+  line 7    FROM oms.contracts.broker_order_status IMPORT BrokerOrderStatus
+  line 8    FROM oms.contracts.broker_submission_result IMPORT BrokerSubmissionResult
+  line 9    FROM oms.events.order_events IMPORT BaseOrderEvent
+  line 9    FROM oms.events.order_events IMPORT OrderExecutionErrorEvent
+  line 9    FROM oms.events.order_events IMPORT OrderRejectedEvent
+  line 9    FROM oms.events.order_events IMPORT OrderSubmittedEvent
+  line 9    FROM oms.events.order_events IMPORT OrderTransitionEvent
+  line 16   FROM oms.models.order IMPORT Order
+  line 17   FROM oms.state_machine.order_state_machine IMPORT OrderState
+
+oms.engine.order_management_engine
+  FILE: oms\engine\order_management_engine.py
+  line 3    FROM oms.contracts.order_intent IMPORT OrderIntentContract
+  line 4    FROM oms.models.order IMPORT Order
+  line 5    FROM oms.state_machine.order_state_machine IMPORT OrderState
+
+oms.events.execution
+  FILE: oms\events\execution.py
+  line 5    FROM oms.events.base IMPORT BaseOrderEvent
+
+oms.events.order_events
+  FILE: oms\events\order_events.py
+  line 6    FROM oms.state_machine.order_state_machine IMPORT OrderState
+
+oms.events.risk
+  FILE: oms\events\risk.py
+  line 2    FROM oms.events.base IMPORT BaseOrderEvent
+
+oms.models.order
+  FILE: oms\models\order.py
+  line 3    FROM oms.contracts.order_intent IMPORT OrderIntentContract
+  line 4    FROM oms.events.order_events IMPORT BaseOrderEvent
+  line 4    FROM oms.events.order_events IMPORT OrderRejectedEvent
+  line 4    FROM oms.events.order_events IMPORT OrderSubmittedEvent
+  line 4    FROM oms.events.order_events IMPORT OrderTransitionEvent
+  line 10   FROM oms.state_machine.order_state_machine IMPORT OrderState
+  line 10   FROM oms.state_machine.order_state_machine IMPORT OrderStateMachine
+
+oms.services.order_execution_service
+  FILE: oms\services\order_execution_service.py
+  line 8    FROM oms.contracts.broker_order_status IMPORT BrokerOrderStatus
+  line 9    FROM oms.contracts.order_intent IMPORT OrderIntentContract
+  line 10   FROM oms.engine.execution_engine IMPORT ExecutionEngine
+  line 11   FROM oms.engine.order_management_engine IMPORT OrderManagementEngine
+  line 12   FROM oms.events.base IMPORT BaseOrderEvent
+  line 13   FROM oms.events.risk IMPORT OrderAcceptedEvent
+  line 13   FROM oms.events.risk IMPORT RiskRejectedEvent
+  line 14   FROM oms.models.order IMPORT Order
+
+execution.admission.order_admission_controller
+  FILE: execution\admission\order_admission_controller.py
+  line 7    FROM execution.certification.engine.runtime_state_controller IMPORT RuntimeStateController
+
+execution.certification.startup_gate
+  FILE: execution\certification\startup_gate.py
+  line 10   FROM execution.manifest IMPORT EXECUTION_ENGINE_VERSION
+  line 11   FROM execution.certification.contracts.empirical_theorem IMPORT EmpiricalTheorem
+  line 12   FROM execution.certification.engine.registry._validator IMPORT RegistryValidator
+  line 13   FROM execution.certification.engine.dependency._resolver IMPORT DependencyResolver
+  line 14   FROM execution.certification.engine.theorem._executor IMPORT TheoremExecutor
+  line 15   FROM execution.certification.engine.proof._builder IMPORT ProofBuilder
+  line 16   FROM execution.certification.engine.certificate._issuer IMPORT StartupCertificate
+  line 16   FROM execution.certification.engine.certificate._issuer IMPORT CertificateIssuer
+  line 17   FROM execution.certification.engine.runtime.state._controller IMPORT RuntimeStateController
+  line 17   FROM execution.certification.engine.runtime.state._controller IMPORT RuntimeCertificationState
+SYNTAX ERROR: execution\certification\theorem_empty_stream_001.py: invalid non-printable character U+FEFF (theorem_empty_stream_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_ems_adapter_boundary_001.py: invalid non-printable character U+FEFF (theorem_ems_adapter_boundary_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_ems_translation_001.py: invalid non-printable character U+FEFF (theorem_ems_translation_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_eventstore_immutability_001.py: invalid non-printable character U+FEFF (theorem_eventstore_immutability_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_event_ingestion_001.py: invalid non-printable character U+FEFF (theorem_event_ingestion_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_event_order_consistency_001.py: invalid non-printable character U+FEFF (theorem_event_order_consistency_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_execution_derivation_001.py: invalid non-printable character U+FEFF (theorem_execution_derivation_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_order_authorization_001.py: invalid non-printable character U+FEFF (theorem_order_authorization_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_order_replay_001.py: invalid non-printable character U+FEFF (theorem_order_replay_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_order_state_transition_001.py: invalid non-printable character U+FEFF (theorem_order_state_transition_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_partial_fill_001.py: invalid non-printable character U+FEFF (theorem_partial_fill_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_reconciliation_purity_001.py: invalid non-printable character U+FEFF (theorem_reconciliation_purity_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_replay_determinism_001.py: invalid non-printable character U+FEFF (theorem_replay_determinism_001.py, line 1)
+
+execution.contracts.fill_decision_contract
+  FILE: execution\contracts\fill_decision_contract.py
+  line 4    FROM execution.contracts.fill_contract IMPORT FillContract
+
+execution.contracts.fill_evaluation_contract
+  FILE: execution\contracts\fill_evaluation_contract.py
+  line 5    FROM execution.contracts.market_snapshot_contract IMPORT MarketSnapshotContract
+  line 6    FROM execution.simulation.context IMPORT ExecutionSimulationContext
+  line 7    FROM brokers.paper.contracts IMPORT FillContract
+
+execution.contracts.order_event_record
+  FILE: execution\contracts\order_event_record.py
+  line 4    FROM execution.oms.order_state_machine IMPORT OrderState
+
+execution.ems.base_adapter
+  FILE: execution\ems\base_adapter.py
+  line 3    FROM execution.contracts.ems_contract IMPORT EMSOrderRequest
+  line 4    FROM execution.contracts.broker_submission_contract IMPORT BrokerSubmissionResult
+
+execution.ems.paper_adapter
+  FILE: execution\ems\paper_adapter.py
+  line 4    FROM execution.ems.base_adapter IMPORT AbstractEMSAdapter
+  line 5    FROM execution.contracts.ems_contract IMPORT EMSOrderRequest
+  line 6    FROM execution.contracts.broker_submission_contract IMPORT BrokerSubmissionResult
+
+execution.engine.certificate_issuer
+  FILE: execution\engine\certificate_issuer.py
+  line 3    FROM ..contracts.empirical_result IMPORT ExecutionEmpiricalResult
+  line 3    FROM ..contracts.empirical_result IMPORT CertificationState
+
+execution.engine.fill_allocator
+  FILE: execution\engine\fill_allocator.py
+  line 6    FROM execution.contracts.fill_contract IMPORT FillContract
+  line 7    FROM execution.contracts.order_contract IMPORT OrderContract
+  line 8    FROM execution.models.contracts.liquidity_assessment IMPORT LiquidityAssessment
+  line 9    FROM execution.models.contracts.price_adjustment IMPORT PriceAdjustment
+  line 10   FROM execution.simulation.context IMPORT ExecutionSimulationContext
+
+execution.engine.fill_decision_assembler
+  FILE: execution\engine\fill_decision_assembler.py
+  line 5    FROM execution.contracts.fill_contract IMPORT FillContract
+  line 6    FROM execution.contracts.fill_decision_contract IMPORT FillDecisionContract
+  line 6    FROM execution.contracts.fill_decision_contract IMPORT ExecutionStatus
+  line 7    FROM execution.contracts.order_contract IMPORT OrderContract
+  line 8    FROM execution.models.contracts.fee_assessment IMPORT FeeAssessment
+
+execution.engine.fill_simulation_engine
+  FILE: execution\engine\fill_simulation_engine.py
+  line 4    FROM execution.contracts.order_contract IMPORT OrderContract
+  line 5    FROM execution.contracts.fill_decision_contract IMPORT FillDecisionContract
+  line 6    FROM execution.simulation.context IMPORT ExecutionSimulationContext
+  line 7    FROM execution.models.protocols IMPORT LiquidityModelProtocol
+  line 7    FROM execution.models.protocols IMPORT SlippageModelProtocol
+  line 7    FROM execution.models.protocols IMPORT MarketImpactModelProtocol
+  line 7    FROM execution.models.protocols IMPORT FeeModelProtocol
+  line 13   FROM execution.models.contracts.price_adjustment IMPORT PriceAdjustment
+  line 14   FROM execution.engine.fill_allocator IMPORT BaselineFillAllocator
+  line 15   FROM execution.engine.fill_decision_assembler IMPORT FillDecisionAssembler
+
+execution.engine.proof_builder
+  FILE: execution\engine\proof_builder.py
+  line 5    FROM ..contracts.empirical_theorem IMPORT EmpiricalTheorem
+
+execution.engine.theorem_executor
+  FILE: execution\engine\theorem_executor.py
+  line 3    FROM ..contracts.empirical_theorem IMPORT EmpiricalTheorem
+
+execution.events.event_normalizer
+  FILE: execution\events\event_normalizer.py
+  line 3    FROM execution.contracts.event_gateway_contract IMPORT GatewayIngressPayload
+  line 4    FROM execution.events.normalization_result IMPORT EventNormalizationResult
+
+execution.events.event_store
+  FILE: execution\events\event_store.py
+  line 7    FROM execution.contracts.execution_event IMPORT ExecutionEvent
+
+execution.events.gateway
+  FILE: execution\events\gateway.py
+  line 2    FROM contracts.broker.order_contract IMPORT OrderContract
+  line 3    FROM contracts.broker.broker_response_contract IMPORT BrokerResponseContract
+  line 4    FROM contracts.broker.enums IMPORT OrderStatus
+
+execution.events.normalization_result
+  FILE: execution\events\normalization_result.py
+  line 4    FROM execution.contracts.execution_event IMPORT ExecutionEvent
+
+execution.events.paper_event_normalizer
+  FILE: execution\events\paper_event_normalizer.py
+  line 4    FROM execution.events.event_normalizer IMPORT AbstractEventNormalizer
+  line 5    FROM execution.contracts.event_gateway_contract IMPORT GatewayIngressPayload
+  line 6    FROM execution.contracts.execution_event IMPORT ExecutionEvent
+  line 7    FROM execution.events.normalization_result IMPORT EventNormalizationResult
+
+execution.models.protocols
+  FILE: execution\models\protocols.py
+  line 4    FROM execution.contracts.liquidity_assessment_contract IMPORT LiquidityAssessment
+  line 5    FROM execution.contracts.order_contract IMPORT OrderContract
+  line 6    FROM execution.contracts.fill_contract IMPORT FillContract
+  line 7    FROM execution.models.contracts.fee_assessment IMPORT FeeAssessment
+  line 8    FROM execution.simulation.context IMPORT ExecutionSimulationContext
+
+execution.oms.order_manager
+  FILE: execution\oms\order_manager.py
+  line 8    FROM execution.contracts.order_contract IMPORT OrderIntent
+  line 9    FROM execution.contracts.execution_event IMPORT ExecutionEvent
+  line 10   FROM execution.contracts.order_event_record IMPORT OrderEventRecord
+  line 11   FROM execution.oms.order_state_machine IMPORT OrderState
+  line 11   FROM execution.oms.order_state_machine IMPORT OrderStateMachine
+  line 12   FROM execution.certification.theorem_event_order_consistency_001 IMPORT EventOrderConsistencyTheorem
+  line 15   FROM execution.certification.theorem_order_state_transition_001 IMPORT OrderStateTransitionTheorem
+
+execution.reconciliation.cash_reconciler
+  FILE: execution\reconciliation\cash_reconciler.py
+  line 22   FROM execution.contracts.cash_snapshot IMPORT CashSnapshot
+
+execution.replay.replay_engine
+  FILE: execution\replay\replay_engine.py
+  line 21   FROM execution.contracts.order_contract IMPORT OrderIntent
+  line 22   FROM execution.contracts.execution_event IMPORT ExecutionEvent
+  line 23   FROM execution.contracts.cash_snapshot IMPORT CashSnapshot
+  line 24   FROM execution.oms.order_manager IMPORT OrderManager
+  line 24   FROM execution.oms.order_manager IMPORT OrderRecord
+  line 25   FROM execution.reconciliation.position_reconciler IMPORT PositionSnapshot
+
+execution.simulation.context
+  FILE: execution\simulation\context.py
+  line 7    FROM execution.contracts.market_snapshot_contract IMPORT MarketSnapshotContract
+  line 8    FROM execution.simulation.metadata IMPORT ExecutionModelMetadata
+
+execution.simulation.fill_decision_contract
+  FILE: execution\simulation\fill_decision_contract.py
+  line 4    FROM brokers.paper.contracts IMPORT FillContract
+
+execution.models.contracts.baseline_slippage_model
+  FILE: execution\models\contracts\baseline_slippage_model.py
+  line 3    FROM execution.contracts.order_contract IMPORT OrderContract
+  line 3    FROM execution.contracts.order_contract IMPORT OrderSide
+  line 4    FROM execution.simulation.context IMPORT ExecutionSimulationContext
+  line 5    FROM execution.models.contracts.liquidity_assessment IMPORT LiquidityAssessment
+
+execution.models.fees.baseline_fee_model
+  FILE: execution\models\fees\baseline_fee_model.py
+  line 3    FROM execution.contracts.fill_contract IMPORT FillContract
+  line 4    FROM execution.simulation.context IMPORT ExecutionSimulationContext
+  line 5    FROM execution.models.contracts.fee_assessment IMPORT FeeAssessment
+
+execution.models.impact.baseline_market_impact_model
+  FILE: execution\models\impact\baseline_market_impact_model.py
+  line 4    FROM execution.contracts.fill_contract IMPORT FillContract
+  line 5    FROM execution.simulation.context IMPORT ExecutionSimulationContext
+  line 6    FROM execution.models.contracts.fee_assessment IMPORT FeeAssessment
+
+execution.models.liquidity.baseline_liquidity_model
+  FILE: execution\models\liquidity\baseline_liquidity_model.py
+  line 3    FROM execution.contracts.order_contract IMPORT OrderContract
+  line 4    FROM execution.simulation.context IMPORT ExecutionSimulationContext
+  line 5    FROM execution.models.contracts.liquidity_assessment IMPORT LiquidityAssessment
+
+execution.models.slippage.baseline_slippage_model
+  FILE: execution\models\slippage\baseline_slippage_model.py
+  line 3    FROM execution.contracts.order_contract IMPORT OrderContract
+  line 3    FROM execution.contracts.order_contract IMPORT OrderSide
+  line 4    FROM execution.simulation.context IMPORT ExecutionSimulationContext
+  line 5    FROM execution.models.contracts.liquidity_assessment IMPORT LiquidityAssessment
+  line 6    FROM execution.models.contracts.price_adjustment IMPORT PriceAdjustment
+
+execution.certification.contracts.empirical_theorem
+  FILE: execution\certification\contracts\empirical_theorem.py
+  line 17   FROM execution.manifest IMPORT EXECUTION_ENGINE_VERSION
+  line 18   FROM execution.certification.results.empirical_result IMPORT ExecutionResult
+SYNTAX ERROR: execution\certification\registry\manifest.py: invalid non-printable character U+FEFF (manifest.py, line 1)
+SYNTAX ERROR: execution\certification\registry\__init__.py: invalid non-printable character U+FEFF (__init__.py, line 1)
+
+execution.certification.engine.dependency._resolver
+  FILE: execution\certification\engine\dependency\_resolver.py
+  line 10   FROM execution.certification.contracts.empirical_theorem IMPORT EmpiricalTheorem
+
+execution.certification.engine.manifest._builder
+  FILE: execution\certification\engine\manifest\_builder.py
+  line 13   FROM execution.manifest IMPORT EXECUTION_ENGINE_VERSION
+  line 14   FROM execution.certification.contracts.empirical_theorem IMPORT EmpiricalTheorem
+
+execution.certification.engine.proof._builder
+  FILE: execution\certification\engine\proof\_builder.py
+  line 10   FROM execution.certification.contracts.empirical_theorem IMPORT EmpiricalTheorem
+
+execution.certification.engine.registry._validator
+  FILE: execution\certification\engine\registry\_validator.py
+  line 11   FROM execution.certification.contracts.empirical_theorem IMPORT EmpiricalTheorem
+  line 12   FROM execution.certification.engine.manifest._builder IMPORT ManifestBuilder
+SYNTAX ERROR: execution\certification\engine\theorem\_executor.py: invalid non-printable character U+FEFF (_executor.py, line 1)
+
+contracts.broker.broker_interface
+  FILE: contracts\broker\broker_interface.py
+  line 3    FROM contracts.broker.order_contract IMPORT OrderContract
+  line 4    FROM contracts.broker.broker_response_contract IMPORT BrokerResponseContract
+  line 5    FROM contracts.broker.position_contract IMPORT PositionContract
+  line 6    FROM contracts.broker.account_contract IMPORT AccountContract
+
+contracts.broker.broker_response_contract
+  FILE: contracts\broker\broker_response_contract.py
+  line 4    FROM contracts.broker.enums IMPORT OrderStatus
+
+contracts.broker.execution_contract
+  FILE: contracts\broker\execution_contract.py
+  line 3    FROM contracts.broker.enums IMPORT OrderSide
+
+contracts.broker.order_contract
+  FILE: contracts\broker\order_contract.py
+  line 4    FROM contracts.broker.enums IMPORT OrderSide
+  line 4    FROM contracts.broker.enums IMPORT OrderType
+
+contracts.execution.execution_plan
+  FILE: contracts\execution\execution_plan.py
+  line 6    FROM contracts.base IMPORT BaseContract
+  line 7    FROM contracts.enums IMPORT ContractState
+  line 7    FROM contracts.enums IMPORT Environment
+  line 7    FROM contracts.enums IMPORT TrustLevel
+
+contracts.execution.execution_result
+  FILE: contracts\execution\execution_result.py
+  line 13   FROM contracts.event_contract IMPORT EventContract
+  line 14   FROM contracts.base_contract IMPORT Environment
+  line 15   FROM contracts.state IMPORT ContractState
+  line 16   FROM contracts.trust IMPORT TrustLevel
+  line 17   FROM contracts.execution.execution_status IMPORT ExecutionStatus
+  line 18   FROM contracts.freezer IMPORT freeze_metadata
+  line 19   FROM contracts.exceptions IMPORT ContractValidationError
+
+contracts.governance.promotion_decision
+  FILE: contracts\governance\promotion_decision.py
+  line 12   FROM contracts.base_contract IMPORT BaseContract
+  line 12   FROM contracts.base_contract IMPORT Environment
+  line 13   FROM contracts.state IMPORT ContractState
+  line 14   FROM contracts.trust IMPORT TrustLevel
+  line 15   FROM contracts.freezer IMPORT freeze_metadata
+  line 16   FROM contracts.exceptions IMPORT ContractValidationError
+
+contracts.migrations.registry
+  FILE: contracts\migrations\registry.py
+  line 9    FROM contracts.exceptions IMPORT ContractRegistryError
+
+contracts.portfolio.portfolio_decision
+  FILE: contracts\portfolio\portfolio_decision.py
+  line 12   FROM contracts.base_contract IMPORT BaseContract
+  line 12   FROM contracts.base_contract IMPORT Environment
+  line 13   FROM contracts.state IMPORT ContractState
+  line 14   FROM contracts.trust IMPORT TrustLevel
+  line 15   FROM contracts.freezer IMPORT freeze_metadata
+  line 16   FROM contracts.exceptions IMPORT ContractValidationError
+SYNTAX ERROR: contracts\portfolio\portfolio_intent.py: unexpected indent (portfolio_intent.py, line 2)
+
+contracts.promotion.research_to_portfolio
+  FILE: contracts\promotion\research_to_portfolio.py
+  line 3    FROM .promotion_context IMPORT PromotionContext
+
+contracts.research.research_candidate
+  FILE: contracts\research\research_candidate.py
+  line 13   FROM contracts.base_contract IMPORT BaseContract
+  line 13   FROM contracts.base_contract IMPORT Environment
+  line 13   FROM contracts.base_contract IMPORT freeze_metadata
+  line 14   FROM contracts.exceptions IMPORT ContractValidationError
+SYNTAX ERROR: contracts\research\research_signal.py: unexpected indent (research_signal.py, line 2)
+
+contracts.validators.identity
+  FILE: contracts\validators\identity.py
+  line 9    FROM contracts.exceptions IMPORT ContractValidationError
+
+contracts.validators.integrity
+  FILE: contracts\validators\integrity.py
+  line 9    FROM contracts.crypto IMPORT compute_canonical_hash
+  line 10   FROM contracts.exceptions IMPORT ContractIntegrityError
+
+contracts.validators.lifecycle_policy
+  FILE: contracts\validators\lifecycle_policy.py
+  line 9    FROM contracts.state IMPORT ContractState
+  line 10   FROM contracts.trust IMPORT TrustLevel
+  line 11   FROM contracts.exceptions IMPORT ContractValidationError
+
+contracts.validators.lineage
+  FILE: contracts\validators\lineage.py
+  line 10   FROM contracts.state IMPORT ContractState
+  line 11   FROM contracts.trust IMPORT TrustLevel
+  line 12   FROM contracts.state_machine IMPORT validate_transition
+  line 13   FROM contracts.trust_machine IMPORT validate_trust_transition
+  line 14   FROM contracts.exceptions IMPORT ContractValidationError
+
+contracts.validators.pipeline
+  FILE: contracts\validators\pipeline.py
+  line 10   FROM contracts.validators.identity IMPORT validate_contract_identity
+  line 11   FROM contracts.validators.schema IMPORT validate_contract_schema
+  line 12   FROM contracts.validators.lineage IMPORT validate_state_history_sequence
+  line 12   FROM contracts.validators.lineage IMPORT validate_trust_history_sequence
+  line 16   FROM contracts.validators.lifecycle_policy IMPORT validate_state_trust_combination
+  line 17   FROM contracts.validators.integrity IMPORT validate_contract_integrity
+
+contracts.validators.schema
+  FILE: contracts\validators\schema.py
+  line 9    FROM contracts.exceptions IMPORT ContractValidationError
+
+contracts.migrations.research_signal.v1_to_v2
+  FILE: contracts\migrations\research_signal\v1_to_v2.py
+  line 8    FROM contracts.migrations.registry IMPORT MigrationRegistry
+
+brokers.paper.account_engine
+  FILE: brokers\paper\account_engine.py
+  line 2    FROM .contracts IMPORT ExecutionReportContract
+
+brokers.paper.application_service
+  FILE: brokers\paper\application_service.py
+  line 3    FROM .contracts IMPORT ExecutionReportContract
+
+brokers.paper.broker_adapter
+  FILE: brokers\paper\broker_adapter.py
+  line 4    FROM brokers.broker_interface IMPORT BrokerInterface
+  line 5    FROM brokers.enums IMPORT BrokerId
+  line 5    FROM brokers.enums IMPORT Environment
+  line 6    FROM brokers.paper.context IMPORT ExecutionContext
+  line 7    FROM brokers.paper.capabilities IMPORT BrokerCapabilities
+  line 8    FROM execution.application_service IMPORT ExecutionApplicationService
+  line 9    FROM contracts.broker.account_contract IMPORT AccountContract
+  line 10   FROM contracts.broker.order_contract IMPORT OrderContract
+  line 11   FROM contracts.broker.position_contract IMPORT PositionContract
+  line 12   FROM execution.contracts.execution_report_contract IMPORT ExecutionReportContract
+
+brokers.paper.commit_engine
+  FILE: brokers\paper\commit_engine.py
+  line 3    FROM .contracts IMPORT ExecutionReportContract
+  line 3    FROM .contracts IMPORT ExecutionOutcome
+
+brokers.paper.context
+  FILE: brokers\paper\context.py
+  line 2    FROM brokers.enums IMPORT Environment
+  line 2    FROM brokers.enums IMPORT BrokerId
+
+brokers.paper.execution_aggregate
+  FILE: brokers\paper\execution_aggregate.py
+  line 4    FROM .contracts IMPORT ExecutionReportContract
+
+brokers.paper.execution_pipeline
+  FILE: brokers\paper\execution_pipeline.py
+  line 2    FROM .contracts IMPORT ExecutionOutcome
+  line 2    FROM .contracts IMPORT MarketSnapshotContract
+
+brokers.paper.execution_repository
+  FILE: brokers\paper\execution_repository.py
+  line 2    FROM .execution_aggregate IMPORT ExecutionAggregate
+  line 3    FROM .contracts IMPORT ExecutionReportContract
+
+brokers.paper.factory
+  FILE: brokers\paper\factory.py
+  line 2    FROM .contracts IMPORT ExecutionOutcome
+
+brokers.paper.order_aggregate
+  FILE: brokers\paper\order_aggregate.py
+  line 4    FROM .contracts IMPORT ExecutionReportContract
+
+brokers.paper.order_matcher
+  FILE: brokers\paper\order_matcher.py
+  line 2    FROM .contracts IMPORT FillContract
+  line 2    FROM .contracts IMPORT ExecutionOutcome
+
+brokers.paper.order_store
+  FILE: brokers\paper\order_store.py
+  line 2    FROM .execution_aggregate IMPORT ExecutionAggregate
+  line 3    FROM .contracts IMPORT ExecutionReportContract
+
+brokers.paper.paper_broker
+  FILE: brokers\paper\paper_broker.py
+  line 4    FROM brokers.broker_interface IMPORT BrokerInterface
+  line 5    FROM brokers.enums IMPORT BrokerId
+  line 5    FROM brokers.enums IMPORT Environment
+  line 6    FROM brokers.capabilities IMPORT BrokerCapabilities
+  line 7    FROM execution.capabilities.account_capabilities IMPORT AccountCapabilities
+  line 8    FROM execution.capabilities.effective_capabilities IMPORT EffectiveCapabilities
+  line 9    FROM execution.context IMPORT ExecutionContext
+  line 10   FROM execution.application_service IMPORT ExecutionApplicationService
+  line 11   FROM contracts.broker.account_contract IMPORT AccountContract
+  line 12   FROM contracts.broker.order_contract IMPORT OrderContract
+  line 13   FROM contracts.broker.position_contract IMPORT PositionContract
+  line 14   FROM execution.contracts.execution_report_contract IMPORT ExecutionReportContract
+
+brokers.paper.projection_mapper
+  FILE: brokers\paper\projection_mapper.py
+  line 1    FROM .contracts IMPORT ExecutionReportContract
+
+brokers.paper.query_service
+  FILE: brokers\paper\query_service.py
+  line 2    FROM .contracts IMPORT ExecutionReportContract
+
+brokers.paper.services
+  FILE: brokers\paper\services.py
+  line 4    FROM .execution_repository IMPORT ExecutionRepository
+
+brokers.paper
+  FILE: brokers\paper\__init__.py
+  line 6    FROM .contracts IMPORT MarketSnapshotContract
+  line 6    FROM .contracts IMPORT ExecutionReportContract
+  line 6    FROM .contracts IMPORT ExecutionResultContract
+
+==============================================================================================================
+6. BROKER INTERFACE TRACE
+==============================================================================================================
+
+brokers\broker_interface.py
+  ClassDef        BrokerInterface:11
+
+contracts\broker\broker_interface.py
+  ClassDef        BrokerInterface:8
+
+execution\broker_interface.py
+  DOES NOT EXIST
+
+IMPORTS CONTAINING broker_interface:
+  execution\gateway.py:6 .broker_interface
+SYNTAX ERROR: promotion\result_types.py: invalid non-printable character U+FEFF (result_types.py, line 1)
+SYNTAX ERROR: promotion\__init__.py: invalid non-printable character U+FEFF (__init__.py, line 1)
+SYNTAX ERROR: src\gateway\protocol.py: invalid syntax (protocol.py, line 1)
+SYNTAX ERROR: portfolio\construction\constraint_registry.py: invalid syntax (constraint_registry.py, line 49)
+SYNTAX ERROR: execution\certification\theorem_empty_stream_001.py: invalid non-printable character U+FEFF (theorem_empty_stream_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_ems_adapter_boundary_001.py: invalid non-printable character U+FEFF (theorem_ems_adapter_boundary_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_ems_translation_001.py: invalid non-printable character U+FEFF (theorem_ems_translation_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_eventstore_immutability_001.py: invalid non-printable character U+FEFF (theorem_eventstore_immutability_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_event_ingestion_001.py: invalid non-printable character U+FEFF (theorem_event_ingestion_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_event_order_consistency_001.py: invalid non-printable character U+FEFF (theorem_event_order_consistency_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_execution_derivation_001.py: invalid non-printable character U+FEFF (theorem_execution_derivation_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_order_authorization_001.py: invalid non-printable character U+FEFF (theorem_order_authorization_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_order_replay_001.py: invalid non-printable character U+FEFF (theorem_order_replay_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_order_state_transition_001.py: invalid non-printable character U+FEFF (theorem_order_state_transition_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_partial_fill_001.py: invalid non-printable character U+FEFF (theorem_partial_fill_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_reconciliation_purity_001.py: invalid non-printable character U+FEFF (theorem_reconciliation_purity_001.py, line 1)
+SYNTAX ERROR: execution\certification\theorem_replay_determinism_001.py: invalid non-printable character U+FEFF (theorem_replay_determinism_001.py, line 1)
+  execution\events\gateway.py:5 .broker_interface
+SYNTAX ERROR: execution\certification\registry\manifest.py: invalid non-printable character U+FEFF (manifest.py, line 1)
+SYNTAX ERROR: execution\certification\registry\__init__.py: invalid non-printable character U+FEFF (__init__.py, line 1)
+SYNTAX ERROR: execution\certification\engine\theorem\_executor.py: invalid non-printable character U+FEFF (_executor.py, line 1)
+SYNTAX ERROR: contracts\portfolio\portfolio_intent.py: unexpected indent (portfolio_intent.py, line 2)
+SYNTAX ERROR: contracts\research\research_signal.py: unexpected indent (research_signal.py, line 2)
+  brokers\paper\broker_adapter.py:4 brokers.broker_interface
+  brokers\paper\paper_broker.py:4 brokers.broker_interface
+
+==============================================================================================================
+7. EXECUTION CONTRACT FAMILY
+==============================================================================================================
+
+contracts\execution.py
+  ClassDef        ExecutionPlanContract:5
+  ClassDef        ExecutionResultContract:16
+
+contracts\execution
+  contracts\execution\execution_plan.py
+    ExecutionPlanContract
+  contracts\execution\execution_result.py
+    ExecutionResultContract
+  contracts\execution\execution_status.py
+    ExecutionStatus
+
+execution\contracts
+  execution\contracts\empirical_result.py
+    ExecutionEmpiricalResult
+  execution\contracts\ems_contract.py
+    EMSOrderRequest
+  execution\contracts\execution_event.py
+    ExecutionEvent
+  execution\contracts\execution_intent.py
+    ExecutionIntent
+  execution\contracts\metadata.py
+    ExecutionModelMetadata
+  execution\contracts\order_contract.py
+    OrderIntent
+  execution\contracts\order_event_record.py
+    OrderEventRecord
+
+oms\contracts
+  oms\contracts\broker_order_status.py
+    BrokerOrderStatus
+  oms\contracts\order_intent.py
+    OrderSide
+    OrderType
+    OrderIntentContract
+
+==============================================================================================================
+8. PROMOTION -> EXECUTION TRACE
+==============================================================================================================
+
+FILE: promotion\implementations\decision_to_execution.py
+  IMPORTS:
+    line 1    from  typing Any
+    line 2    from  ..base_promoter BasePromotionService
+    line 3    from  ..promotion_context PromotionContext
+    line 4    from  ..guards.capability_guard CapabilityGuard
+    line 5    from  ..guards.lineage_guard LineageGuard
+    line 6    from  ..services.lifecycle_transition LifecycleTransitionService
+    line 7    from  ..exceptions BusinessRuleViolationError
+    line 7    from  ..exceptions LifecycleTransitionError
+    line 62   from  contracts.execution ExecutionPlanContract
+  DEFINITIONS:
+    ClassDef        DecisionToExecutionPromoter:10
+    FunctionDef     validate_source:13
+    FunctionDef     validate_capabilities:16
+    FunctionDef     validate_business_rules:19
+    FunctionDef     validate_lifecycle_eligibility:26
+    FunctionDef     create_decision:35
+    FunctionDef     create_target:52
+    FunctionDef     validate_target:116
+    FunctionDef     transition_source:128
+    FunctionDef     create_audit:137
+    assignment      status:20
+    assignment      state:29
+    assignment      decision_class:36
+    assignment      decision_id:37
+    assignment      decision_id:64
+    assignment      symbol:66
+    assignment      approved_weight:72
+    assignment      target_quantity:74
+    assignment      order_type:79
+    assignment      plan_id:117
+    assignment      audit_class:144
+    assignment      target_id:146
+
+FILE: promotion\implementations\execution_to_result.py
+  IMPORTS:
+    line 1    from  typing Any
+    line 2    from  ..base_promoter BasePromotionService
+    line 3    from  ..promotion_context PromotionContext
+    line 4    from  ..guards.capability_guard CapabilityGuard
+    line 5    from  ..guards.lineage_guard LineageGuard
+    line 6    from  ..services.lifecycle_transition LifecycleTransitionService
+    line 7    from  ..exceptions BusinessRuleViolationError
+    line 7    from  ..exceptions LifecycleTransitionError
+  DEFINITIONS:
+    ClassDef        ExecutionToResultPromoter:9
+    FunctionDef     validate_source:12
+    FunctionDef     validate_capabilities:15
+    FunctionDef     validate_business_rules:18
+    FunctionDef     validate_lifecycle_eligibility:23
+    FunctionDef     create_decision:28
+    FunctionDef     create_target:40
+    FunctionDef     validate_target:60
+    FunctionDef     transition_source:65
+    FunctionDef     create_audit:74
+    assignment      fill_price:19
+    assignment      state:24
+    assignment      decision_class:29
+    assignment      plan_id:30
+    assignment      target_class:41
+    assignment      plan_id:42
+    assignment      result_id:61
+    assignment      audit_class:75
+
+==============================================================================================================
+9. EXECUTION / OMS / EMS COMPONENT INVENTORY
+==============================================================================================================
+
+[execution]
+  execution\admission\order_admission_controller.py
+  execution\capabilities\broker_capabilities.py
+  execution\certification\theorem_ems_adapter_boundary_001.py
+  execution\certification\theorem_ems_translation_001.py
+  execution\certification\theorem_event_order_consistency_001.py
+  execution\certification\theorem_execution_derivation_001.py
+  execution\certification\theorem_order_authorization_001.py
+  execution\certification\theorem_order_replay_001.py
+  execution\certification\theorem_order_state_transition_001.py
+  execution\child_order.py
+  execution\contracts\broker_submission_contract.py
+  execution\contracts\ems_contract.py
+  execution\contracts\event_gateway_contract.py
+  execution\contracts\execution_event.py
+  execution\contracts\execution_intent.py
+  execution\contracts\order_contract.py
+  execution\contracts\order_event_record.py
+  execution\ems\base_adapter.py
+  execution\ems\paper_adapter.py
+  execution\events\broker_events.py
+  execution\events\execution_events.py
+  execution\events\gateway.py
+  execution\events\order_events.py
+  execution\execution_simulator.py
+  execution\gateway.py
+  execution\oms\order_manager.py
+  execution\oms\order_state_machine.py
+  execution\order.py
+  execution\order_state.py
+
+[oms]
+  oms\adapters\broker_adapter.py
+  oms\contracts\broker_order_status.py
+  oms\contracts\broker_submission_result.py
+  oms\contracts\order_intent.py
+  oms\engine\execution_engine.py
+  oms\engine\order_management_engine.py
+  oms\events\execution.py
+  oms\events\order_events.py
+  oms\models\order.py
+  oms\services\order_execution_service.py
+  oms\state_machine\order_state_machine.py
+
+[brokers]
+  brokers\broker_interface.py
+  brokers\paper\broker_adapter.py
+  brokers\paper\execution_aggregate.py
+  brokers\paper\execution_pipeline.py
+  brokers\paper\execution_repository.py
+  brokers\paper\order_aggregate.py
+  brokers\paper\order_matcher.py
+  brokers\paper\order_store.py
+  brokers\paper\paper_broker.py
+
+==============================================================================================================
+10. PRELIMINARY FORENSIC FINDINGS
+==============================================================================================================
+
+[DO NOT MODIFY CODE BASED ON THIS SECTION]
+
+The static trace is intended to establish architecture before remediation.
+
+Questions to answer from the output:
+
+1. Which ExecutionIntent definition is actually upstream of execution?
+
+2. Is ExecutionPlanContract a live contract or a legacy/shadow contract?
+
+3. Is ExecutionResultContract part of the live execution path or merely
+   a compatibility/legacy contract?
+
+4. Which BrokerInterface is consumed by the live EMS/broker path?
+
+5. Is brokers.broker_interface canonical, or is
+   contracts.broker.broker_interface canonical?
+
+6. Is execution.gateway part of the live path, or is it an orphaned/obsolete
+   implementation?
+
+7. Which component consumes ExecutionIntent?
+
+8. Where is ExecutionIntent converted into OrderIntentContract?
+
+9. Where is OrderIntentContract converted into an executable order?
+
+10. Which component actually calls a broker/EMS adapter?
+
+11. Does promotion/implementations/decision_to_execution.py feed the same
+    execution path as the OMS/EMS stack?
+
+12. Is vsc.pipeline a live production path or a parallel test/demo path?
+
+13. Does execution_to_result.py consume the actual broker execution result?
+
+14. Are there multiple independent execution pipelines?
+
+15. Where is the FIRST point at which the architectural graph becomes
+    disconnected?
+
+The goal is to identify ONE canonical path, not to repair individual import
+errors independently.
+

@@ -1,0 +1,22 @@
+{
+  "certificate_signature": "UNSIGNED_DEV_MODE",
+  "certified": true,
+  "empirical_proof_hash": "bd7a70afc008ddb64b39e90aed32ca4e130940e36c92259f028aed4e431f80fc",
+  "engine_version": "1.0.0",
+  "environment_hash": "36d566dbc1b80032fba1343de1838ac270572dd709be00ba1ab37b6b6b56a94b",
+  "gates_passed": {
+    "dependency_dag_ms": 0.027400004910305142,
+    "empirical_tests_ms": 75.4746000020532,
+    "engine_version_ms": 0.0029000002541579306,
+    "environment_check_ms": 0.02359999780310318,
+    "registry_integrity_ms": 0.14309999824035913,
+    "signature_verify_ms": 0.0022000021999701858
+  },
+  "manifest_id": "EXECUTION-THEOREM-REGISTRY",
+  "manifest_schema_version": "1.0",
+  "registry_hash": "8f5492d9babc2b4eaaa72d96eeccb81820d427ff465517efa9072c99f42d8cc8",
+  "registry_signature": "UNSIGNED_DEV_MODE",
+  "startup_certificate_hash": "5fe0ce15ae1b3bf8fff028332e5032b0ad8f7da055f31034cd2cb4ac51f21110",
+  "timestamp": "1786940206.313135",
+  "total_theorems": 5
+}

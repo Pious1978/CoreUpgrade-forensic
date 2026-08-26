@@ -1,9 +1,16 @@
 from dataclasses import dataclass
-from .base import BaseContract, ContractType, TrustLevel
+from enum import Enum
+
+from .base_contract import BaseContract
+
+
+class ContractType(Enum):
+    UNIVERSE = "UniverseContract"
+
 
 @dataclass(frozen=True)
 class UniverseContract(BaseContract):
-    contract_type: ContractType = ContractType.UNIVERSE  # Or register a new type if needed, or handle via metadata
+    contract_type: ContractType = ContractType.UNIVERSE
     symbol: str = ""
     exchange: str = "NASDAQ"
     market_cap_category: str = "LARGE_CAP"

@@ -1,7 +1,7 @@
-from dataclasses import dataclass, field
+﻿from dataclasses import dataclass, field
 from typing import Any, Mapping
 from .metadata import PromotionMetadata
-from .trace import TraceTree
+from .events import PromotionTrace
 from .status import PromotionStatus
 
 @dataclass(frozen=True)
@@ -13,7 +13,7 @@ class PromotionResult:
     target: Any
     audit: Any
     metadata: PromotionMetadata
-    trace: TraceTree
+    trace: PromotionTrace
     status: PromotionStatus = PromotionStatus.COMMITTED
     metrics: Mapping[str, Any] = field(default_factory=dict)
     duration_ms: float = 0.0

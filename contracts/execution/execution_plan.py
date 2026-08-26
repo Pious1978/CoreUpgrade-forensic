@@ -1,4 +1,30 @@
-@classmethod
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from typing import Any, Mapping, Optional
+from uuid import UUID, uuid4
+
+from contracts.base import BaseContract
+from contracts.enums import ContractState, Environment, TrustLevel
+
+
+@dataclass(frozen=True)
+class ExecutionPlanContract(BaseContract):
+    """Canonical execution-planning contract."""
+
+    DOMAIN = "execution"
+    CONTRACT_TYPE = "ExecutionPlanContract"
+    SCHEMA_NAME = "execution_plan"
+    SCHEMA_VERSION = "1.0"
+
+    instrument: str = ""
+    order_type: str = ""
+    quantity: float = 0.0
+    broker_route: str = ""
+    slippage_limit_bps: float = 0.0
+    risk_checks_passed: bool = False
+    execution_parameters: Mapping[str, Any] = None
+
+    @classmethod
     def create(
         cls,
         instrument: str,
@@ -19,11 +45,18 @@
         corr_id = correlation_id if correlation_id is not None else uuid4()
         now = datetime.now(timezone.utc)
         resolved_metadata = metadata if metadata is not None else {}
+        resolved_parameters = (
+            execution_parameters
+            if execution_parameters is not None
+            else {}
+        )
 
         initial_state_history = (
             {
                 "state": ContractState.CREATED.value,
-                "timestamp": now.isoformat(timespec="seconds").replace("+00:00", "Z"),
+                "timestamp": now.isoformat(
+                    timespec="seconds"
+                ).replace("+00:00", "Z"),
                 "actor": producer,
                 "reason": "Execution plan initialized",
             },
@@ -54,7 +87,8 @@
             broker_route=broker_route.strip(),
             slippage_limit_bps=float(slippage_limit_bps),
             risk_checks_passed=risk_checks_passed,
-            execution_parameters=execution_parameters,
+            execution_parameters=resolved_parameters,
         )
+
         instance.finalize()
         return instance

@@ -1,4 +1,4 @@
-__version__ = "2.6.2"
+﻿__version__ = "2.6.2"
 FRAMEWORK_VERSION = "2.6.2"
 API_VERSION = 2
 SCHEMA_COMPATIBILITY = ">=2,<3"
@@ -21,7 +21,6 @@ from .context import PromotionContext, PermissionsContext, RiskContext, Portfoli
 from .result_types import PromotionResult
 from .status import PromotionStatus
 from .metadata import PromotionMetadata
-from .trace import TraceTree, Span
 from .events import PromotionDomainEvent, PromotionTrace
 from .event_store import EventStore, StoredEvent
 from .events.event_envelope import EventEnvelope
@@ -121,8 +120,6 @@ __all__ = [
     "PromotionResult",
     "PromotionStatus",
     "PromotionMetadata",
-    "TraceTree",
-    "Span",
     "PromotionDomainEvent",
     "PromotionTrace",
     "EventStore",

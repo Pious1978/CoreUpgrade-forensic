@@ -2,7 +2,7 @@ from enum import Enum
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Tuple, List
-from .base import ContractBase
+from core.contract_runtime import ContractBase
 
 class GovernanceActionType(Enum):
     EXECUTE = "EXECUTE"

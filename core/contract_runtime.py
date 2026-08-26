@@ -1,14 +1,13 @@
-"""Core infrastructure for processing contracts. No business schemas here."""
-class ContractBase: pass
-class ContractValidationError(Exception): pass
-\n# --- Merged from contracts\base.py ---\nimport json
+import json
 import hashlib
-from dataclasses import fields
-from datetime import datetime
-from typing import Dict, Any, Tuple, List
+from dataclasses import fields, dataclass, asdict, is_dataclass
+from typing import Any, Dict, Type, TypeVar, Optional, List, Tuple
 from abc import ABC, abstractmethod
 from .exceptions import ContractValidationError
 
+T = TypeVar("T", bound="ContractBase")
+
+@dataclass(frozen=True)
 class ContractBase(ABC):
     """
     Abstract base for all domain contracts. Decoupled from dataclass field inheritance
@@ -41,7 +40,6 @@ class ContractBase(ABC):
     @staticmethod
     def _serialize(value):
         if isinstance(value, float):
-            # Canonical float normalization to prevent floating-point drift (e.g. 0.3000000004 vs 0.3)
             return round(value, 8)
         if isinstance(value, datetime):
             return value.isoformat()
@@ -54,22 +52,22 @@ class ContractBase(ABC):
         return value
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]):
-        clean_data = {k: v for k, v in data.items() if k != "schema_version"}
-        return cls(**clean_data)
+    def from_dict(cls: Type[T], data: Dict[str, Any]) -> T:
+        if not is_dataclass(cls):
+            return cls(**data)
+        
+        field_names = {f.name for f in cls.__dataclass_fields__.values()}
+        filtered_data = {k: v for k, v in data.items() if k in field_names}
+        return cls(**filtered_data)
 
     def to_json(self) -> str:
         return json.dumps(self.to_dict(), sort_keys=True)
 
     @classmethod
-    def from_json(cls, json_str: str):
-        return cls.from_dict(json.loads(json_str))
+    def from_json(cls: Type[T], json_str: str) -> T:
+        data = json.loads(json_str)
+        return cls.from_dict(data)
 
     def fingerprint(self) -> str:
-        payload = {
-            "schema_version": getattr(self, "schema_version", "1.0"),
-            "contract_type": self.__class__.__name__,
-            "payload": self.to_dict()
-        }
-        raw = json.dumps(payload, sort_keys=True)
-        return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+        json_data = self.to_json()
+        return hashlib.sha256(json_data.encode("utf-8")).hexdigest()

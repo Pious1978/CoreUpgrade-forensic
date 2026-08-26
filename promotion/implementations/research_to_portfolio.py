@@ -3,7 +3,7 @@ from ..base_promoter import BasePromotionService
 from ..context import PromotionContext
 from ..guards.capability_guard import CapabilityGuard
 from ..guards.lineage_dag_guard import LineageDagGuard
-from ..registry import promotion
+from ..graph import promotion
 from ..policies.research_policy import ResearchPromotionPolicy
 from contracts.lifecycle_transition_service import LifecycleTransitionService
 from ..exceptions import PolicyViolationError, LifecycleTransitionError

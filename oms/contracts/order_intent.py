@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
+from typing import Optional
 
 
 class OrderSide(str, Enum):
@@ -17,7 +18,6 @@ class OrderType(str, Enum):
 @dataclass(frozen=True, slots=True)
 class OrderIntentContract:
     """Immutable contract representing a certified, risk-approved trading intent
-
     ready for OMS intake and broker routing.
     """
     intent_id: str

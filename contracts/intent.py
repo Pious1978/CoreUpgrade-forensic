@@ -1,6 +1,13 @@
 from dataclasses import dataclass, field
-from typing import Mapping, List
-from .base import BaseContract, ContractType
+from enum import Enum
+from typing import Mapping
+
+from .base_contract import BaseContract
+
+
+class ContractType(Enum):
+    PORTFOLIO_INTENT = "MultiAssetPortfolioIntentContract"
+
 
 @dataclass(frozen=True)
 class MultiAssetPortfolioIntentContract(BaseContract):

@@ -1,14 +1,14 @@
 """
 Contract Bootstrap
 
-Populates the ContractRegistry with all concrete domain contracts 
+Populates the ContractRegistry with all concrete domain contracts
 and permanently freezes the registry to prevent runtime injection.
 """
 
 from contracts.registry import ContractRegistry
 from contracts.research.research_signal import ResearchSignalContract
 from contracts.portfolio.portfolio_intent import PortfolioIntentContract
-from contracts.execution.execution_plan import ExecutionPlanContract
+from contracts.execution import ExecutionPlanContract
 
 
 def bootstrap_contract_system() -> None:
