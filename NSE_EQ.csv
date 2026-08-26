@@ -3,7 +3,7 @@ SYMBOL,NAME OF COMPANY, SERIES, DATE OF LISTING, PAID UP VALUE, MARKET LOT, ISIN
 21STCENMGM,21st Century Management Services Limited,EQ,3-May-95,10,1,INE253B01015,10
 360ONE,360 ONE WAM LIMITED,EQ,19-Sep-19,1,1,INE466L01038,1
 3BBLACKBIO,3B Blackbio Dx Limited,EQ,20-Apr-26,10,1,INE994E01018,10
-3IINFOLTD,3i Infotech Limited,EQ,22-Oct-21,10,1,INE748C01038,10
+3IINFOLTD,3i Infotech Limited,BE,22-Oct-21,10,1,INE748C01038,10
 3MINDIA,3M India Limited,EQ,13-Aug-04,10,1,INE470A01017,10
 3PLAND,3P Land Holdings Limited,EQ,19-Jul-95,2,1,INE105C01023,2
 5PAISA,5Paisa Capital Limited,EQ,16-Nov-17,10,1,INE618L01018,10
@@ -24,7 +24,7 @@ AARVI,Aarvi Encon Limited,EQ,24-Jun-20,10,1,INE754X01016,10
 AASTHA,Aastha Spintex Limited,EQ,6-Jul-26,10,1,INE2FMX01012,10
 AAVAS,Aavas Financiers Limited,EQ,8-Oct-18,10,1,INE216P01012,10
 ABAN,Aban Offshore Limited,BE,29-Mar-95,2,1,INE421A01028,2
-ABANSENT,Abans Enterprises Limited,BE,20-Apr-26,2,1,INE365O01028,2
+ABANSENT,Abans Enterprises Limited,EQ,20-Apr-26,2,1,INE365O01028,2
 ABB,ABB India Limited,EQ,8-Feb-95,2,1,INE117A01022,2
 ABBOTINDIA,Abbott India Limited,EQ,8-Jan-10,10,1,INE358A01014,10
 ABCAPITAL,Aditya Birla Capital Limited,EQ,1-Sep-17,10,1,INE674K01013,10
@@ -81,7 +81,7 @@ AGARWALEYE,Dr. Agarwal's Health Care Limited,EQ,4-Feb-25,1,1,INE943P01029,1
 AGI,AGI Greenpac Limited,EQ,31-May-00,2,1,INE415A01038,2
 AGIIL,Agi Infra Limited,EQ,15-Jul-24,1,1,INE976R01033,1
 AGL,Allcargo Global Limited,EQ,3-Jul-26,2,1,INE1YPB01014,2
-AGRITECH,Agri-Tech (India) Limited,BE,28-Jan-14,10,1,INE449G01018,10
+AGRITECH,Agri-Tech (India) Limited,EQ,28-Jan-14,10,1,INE449G01018,10
 AGROPHOS,Agro Phos India Limited,EQ,8-Mar-19,10,1,INE740V01019,10
 AGSTRA,AGS Transact Technologies Limited,BZ,31-Jan-22,10,1,INE583L01014,10
 AHCL,Anlon Healthcare Limited,EQ,3-Sep-25,2,1,INE0Y8W01025,2
@@ -141,6 +141,7 @@ ANGELONE,Angel One Limited,EQ,5-Oct-20,1,1,INE732I01021,1
 ANIKINDS,Anik Industries Limited,EQ,21-May-08,10,1,INE087B01017,10
 ANKITMETAL,Ankit Metal & Power Limited,BZ,14-Mar-13,10,1,INE106I01010,10
 ANMOL,Anmol India Limited,EQ,4-Jun-21,10,1,INE02AR01019,10
+ANNAPURNA,Annapurna Swadisht Limited,EQ,12-Aug-26,10,1,INE0MGM01017,10
 ANSALAPI,Ansal Properties & Infrastructure Limited,BZ,27-Jan-06,5,1,INE436A01026,5
 ANTELOPUS,Antelopus Selan Energy Limited,EQ,26-Sep-06,10,1,INE818A01017,10
 ANTGRAPHIC,Antarctica Limited,EQ,31-Dec-97,1,1,INE414B01021,1
@@ -164,6 +165,7 @@ APTUS,Aptus Value Housing Finance India Limited,EQ,24-Aug-21,2,1,INE852O01025,2
 AQYLON,Aqylon Nexus Limited,EQ,1-Apr-24,1,1,INE416A01051,1
 ARCHIDPLY,Archidply Industries Limited,EQ,4-Jul-08,10,1,INE877I01016,10
 ARCHIES,Archies Limited,EQ,2-Sep-98,2,1,INE731A01020,2
+ARDEE,Ardee Industries Limited,EQ,12-Aug-26,2,1,INE0XNF01022,2
 ARE&M,Amara Raja Energy & Mobility Limited,EQ,5-Sep-03,1,1,INE885A01032,1
 ARENTERP,Rajdarshan Industries Limited,EQ,18-Oct-95,10,1,INE610C01014,10
 ARFIN,Arfin India Limited,EQ,22-Jul-25,1,1,INE784R01023,1
@@ -190,7 +192,7 @@ ASAL,Automotive Stampings and Assemblies Limited,EQ,12-Mar-02,10,1,INE900C01027,
 ASALCBR,Associated Alcohols & Breweries Ltd.,EQ,12-Feb-20,10,1,INE073G01016,10
 ASHAPURMIN,Ashapura Minechem Limited,EQ,20-Sep-95,2,1,INE348A01023,2
 ASHIANA,Ashiana Housing Limited,EQ,29-Jun-11,2,1,INE365D01021,2
-ASHIKAG,Ashika Global Securities Limited,EQ,20-Apr-26,10,1,INE094B01013,10
+ASHIKAG,Ashika Global Securities Limited,BE,20-Apr-26,10,1,INE094B01013,10
 ASHIMASYN,Ashima Limited,EQ,27-Jul-95,10,1,INE440A01010,10
 ASHOKA,Ashoka Buildcon Limited,EQ,14-Oct-10,5,1,INE442H01029,5
 ASHOKAMET,Ashoka Metcast Limited,EQ,27-Jun-23,10,1,INE760Y01011,10
@@ -208,7 +210,7 @@ ASTERDM,Aster DM Quality Care Limited,EQ,26-Feb-18,10,1,INE914M01019,10
 ASTRAL,Astral Limited,EQ,20-Mar-07,1,1,INE006I01046,1
 ASTRAMICRO,Astra Microwave Products Limited,EQ,1-Nov-04,2,1,INE386C01029,2
 ASTRAZEN,AstraZeneca Pharma India Limited,EQ,4-May-01,2,1,INE203A01020,2
-ASTRON,Astron Paper & Board Mill Limited,BE,29-Dec-17,10,1,INE646X01014,10
+ASTRON,Astron Paper & Board Mill Limited,BZ,29-Dec-17,10,1,INE646X01014,10
 ATALREAL,Atal Realtech Limited,EQ,12-May-23,2,1,INE0ALR01029,2
 ATAM,Atam Valves Limited,EQ,10-May-23,10,1,INE09KD01013,10
 ATGL,Adani Total Gas Limited,EQ,5-Nov-18,1,1,INE399L01023,1
@@ -224,7 +226,7 @@ AURIONPRO,Aurionpro Solutions Limited,EQ,25-Oct-05,10,1,INE132H01018,10
 AUROPHARMA,Aurobindo Pharma Limited,EQ,19-Jul-00,1,1,INE406A01037,1
 AURUM,Aurum PropTech Limited,EQ,19-Aug-15,5,1,INE898S01029,5
 AURUS,AURUS GEM CORPORATION LIMITED,EQ,5-Nov-13,10,1,INE142K01011,10
-AUSOMENT,Ausom Enterprise Limited,BE,17-Apr-96,10,1,INE218C01016,10
+AUSOMENT,Ausom Enterprise Limited,EQ,17-Apr-96,10,1,INE218C01016,10
 AUTOAXLES,Automotive Axles Limited,EQ,29-May-03,10,1,INE449A01011,10
 AUTOIND,Autoline Industries Limited,BE,31-Jan-07,10,1,INE718H01014,10
 AVADHSUGAR,Avadh Sugar & Energy Limited,EQ,28-Jul-17,10,1,INE349W01017,10
@@ -275,7 +277,7 @@ BANARISUG,Bannari Amman Sugars Limited,EQ,28-May-03,10,1,INE459A01010,10
 BANCOINDIA,Banco Products (I) Limited,EQ,22-Dec-06,2,1,INE213C01025,2
 BANDHANBNK,Bandhan Bank Limited,EQ,27-Mar-18,10,1,INE545U01014,10
 BANG,Bang Overseas Limited,EQ,20-Feb-08,10,1,INE863I01016,10
-BANKA,Banka BioLoo Limited,BE,29-Oct-20,10,1,INE862Y01015,10
+BANKA,Banka BioLoo Limited,EQ,29-Oct-20,10,1,INE862Y01015,10
 BANKBARODA,Bank of Baroda,EQ,19-Feb-97,2,1,INE028A01039,2
 BANKINDIA,Bank of India,EQ,30-Apr-97,10,1,INE084A01016,10
 BANSALWIRE,Bansal Wire Industries Limited,EQ,10-Jul-24,5,1,INE0B9K01025,5
@@ -312,7 +314,7 @@ BFUTILITIE,BF Utilities Limited,EQ,3-May-07,5,1,INE243D01012,5
 BGRENERGY,BGR Energy Systems Limited,BE,3-Jan-08,10,1,INE661I01014,10
 BHAGCHEM,Bhagiradha Chemicals & Industries Limited,EQ,18-Oct-21,1,1,INE414D01027,1
 BHAGERIA,Bhageria Industries Limited,BE,2-Mar-16,5,1,INE354C01027,5
-BHAGYANGR,Bhagyanagar India Limited,BE,17-May-17,2,1,INE458B01036,2
+BHAGYANGR,Bhagyanagar India Limited,EQ,17-May-17,2,1,INE458B01036,2
 BHANDARI,Bhandari Hosiery Exports Limited,BE,30-Jan-17,1,1,INE474E01029,1
 BHARATCOAL,Bharat Coking Coal Limited,EQ,19-Jan-26,10,1,INE05XR01022,10
 BHARATFORG,Bharat Forge Limited,EQ,4-Apr-03,2,1,INE465A01025,2
@@ -345,7 +347,7 @@ BLISSGVS,Bliss GVS Pharma Limited,BE,26-Jul-10,1,1,INE416D01022,1
 BLKASHYAP,B. L. Kashyap and Sons Limited,EQ,17-Mar-06,1,1,INE350H01032,1
 BLS,BLS International Services Limited,EQ,14-Jun-16,1,1,INE153T01027,1
 BLSE,BLS E-Services Limited,EQ,6-Feb-24,10,1,INE0NLT01010,10
-BLUECHIP,Blue Chip India Limited,BE,12-Mar-97,2,1,INE657B01025,2
+BLUECHIP,Blue Chip India Limited,EQ,12-Mar-97,2,1,INE657B01025,2
 BLUECOAST,Blue Coast Hotels Limited,BE,16-Feb-00,10,1,INE472B01011,10
 BLUEDART,Blue Dart Express Limited,EQ,12-Dec-02,10,1,INE233B01017,10
 BLUEJET,Blue Jet Healthcare Limited,EQ,1-Nov-23,2,1,INE0KBH01020,2
@@ -353,7 +355,7 @@ BLUESTARCO,Blue Star Limited,EQ,15-Jun-00,2,1,INE472A01039,2
 BLUESTONE,BlueStone Jewellery and Lifestyle Limited,EQ,19-Aug-25,1,1,INE304W01038,1
 BLUSPRING,Bluspring Enterprises Limited,EQ,11-Jun-25,10,1,INE0U4101014,10
 BMWVENTLTD,BMW Ventures Limited,EQ,1-Oct-25,10,1,INE965W01036,10
-BNAGROCHEM,BN Agrochem Limited,BE,20-Apr-26,10,1,INE00HZ01011,10
+BNAGROCHEM,BN Agrochem Limited,EQ,20-Apr-26,10,1,INE00HZ01011,10
 BNALTD,B & A Limited,BE,20-Apr-26,10,1,INE489D01011,10
 BODALCHEM,Bodal Chemicals Limited,BE,22-Aug-11,2,1,INE338D01028,2
 BOHRAIND,Bohra Industries Limited,EQ,27-Oct-22,10,1,INE802W01023,10
@@ -379,6 +381,7 @@ BSOFT,BIRLASOFT LIMITED,EQ,24-Nov-99,2,1,INE836A01035,2
 BTML,Bodhi Tree Multimedia Limited,EQ,15-Feb-23,1,1,INE0EEJ01023,1
 BTTL,Bhilwara Technical Textiles Limited,BE,20-Apr-26,1,1,INE274K01012,1
 BUILDPRO,Shankara Buildpro Limited,EQ,9-Jan-26,10,1,INE24OJ01011,10
+BURNPUR,Burnpur Cement Limited,BE,3-Jan-08,10,1,INE817H01022,10
 BUTTERFLY,Butterfly Gandhimathi Appliances Limited,EQ,28-Apr-14,10,1,INE295F01017,10
 BVCL,Barak Valley Cements Limited,EQ,23-Nov-07,10,1,INE139I01011,10
 BYKE,The Byke Hospitality Ltd,BE,15-Apr-15,10,1,INE319B01014,10
@@ -474,8 +477,8 @@ CORDSCABLE,Cords Cable Industries Limited,BE,13-Feb-08,10,1,INE792I01017,10
 COROMANDEL,Coromandel International Limited,EQ,31-May-95,1,1,INE169A01031,1
 CORONA,CORONA Remedies Limited,EQ,15-Dec-25,10,1,INE02ZQ01018,10
 COSMOFIRST,COSMO FIRST LIMITED,EQ,25-May-95,10,1,INE757A01017,10
-COUNCODOS,Country Condo's Limited,EQ,22-Jan-09,1,1,INE695B01025,1
-CPCAP,CP Capital Limited,BE,6-Oct-10,10,1,INE521J01018,10
+COUNCODOS,Country Condo's Limited,BE,22-Jan-09,1,1,INE695B01025,1
+CPCAP,CP Capital Limited,EQ,6-Oct-10,10,1,INE521J01018,10
 CPEDU,Career Point Edutech Limited,EQ,5-Sep-25,10,1,INE0P6P01016,10
 CPL,Captain Polyplast Limited,EQ,23-Jul-26,2,1,INE536P01021,2
 CPPLUS,Aditya Infotech Limited,EQ,5-Aug-25,1,1,INE819V01029,1
@@ -502,7 +505,7 @@ CYBERTECH,Cybertech Systems And Software Limited,BE,27-Jan-99,10,1,INE214A01019,
 CYIENT,Cyient Limited,EQ,30-Sep-98,5,1,INE136B01020,5
 CYIENTDLM,Cyient DLM Limited,EQ,10-Jul-23,10,1,INE055S01018,10
 DABUR,Dabur India Limited,EQ,28-Apr-99,1,1,INE016A01026,1
-DAICHI,Dai-Ichi Karkaria Limited,BE,20-Apr-26,10,1,INE928C01010,10
+DAICHI,Dai-Ichi Karkaria Limited,EQ,20-Apr-26,10,1,INE928C01010,10
 DALBHARAT,Dalmia Bharat Limited,EQ,22-Jan-19,2,1,INE00R701025,2
 DALMIASUG,Dalmia Bharat Sugar and Industries Limited,EQ,17-Jan-96,2,1,INE495A01022,2
 DAMCAPITAL,Dam Capital Advisors Limited,EQ,27-Dec-24,2,1,INE284H01025,2
@@ -515,14 +518,14 @@ DBCORP,D.B.Corp Limited,EQ,6-Jan-10,10,1,INE950I01011,10
 DBEIL,Deepak Builders & Engineers India Limited,BE,28-Oct-24,1,1,INE0OPA01027,1
 DBL,Dilip Buildcon Limited,EQ,11-Aug-16,10,1,INE917M01012,10
 DBOL,Dhampur Bio Organics Limited,EQ,8-Sep-22,10,1,INE0I3401014,10
-DBREALTY,Valor Estate Limited,BE,24-Feb-10,10,1,INE879I01012,10
+DBREALTY,Valor Estate Limited,EQ,24-Feb-10,10,1,INE879I01012,10
 DBSTOCKBRO,DB (International) Stock Brokers Limited,BE,29-Feb-12,2,1,INE921B01025,2
 DCAL,Dishman Carbogen Amcis Limited,EQ,21-Sep-17,2,1,INE385W01011,2
 DCBBANK,DCB Bank Limited,EQ,27-Oct-06,10,1,INE503A01015,10
 DCI,Dc Infotech And Communication Limited,EQ,19-Oct-22,10,1,INE0A1101019,10
 DCM,DCM  Limited,BE,29-Mar-95,10,1,INE498A01018,10
 DCMFINSERV,DCM Financial Services Limited,EQ,21-May-97,10,1,INE891B01012,10
-DCMNVL,DCM Nouvelle Limited,BE,16-Jul-19,10,1,INE08KP01019,10
+DCMNVL,DCM Nouvelle Limited,EQ,16-Jul-19,10,1,INE08KP01019,10
 DCMSHRIRAM,DCM Shriram Limited,EQ,12-Apr-95,2,1,INE499A01024,2
 DCMSIL,DCM Shriram International Limited,BE,17-Feb-26,2,1,INE0OU201013,2
 DCMSRIND,DCM Shriram Industries Limited,EQ,24-Dec-21,2,1,INE843D01027,2
@@ -531,7 +534,7 @@ DCXINDIA,DCX Systems Limited,EQ,11-Nov-22,2,1,INE0KL801015,2
 DDEVPLSTIK,Ddev Plastiks Industries Limited,EQ,15-Jan-25,1,1,INE0HR601026,1
 DECCANCE,Deccan Cements Limited,EQ,2-Aug-07,5,1,INE583C01021,5
 DECNGOLD,Deccan Gold Mines Limited,EQ,20-Apr-26,1,1,INE945F01025,1
-DEEDEV,DEE Development Engineers Limited,BE,26-Jun-24,10,1,INE841L01016,10
+DEEDEV,DEE Development Engineers Limited,EQ,26-Jun-24,10,1,INE841L01016,10
 DEEPAKFERT,Deepak Fertilizers and Petrochemicals Corporation Limited,EQ,17-Jan-03,10,1,INE501A01019,10
 DEEPAKNTR,Deepak Nitrite Limited,EQ,29-Sep-10,2,1,INE288B01029,2
 DEEPINDS,Deep Industries Limited,EQ,27-Apr-21,5,1,INE0FHS01024,5
@@ -551,7 +554,7 @@ DHANBANK,Dhanlaxmi Bank Limited,EQ,1-Apr-04,10,1,INE680A01011,10
 DHANUKA,Dhanuka Agritech Limited,EQ,29-Jun-11,2,1,INE435G01025,2
 DHARAN,DHARAN INFRA-EPC LIMITED,BZ,2-Apr-18,1,1,INE278R01034,1
 DHARMAJ,Dharmaj Crop Guard Limited,EQ,8-Dec-22,10,1,INE00OQ01016,10
-DHRUV,Dhruv Consultancy Services Limited,BE,25-Nov-21,10,1,INE506Z01015,10
+DHRUV,Dhruv Consultancy Services Limited,EQ,25-Nov-21,10,1,INE506Z01015,10
 DHUNINV,Dhunseri Investments Limited,EQ,18-Mar-11,10,1,INE320L01011,10
 DIACABS,Diamond Power Infrastructure Limited,BE,15-Sep-23,1,1,INE989C01038,1
 DIAMINESQ,Diamines & Chemicals Limited,EQ,25-Sep-23,10,1,INE591D01014,10
@@ -559,11 +562,11 @@ DIAMONDYD,Prataap Snacks Limited,EQ,5-Oct-17,5,1,INE393P01035,5
 DICIND,DIC India Limited,EQ,30-Aug-95,10,1,INE303A01010,10
 DIFFNKG,Diffusion Engineers Limited,EQ,4-Oct-24,10,1,INE184O01015,10
 DIGIDRIVE,Digidrive Distributors Limited,EQ,10-Jan-24,10,1,INE0PSC01024,10
-DIGISPICE,DiGiSPICE Technologies Limited,BE,27-May-08,3,1,INE927C01020,3
+DIGISPICE,DiGiSPICE Technologies Limited,EQ,27-May-08,3,1,INE927C01020,3
 DIGITIDE,Digitide Solutions Limited,EQ,11-Jun-25,10,1,INE0U4701011,10
 DIGJAMLMTD,Digjam Limited,EQ,18-Oct-21,10,1,INE731U01028,10
 DISAQ,Disa India Limited,EQ,20-Apr-26,10,1,INE131C01011,10
-DISHTV,Dish TV India Limited,BE,18-Apr-07,1,1,INE836F01026,1
+DISHTV,Dish TV India Limited,EQ,18-Apr-07,1,1,INE836F01026,1
 DIVGIITTS,Divgi Torqtransfer Systems Limited,EQ,14-Mar-23,5,1,INE753U01022,5
 DIVISLAB,Divi's Laboratories Limited,EQ,12-Mar-03,2,1,INE361B01024,2
 DIXON,Dixon Technologies (India) Limited,EQ,18-Sep-17,2,1,INE935N01020,2
@@ -597,7 +600,7 @@ DWARKESH,Dwarikesh Sugar Industries Limited,EQ,31-Dec-04,1,1,INE366A01041,1
 DYCL,Dynamic Cables Limited,EQ,27-Jul-22,10,1,INE600Y01019,10
 DYNAMATECH,Dynamatic Technologies Limited,EQ,14-Sep-06,10,1,INE221B01012,10
 DYNPRO,Dynemic Products Limited,EQ,19-Jul-17,10,1,INE256H01015,10
-E2E,E2E Networks Limited,EQ,12-Apr-22,1,1,INE255Z01027,1
+E2E,E2E Networks Limited,BE,12-Apr-22,1,1,INE255Z01027,1
 EASEMYTRIP,Easy Trip Planners Limited,EQ,19-Mar-21,1,1,INE07O001026,1
 EASTSILK,Eastern Silk Industries Limited,BE,3-Jul-96,2,1,INE962C01035,2
 EBGNG,GNG Electronics Limited,EQ,30-Jul-25,2,1,INE18JU01028,2
@@ -627,7 +630,7 @@ ELLEN,Ellenbarrie Industrial Gases Limited,EQ,1-Jul-25,2,1,INE236E01022,2
 ELPROINTL,Elpro International Limited,EQ,20-Apr-26,1,1,INE579B01039,1
 EMAMILTD,Emami Limited,EQ,3-Aug-06,1,1,INE548C01032,1
 EMAMIPAP,Emami Paper Mills Limited,BE,30-May-19,2,1,INE830C01026,2
-EMAMIREAL,Emami Realty Limited,BE,28-Jul-10,2,1,INE778K01012,2
+EMAMIREAL,Emami Realty Limited,EQ,28-Jul-10,2,1,INE778K01012,2
 EMBDL,Embassy Developments Limited,EQ,23-Mar-07,2,1,INE069I01010,2
 EMCURE,Emcure Pharmaceuticals Limited,EQ,10-Jul-24,10,1,INE168P01015,10
 EMIL,Electronics Mart India Limited,EQ,17-Oct-22,10,1,INE02YR01019,10
@@ -651,10 +654,10 @@ EQUIPPP,Equippp Social Impact Technologies Limited,BE,19-May-21,1,1,INE217G01035
 EQUITASBNK,Equitas Small Finance Bank Limited,EQ,2-Nov-20,10,1,INE063P01018,10
 ERIS,Eris Lifesciences Limited,EQ,29-Jun-17,1,1,INE406M01024,1
 ESABINDIA,Esab India Limited,EQ,1-Nov-95,10,1,INE284A01012,10
-ESAFSFB,ESAF Small Finance Bank Limited,EQ,10-Nov-23,10,1,INE818W01011,10
+ESAFSFB,ESAF Small Finance Bank Limited,BE,10-Nov-23,10,1,INE818W01011,10
 ESCORTS,Escorts Kubota Limited,EQ,1-Mar-95,10,1,INE042A01014,10
 ESSARSHPNG,Essar Shipping Limited,EQ,15-Nov-11,10,1,INE122M01019,10
-ESSENTIA,Integra Essentia Limited,BE,20-Aug-13,1,1,INE418N01035,1
+ESSENTIA,Integra Essentia Limited,EQ,20-Aug-13,1,1,INE418N01035,1
 ESTER,Ester Industries Limited,EQ,20-Jun-11,5,1,INE778B01029,5
 ETERNAL,ETERNAL LIMITED,EQ,23-Jul-21,1,1,INE758T01015,1
 ETHOSLTD,Ethos Limited,EQ,30-May-22,10,1,INE04TZ01018,10
@@ -686,7 +689,7 @@ FERMENTA,Fermenta Biotech Limited,EQ,4-Aug-26,5,1,INE225B01021,5
 FIBERWEB,Fiberweb (India) Limited,EQ,16-Feb-22,10,1,INE296C01020,10
 FIEMIND,Fiem Industries Limited,EQ,19-Oct-06,10,1,INE737H01014,10
 FILATEX,Filatex India Limited,EQ,29-Aug-11,1,1,INE816B01035,1
-FILATFASH,Filatex Fashions Limited,BE,6-May-24,1,1,INE185E01021,1
+FILATFASH,Filatex Fashions Limited,EQ,6-May-24,1,1,INE185E01021,1
 FINCABLES,Finolex Cables Limited,EQ,15-Feb-95,2,1,INE235A01022,2
 FINEORG,Fine Organic Industries Limited,EQ,2-Jul-18,5,1,INE686Y01026,5
 FINKURVE,Finkurve Financial Services Limited,EQ,1-Oct-25,1,1,INE734I01027,1
@@ -722,7 +725,7 @@ GANECOS,Ganesha Ecosphere Limited,EQ,9-Mar-15,10,1,INE845D01014,10
 GANESHBE,Ganesh Benzoplast Limited,BE,16-Sep-21,1,1,INE388A01029,1
 GANESHCP,Ganesh Consumer Products Limited,EQ,29-Sep-25,10,1,INE652V01016,10
 GANESHHOU,GANESH HOUSING LIMITED,EQ,2-Mar-07,10,1,INE460C01014,10
-GANGAFORGE,Ganga Forging Limited,BE,6-Jul-21,1,1,INE691Z01023,1
+GANGAFORGE,Ganga Forging Limited,EQ,6-Jul-21,1,1,INE691Z01023,1
 GANGESSECU,Ganges Securities Limited,EQ,28-Jul-17,10,1,INE335W01016,10
 GARFIBRES,Garware Technical Fibres Limited,EQ,3-Apr-07,10,1,INE276A01018,10
 GARUDA,Garuda Construction and Engineering Limited,EQ,15-Oct-24,5,1,INE0JVO01026,5
@@ -738,6 +741,7 @@ GEEKAYWIRE,Geekay Wires Limited,EQ,6-Mar-20,1,1,INE669X01032,1
 GEMAROMA,Gem Aromatics Limited,EQ,26-Aug-25,2,1,INE06XZ01023,2
 GENCON,Generic Engineering Construction and Projects Limited,EQ,16-Feb-21,5,1,INE854S01022,5
 GENESYS,Genesys International Corporation Limited,EQ,23-Jan-03,5,1,INE727B01026,5
+GENESYS-RE,Genesys International Corporation Limited-RE,BE,14-Aug-26,5,1,INE727B20018,5
 GENSOL,Gensol Engineering Limited,BZ,3-Jul-23,10,1,INE06H201014,10
 GENUSPAPER,Genus Paper & Boards Limited,EQ,16-Feb-15,1,1,INE949P01018,1
 GENUSPOWER,Genus Power Infrastructures Limited,EQ,8-Jul-05,1,1,INE955D01029,1
@@ -759,9 +763,9 @@ GKWLIMITED,GKW Limited,EQ,20-Jul-09,10,1,INE528A01020,10
 GLAND,Gland Pharma Limited,EQ,20-Nov-20,1,1,INE068V01023,1
 GLAXO,GlaxoSmithKline Pharmaceuticals Limited,EQ,15-Dec-00,10,1,INE159A01016,10
 GLENMARK,Glenmark Pharmaceuticals Limited,EQ,7-Feb-00,1,1,INE935A01035,1
-GLFL,Gujarat Lease Financing Limited,BE,8-Feb-95,10,1,INE540A01017,10
+GLFL,Gujarat Lease Financing Limited,EQ,8-Feb-95,10,1,INE540A01017,10
 GLOBAL,Global Education Limited,EQ,7-Dec-20,2,1,INE291W01037,2
-GLOBALE,Globale Tessile Limited,BE,27-Aug-24,10,1,INE0URU01010,10
+GLOBALE,Globale Tessile Limited,EQ,27-Aug-24,10,1,INE0URU01010,10
 GLOBALVECT,Global Vectra Helicorp Limited,EQ,27-Oct-06,10,1,INE792H01019,10
 GLOBE,GLOBE ENTERPRISES (INDIA) LIMITED,EQ,7-Oct-20,2,1,INE581X01021,2
 GLOBECIVIL,Globe Civil Projects Limited,EQ,1-Jul-25,10,1,INE0V3U01015,10
@@ -800,7 +804,7 @@ GPIL,Godawari Power And Ispat limited,EQ,25-Apr-06,1,1,INE177H01039,1
 GPPL,Gujarat Pipavav Port Limited,EQ,9-Sep-10,10,1,INE517F01014,10
 GPTHEALTH,GPT Healthcare Limited,EQ,29-Feb-24,10,1,INE486R01017,10
 GPTINFRA,GPT Infraprojects Limited,EQ,11-Jul-16,10,1,INE390G01014,10
-GRADIENTE,Gradiente Infotainment Limited,BE,8-May-26,10,1,INE361K01017,10
+GRADIENTE,Gradiente Infotainment Limited,EQ,8-May-26,10,1,INE361K01017,10
 GRANDOAK,Grand Oak Canyons Distillery Limited,EQ,20-Apr-26,10,1,INE926B01016,10
 GRANULES,Granules India Limited,EQ,20-Jun-05,1,1,INE101D01020,1
 GRAPHITE,Graphite India Limited,EQ,7-Feb-03,2,1,INE371A01025,2
@@ -925,7 +929,7 @@ HUDCO,Housing & Urban Development Corporation Limited,EQ,19-May-17,10,1,INE031A0
 HUHTAMAKI,Huhtamaki India Limited,EQ,1-Oct-04,2,1,INE275B01026,2
 HYBRIDFIN,Hybrid Financial Services Limited,BE,5-Dec-22,5,1,INE965B01022,5
 HYUNDAI,Hyundai Motor India Limited,EQ,22-Oct-24,10,1,INE0V6F01027,10
-IBULLSLTD,Indiabulls Limited,BE,18-Aug-11,2,1,INE126M01010,2
+IBULLSLTD,Indiabulls Limited,EQ,18-Aug-11,2,1,INE126M01010,2
 ICDSLTD,ICDS Limited,EQ,17-Nov-99,10,1,INE613B01010,10
 ICEMAKE,Ice Make Refrigeration Limited,EQ,12-Oct-20,10,1,INE520Y01019,10
 ICICIAMC,ICICI Prudential Asset Management Company Limited,EQ,19-Dec-25,1,1,INE346A01027,1
@@ -936,7 +940,7 @@ ICIL,Indo Count Industries Limited,EQ,12-Sep-05,2,1,INE483B01026,2
 ICRA,ICRA Limited,EQ,13-Apr-07,10,1,INE725G01011,10
 IDBI,IDBI Bank Limited,EQ,20-Sep-95,10,1,INE008A01015,10
 IDEA,Vodafone Idea Limited,EQ,9-Mar-07,10,1,INE669E01016,10
-IDEAFORGE,Ideaforge Technology Limited,BE,7-Jul-23,10,1,INE349Y01013,10
+IDEAFORGE,Ideaforge Technology Limited,EQ,7-Jul-23,10,1,INE349Y01013,10
 IDFCFIRSTB,IDFC First Bank Limited,EQ,6-Nov-15,10,1,INE092T01019,10
 IEX,Indian Energy Exchange Limited,EQ,23-Oct-17,1,1,INE022Q01020,1
 IFBAGRO,IFB Agro Industries Limited,BE,3-Apr-96,10,1,INE076C01018,10
@@ -982,10 +986,10 @@ INDOFARM,Indo Farm Equipment Limited,EQ,7-Jan-25,10,1,INE622H01018,10
 INDOMIM,INDO-MIM Limited,EQ,30-Jul-26,1,1,INE084101034,1
 INDORAMA,Indo Rama Synthetics (India) Limited,EQ,20-Jun-03,10,1,INE156A01020,10
 INDOSTAR,IndoStar Capital Finance Limited,EQ,21-May-18,10,1,INE896L01010,10
-INDOTECH,Indo Tech Transformers Limited,BE,16-Mar-06,10,1,INE332H01014,10
+INDOTECH,Indo Tech Transformers Limited,EQ,16-Mar-06,10,1,INE332H01014,10
 INDOTHAI,Indo Thai Securities Limited,EQ,2-Nov-11,1,1,INE337M01021,1
 INDOUS,Indo Us Biotech Limited,EQ,27-Sep-24,10,1,INE250Z01010,10
-INDOWIND,Indowind Energy Limited,BE,14-Sep-07,10,1,INE227G01018,10
+INDOWIND,Indowind Energy Limited,EQ,14-Sep-07,10,1,INE227G01018,10
 INDPRUD,Industrial & Prudential Investment Company Limited,EQ,20-Apr-26,10,1,INE620D01011,10
 INDRAMEDCO,Indraprastha Medical Corporation Limited,EQ,17-Apr-97,10,1,INE681B01017,10
 INDSWFTLAB,Ind-Swift Laboratories Limited,EQ,2-Jul-97,10,1,INE915B01019,10
@@ -999,7 +1003,7 @@ INGERRAND,Ingersoll Rand (India) Limited,EQ,15-Apr-99,10,1,INE177A01018,10
 INNOVACAP,Innova Captab Limited,EQ,29-Dec-23,10,1,INE0DUT01020,10
 INNOVANA,Innovana Thinklabs Limited,EQ,17-Dec-24,10,1,INE403Y01018,10
 INNOVISION,Innovision Limited,EQ,23-Mar-26,10,1,INE0ADB01012,10
-INOXGREEN,Inox Green Energy Services Limited,BE,23-Nov-22,10,1,INE510W01014,10
+INOXGREEN,Inox Green Energy Services Limited,EQ,23-Nov-22,10,1,INE510W01014,10
 INOXINDIA,INOX India Limited,EQ,21-Dec-23,2,1,INE616N01034,2
 INOXWIND,Inox Wind Limited,EQ,9-Apr-15,10,1,INE066P01011,10
 INSECTICID,Insecticides (India) Limited,EQ,30-May-07,10,1,INE070I01018,10
@@ -1040,7 +1044,7 @@ IZMO,IZMO Limited,EQ,5-Feb-07,10,1,INE848A01014,10
 J&KBANK,The Jammu & Kashmir Bank Limited,EQ,22-Jul-98,1,1,INE168A01041,1
 JAGRAN,Jagran Prakashan Limited,EQ,22-Feb-06,2,1,INE199G01027,2
 JAGSNPHARM,Jagsonpal Pharmaceuticals Limited,EQ,1-Mar-00,2,1,INE048B01035,2
-JAIBALAJI,Jai Balaji Industries Limited,BE,9-Dec-03,2,1,INE091G01026,2
+JAIBALAJI,Jai Balaji Industries Limited,EQ,9-Dec-03,2,1,INE091G01026,2
 JAICORPLTD,Jai Corp Limited,EQ,26-Nov-97,1,1,INE070D01027,1
 JAINREC,Jain Resource Recycling Limited,EQ,1-Oct-25,2,1,INE0YD401026,2
 JAIPURKURT,Nandani Creation Limited,EQ,2-Sep-21,10,1,INE696V01013,10
@@ -1068,7 +1072,7 @@ JISLJALEQS,Jain Irrigation Systems Limited,EQ,13-Aug-01,2,1,INE175A01038,2
 JITFINFRA,JITF Infralogistics Limited,EQ,27-Feb-17,2,1,INE863T01013,2
 JKCEMENT,JK Cement Limited,EQ,14-Mar-06,10,1,INE823G01014,10
 JKIL,J.Kumar Infraprojects Limited,EQ,12-Feb-08,5,1,INE576I01022,5
-JKIPL,Jinkushal Industries Limited,BE,3-Oct-25,10,1,INE1FF001016,10
+JKIPL,Jinkushal Industries Limited,EQ,3-Oct-25,10,1,INE1FF001016,10
 JKLAKSHMI,JK Lakshmi Cement Limited,EQ,19-Jun-06,5,1,INE786A01032,5
 JKPAPER,JK Paper Limited,EQ,16-Jun-05,10,1,INE789E01012,10
 JKTYRE,JK Tyre & Industries Limited,EQ,19-Mar-07,2,1,INE573A01042,2
@@ -1103,7 +1107,7 @@ JYOTICNC,Jyoti CNC Automation Limited,EQ,16-Jan-24,2,1,INE980O01024,2
 JYOTISTRUC,Jyoti Structures Limited,EQ,19-Jul-95,2,1,INE197A01024,2
 KABRAEXTRU,Kabra Extrusion Technik Limited,EQ,6-Sep-95,5,1,INE900B01029,5
 KAJARIACER,Kajaria Ceramics Limited,EQ,1-Jun-04,1,1,INE217B01036,1
-KAKATCEM,Kakatiya Cement Sugar & Industries Limited,BE,13-Dec-95,10,1,INE437B01014,10
+KAKATCEM,Kakatiya Cement Sugar & Industries Limited,EQ,13-Dec-95,10,1,INE437B01014,10
 KALAMANDIR,Sai Silks (Kalamandir) Limited,EQ,27-Sep-23,2,1,INE438K01021,2
 KALPATARU,Kalpataru Limited,EQ,1-Jul-25,10,1,INE227J01012,10
 KALYANI,Kalyani Commercials Limited,BE,13-Feb-17,10,1,INE610E01010,10
@@ -1114,7 +1118,7 @@ KAMATHOTEL,Kamat Hotels (I) Limited,EQ,29-May-96,10,1,INE967C01018,10
 KAMDHENU,Kamdhenu Limited,BE,9-May-06,1,1,INE390H01020,1
 KAMOPAINTS,Kamdhenu Ventures Limited,EQ,24-Jan-23,1,1,INE0BTI01037,1
 KANANIIND,Kanani Industries Limited,EQ,14-Dec-11,1,1,INE879E01037,1
-KANCHI,Kanchi Karpooram Limited,BE,20-Apr-26,10,1,INE081G01019,10
+KANCHI,Kanchi Karpooram Limited,EQ,20-Apr-26,10,1,INE081G01019,10
 KANORICHEM,Kanoria Chemicals & Industries Limited,BE,8-Feb-95,5,1,INE138C01024,5
 KANPRPLA,Kanpur Plastipack Limited,EQ,1-Jan-21,10,1,INE694E01014,10
 KANSAINER,Kansai Nerolac Paints Limited,EQ,15-Sep-03,1,1,INE531A01024,1
@@ -1126,7 +1130,7 @@ KAVDEFENCE,Kavveri Defence & Wireless Technologies Limited,EQ,29-Jan-08,10,1,INE
 KAYA,Kaya Limited,EQ,14-Aug-15,10,1,INE587G01015,10
 KAYNES,Kaynes Technology India Limited,EQ,22-Nov-22,10,1,INE918Z01012,10
 KCP,KCP Limited,EQ,9-Apr-97,1,1,INE805C01028,1
-KCPSUGIND,KCP Sugar and Industries Corporation Limited,EQ,11-Jun-97,1,1,INE790B01024,1
+KCPSUGIND,KCP Sugar and Industries Corporation Limited,BE,11-Jun-97,1,1,INE790B01024,1
 KDDL,KDDL Limited,EQ,23-Mar-16,10,1,INE291D01011,10
 KEC,KEC International Limited,EQ,10-Mar-06,2,1,INE389H01022,2
 KECL,Kirloskar Electric Company Limited,EQ,9-Mar-10,10,1,INE134B01017,10
@@ -1186,10 +1190,10 @@ KRIDHANINF,Kridhan Infra Limited,BE,11-Dec-15,2,1,INE524L01026,2
 KRISHANA,Krishana Phoschem Limited,EQ,22-Aug-19,2,1,INE506W01020,2
 KRISHIVAL,Krishival Foods Limited,EQ,20-Jun-25,10,1,INE0GGO01015,10
 KRISHNADEF,Krishna Defence And Allied Industries Limited,EQ,30-Dec-25,10,1,INE0J5601015,10
-KRITI,Kriti Industries (India) Limited,BE,1-Nov-21,1,1,INE479D01038,1
+KRITI,Kriti Industries (India) Limited,EQ,1-Nov-21,1,1,INE479D01038,1
 KRITIKA,Kritika Wires Limited,EQ,4-May-22,2,1,INE00Z501029,2
 KRITINUT,Kriti Nutrients Limited,EQ,7-Oct-22,1,1,INE798K01010,1
-KRN,KRN Heat Exchanger and Refrigeration Limited,BE,3-Oct-24,10,1,INE0Q3J01015,10
+KRN,KRN Heat Exchanger and Refrigeration Limited,EQ,3-Oct-24,10,1,INE0Q3J01015,10
 KRONOX,Kronox Lab Sciences Limited,EQ,10-Jun-24,10,1,INE0ATZ01017,10
 KROSS,Kross Limited,EQ,16-Sep-24,5,1,INE0O6601022,5
 KRSNAA,Krsnaa Diagnostics Limited,EQ,16-Aug-21,5,1,INE08LI01020,5
@@ -1197,7 +1201,7 @@ KRYSTAL,Krystal Integrated Services Limited,EQ,21-Mar-24,10,1,INE0QN801017,10
 KSB,Ksb Limited,EQ,8-Feb-95,2,1,INE999A01023,2
 KSCL,Kaveri Seed Company Limited,EQ,4-Oct-07,2,1,INE455I01029,2
 KSHINTL,KSH International Limited,EQ,23-Dec-25,5,1,INE987S01020,5
-KSHITIJPOL,Kshitij Polyline Limited,BE,27-Jul-22,2,1,INE013801027,2
+KSHITIJPOL,Kshitij Polyline Limited,EQ,27-Jul-22,2,1,INE013801027,2
 KSL,Kalyani Steels Limited,EQ,19-May-10,5,1,INE907A01026,5
 KSOLVES,Ksolves India Limited,EQ,23-Sep-22,5,1,INE0D6I01023,5
 KSR,KSR Footwear Limited,EQ,27-Nov-25,10,1,INE1SPP01016,10
@@ -1225,6 +1229,7 @@ LAXMIDENTL,Laxmi Dental Limited,EQ,20-Jan-25,2,1,INE0WO601020,2
 LAXMIINDIA,Laxmi India Finance Limited,BE,5-Aug-25,5,1,INE06WU01026,5
 LCCINFOTEC,LCC Infotech Limited,EQ,2-Mar-00,2,1,INE938A01021,2
 LCL,Lohia Corp Limited,EQ,30-Jul-26,1,1,INE0QJW01029,1
+LEAPIND,LEAP India Limited,EQ,14-Aug-26,1,1,INE00GO01025,1
 LEMERITE,Le Merite Exports Limited,EQ,12-Dec-25,2,1,INE0G1L01025,2
 LEMONTREE,Lemon Tree Hotels Limited,EQ,9-Apr-18,10,1,INE970X01018,10
 LENSKART,Lenskart Solutions Limited,EQ,10-Nov-25,2,1,INE956O01016,2
@@ -1248,7 +1253,7 @@ LMW,LMW Limited,EQ,29-Mar-95,10,1,INE269B01029,10
 LODHA,Lodha Developers Limited,EQ,19-Apr-21,10,1,INE670K01029,10
 LOKESHMACH,Lokesh Machines Limited,BE,5-May-06,10,1,INE397H01017,10
 LORDSCHLO,Lords Chloro Alkali Limited,EQ,28-Aug-23,10,1,INE846D01012,10
-LOTUSDEV,Sri Lotus Developers and Realty Limited,EQ,6-Aug-25,1,1,INE0V9Q01010,1
+LOTUSDEV,Sri Lotus Developers and Realty Limited,BE,6-Aug-25,1,1,INE0V9Q01010,1
 LOTUSEYE,Lotus Eye Hospital and Institute Limited,EQ,11-Jul-08,10,1,INE947I01017,10
 LOVABLE,Lovable Lingerie Limited,EQ,24-Mar-11,10,1,INE597L01014,10
 LOYALTEX,Loyal Textile Mills Limited,EQ,11-Aug-22,10,1,INE970D01010,10
@@ -1277,7 +1282,7 @@ MAGADSUGAR,Magadh Sugar & Energy Limited,EQ,28-Jul-17,10,1,INE347W01011,10
 MAGNUM,Magnum Ventures Limited,EQ,20-Sep-07,10,1,INE387I01016,10
 MAHABANK,Bank of Maharashtra,EQ,12-Apr-04,10,1,INE457A01014,10
 MAHAPEXLTD,Maha Rashtra Apex Corporation Limited,EQ,21-Jan-98,10,1,INE843B01013,10
-MAHASTEEL,Mahamaya Steel Industries Limited,EQ,1-Jul-16,10,1,INE451L01014,10
+MAHASTEEL,Mahamaya Steel Industries Limited,BE,1-Jul-16,10,1,INE451L01014,10
 MAHEPC,Mahindra EPC Irrigation Limited,EQ,14-Feb-20,10,1,INE215D01010,10
 MAHESHWARI,Maheshwari Logistics Limited,BE,15-Apr-19,10,1,INE263W01010,10
 MAHLIFE,Mahindra Lifespace Developers Limited,EQ,10-May-00,10,1,INE813A01018,10
@@ -1305,7 +1310,7 @@ MANIPALHOS,Manipal Health Enterprises Limited,EQ,5-Aug-26,2,1,INE459N01021,2
 MANKIND,Mankind Pharma Limited,EQ,9-May-23,1,1,INE634S01028,1
 MANOMAY,Manomay Tex India Limited,EQ,18-Jan-23,10,1,INE784W01015,10
 MANORAMA,Manorama Industries Limited,EQ,1-Jul-22,2,1,INE00VM01036,2
-MANORG,Mangalam Organics Limited,BE,2-Nov-21,10,1,INE370D01013,10
+MANORG,Mangalam Organics Limited,EQ,2-Nov-21,10,1,INE370D01013,10
 MANUGRAPH,Manugraph India Limited,BE,14-Sep-06,2,1,INE867A01022,2
 MANYAVAR,Vedant Fashions Limited,EQ,16-Feb-22,1,1,INE825V01034,1
 MAPMYINDIA,C.E. Info Systems Limited,EQ,21-Dec-21,2,1,INE0BV301023,2
@@ -1318,11 +1323,11 @@ MARKSANS,Marksans Pharma Limited,EQ,21-Jan-02,1,1,INE750C01026,1
 MARSONS,Marsons Limited,EQ,13-Mar-26,1,1,INE415B01044,1
 MARUTI,Maruti Suzuki India Limited,EQ,9-Jul-03,5,1,INE585B01010,5
 MASFIN,MAS Financial Services Limited,EQ,18-Oct-17,10,1,INE348L01012,10
-MASKINVEST,Mask Investments Limited,BE,14-Oct-16,10,1,INE885F01015,10
+MASKINVEST,Mask Investments Limited,EQ,14-Oct-16,10,1,INE885F01015,10
 MASTEK,Mastek Limited,EQ,10-May-95,5,1,INE759A01021,5
 MASTERTR,Master Trust Limited,EQ,12-Nov-24,1,1,INE677D01037,1
 MATRIMONY,Matrimony.Com Limited,EQ,21-Sep-17,5,1,INE866R01028,5
-MAWANASUG,Mawana Sugars Limited,BE,20-Mar-09,10,1,INE636A01039,10
+MAWANASUG,Mawana Sugars Limited,EQ,20-Mar-09,10,1,INE636A01039,10
 MAXESTATES,Max Estates Limited,EQ,30-Oct-23,10,1,INE03EI01018,10
 MAXHEALTH,Max Healthcare Institute Limited,EQ,21-Aug-20,10,1,INE027H01010,10
 MAXIND,Max India Limited,EQ,28-Aug-20,10,1,INE0CG601016,10
@@ -1331,10 +1336,10 @@ MAZDA,Mazda Limited,BE,1-Nov-16,2,1,INE885E01042,2
 MAZDOCK,Mazagon Dock Shipbuilders Limited,EQ,12-Oct-20,5,1,INE249Z01020,5
 MBAPL,Madhya Bharat Agro Products Limited,EQ,22-Aug-19,2,1,INE900L01028,2
 MBEL,M & B Engineering Limited,EQ,6-Aug-25,10,1,INE08N601015,10
-MBLINFRA,MBL Infrastructure Limited,BE,11-Jan-10,10,1,INE912H01013,10
+MBLINFRA,MBL Infrastructure Limited,EQ,11-Jan-10,10,1,INE912H01013,10
 MCCHRLS-B,Mac Charles India Limited,EQ,20-Apr-26,10,1,INE435D01014,10
 MCL,M TEK COPPER LIMITED,EQ,19-Aug-20,5,1,INE813V01022,5
-MCLEODRUSS,Mcleod Russel India Limited,BE,29-Jul-05,5,1,INE942G01012,5
+MCLEODRUSS,Mcleod Russel India Limited,EQ,29-Jul-05,5,1,INE942G01012,5
 MCLOUD,Magellanic Cloud Limited,EQ,7-Feb-25,2,1,INE613C01026,2
 MCX,Multi Commodity Exchange of India Limited,EQ,9-Mar-12,2,1,INE745G01043,2
 MEDANTA,Global Health Limited,EQ,16-Nov-22,2,1,INE474Q01031,2
@@ -1371,7 +1376,7 @@ MKPL,M K Proteins Limited,EQ,13-Jun-23,1,1,INE964W01021,1
 MMFL,MM Forgings Limited,EQ,20-Dec-06,10,1,INE227C01017,10
 MMP,MMP Industries Limited,EQ,9-Jan-20,10,1,INE511Y01018,10
 MMTC,MMTC Limited,EQ,9-Apr-12,1,1,INE123F01029,1
-MMWL,Media Matrix Worldwide Limited,BE,20-Apr-26,1,1,INE200D01020,1
+MMWL,Media Matrix Worldwide Limited,EQ,20-Apr-26,1,1,INE200D01020,1
 MOBIKWIK,One Mobikwik Systems Limited,EQ,18-Dec-24,2,1,INE0HLU01028,2
 MODINATUR,Modi Naturals Limited,BE,11-Dec-25,10,1,INE537F01012,10
 MODIRUBBER,Modi Rubber Limited,EQ,7-Feb-96,10,1,INE832A01018,10
@@ -1382,7 +1387,7 @@ MOHITIND,Mohit Industries Limited,EQ,14-Mar-13,10,1,INE954E01012,10
 MOIL,MOIL Limited,EQ,15-Dec-10,10,1,INE490G01020,10
 MOKSH,Moksh Ornaments Limited,EQ,21-May-21,2,1,INE514Y01020,2
 MOL,Meghmani Organics Limited,EQ,18-Aug-21,1,1,INE0CT101020,1
-MOLDTECH,Mold-Tek Technologies Limited,EQ,7-Jul-16,2,1,INE835B01035,2
+MOLDTECH,Mold-Tek Technologies Limited,BE,7-Jul-16,2,1,INE835B01035,2
 MOLDTKPAC,Mold-Tek Packaging Limited,EQ,23-Feb-15,5,1,INE893J01029,5
 MONARCH,Monarch Networth Capital Limited,EQ,6-Jan-22,10,1,INE903D01011,10
 MONEYBOXX,Moneyboxx Finance Limited,EQ,15-Oct-25,10,1,INE296Q01012,10
@@ -1458,6 +1463,7 @@ NESCO,Nesco Limited,EQ,8-Apr-08,2,1,INE317F01035,2
 NESTLEIND,Nestle India Limited,EQ,1-Aug-23,1,1,INE239A01024,1
 NETWEB,Netweb Technologies India Limited,EQ,27-Jul-23,2,1,INE0NT901020,2
 NETWORK18,Network18 Media & Investments Limited,EQ,2-Feb-07,5,1,INE870H01013,5
+NEUEON,Neueon Corporation Limited,BE,11-Sep-13,1,1,INE333I01044,1
 NEULANDLAB,Neuland Laboratories Limited,EQ,13-Oct-08,10,1,INE794A01010,10
 NEWGEN,Newgen Software Technologies Limited,EQ,29-Jan-18,10,1,INE619B01017,10
 NEXTMEDIA,Next Mediaworks Limited,EQ,4-Apr-01,10,1,INE747B01016,10
@@ -1475,8 +1481,8 @@ NILAINFRA,Nila Infrastructures Limited,EQ,21-May-15,1,1,INE937C01029,1
 NILASPACES,Nila Spaces Limited,EQ,28-Dec-18,1,1,INE00S901012,1
 NILE,Nile Limited,EQ,20-Apr-26,10,1,INE445D01013,10
 NILKAMAL,Nilkamal Limited,EQ,1-Nov-95,10,1,INE310A01015,10
-NIMBSPROJ,Nimbus Projects Limited,BE,6-Apr-26,10,1,INE875B01015,10
-NINSYS,NINtec Systems Limited,BE,21-Feb-23,10,1,INE395U01014,10
+NIMBSPROJ,Nimbus Projects Limited,EQ,6-Apr-26,10,1,INE875B01015,10
+NINSYS,NINtec Systems Limited,EQ,21-Feb-23,10,1,INE395U01014,10
 NIPPOBATRY,Indo-National Limited,EQ,6-Oct-99,5,1,INE567A01028,5
 NIRAJ,Niraj Cement Structurals Limited,BE,1-Oct-20,10,1,INE368I01016,10
 NIRAJISPAT,Niraj Ispat Industries Limited,EQ,27-Oct-16,10,1,INE326T01011,10
@@ -1504,7 +1510,7 @@ NSLNISP,NMDC Steel Limited,EQ,20-Feb-23,10,1,INE0NNS01018,10
 NTPC,NTPC Limited,EQ,5-Nov-04,10,1,INE733E01010,10
 NTPCGREEN,NTPC Green Energy Limited,EQ,27-Nov-24,10,1,INE0ONG01011,10
 NUCLEUS,Nucleus Software Exports Limited,EQ,19-Dec-02,10,1,INE096B01018,10
-NURECA,Nureca Limited,EQ,25-Feb-21,10,1,INE0DSF01015,10
+NURECA,Nureca Limited,BE,25-Feb-21,10,1,INE0DSF01015,10
 NUVAMA,Nuvama Wealth Management Limited,EQ,26-Sep-23,2,1,INE531F01023,2
 NUVOCO,Nuvoco Vistas Corporation Limited,EQ,23-Aug-21,10,1,INE118D01016,10
 NYKAA,FSN E-Commerce Ventures Limited,EQ,10-Nov-21,1,1,INE388Y01029,1
@@ -1512,13 +1518,13 @@ OAL,Oriental Aromatics Limited,EQ,11-Jul-19,5,1,INE959C01023,5
 OBCL,OBCL Limited,EQ,7-Apr-22,10,1,INE426Z01016,10
 OBEROIRLTY,Oberoi Realty Limited,EQ,20-Oct-10,10,1,INE093I01010,10
 OCCLLTD,OCCL Limited,BE,29-Oct-24,2,1,INE0PK601023,2
-ODIGMA,Odigma Consultancy Solutions Limited,BE,12-Dec-24,1,1,INE054301028,1
+ODIGMA,Odigma Consultancy Solutions Limited,EQ,12-Dec-24,1,1,INE054301028,1
 OFSS,Oracle Financial Services Software Limited,EQ,28-Jun-02,5,1,INE881D01027,5
 OIL,Oil India Limited,EQ,30-Sep-09,10,1,INE274J01014,10
 OILCOUNTUB,Oil Country Tubular Limited,BE,30-Aug-95,10,1,INE591A01010,10
 OLAELEC,Ola Electric Mobility Limited,EQ,9-Aug-24,10,1,INE0LXG01040,10
 OLECTRA,Olectra Greentech Limited,EQ,20-Mar-02,4,1,INE260D01016,4
-OMAXAUTO,Omax Autos Limited,BE,20-Feb-03,10,1,INE090B01011,10
+OMAXAUTO,Omax Autos Limited,EQ,20-Feb-03,10,1,INE090B01011,10
 OMAXE,Omaxe Limited,EQ,9-Aug-07,10,1,INE800H01010,10
 OMFREIGHT,Om Freight Forwarders Limited,BE,8-Oct-25,10,1,INE1BZC01019,10
 OMINFRAL,OM INFRA LIMITED,EQ,17-Jun-11,1,1,INE239D01028,1
@@ -1528,7 +1534,7 @@ ONELIFECAP,Onelife Capital Advisors Limited,BE,17-Oct-11,10,1,INE912L01015,10
 ONEPOINT,One Point One Solutions Limited,EQ,9-May-19,2,1,INE840Y01029,2
 ONESOURCE,Onesource Specialty Pharma Limited,EQ,24-Jan-25,1,1,INE013P01021,1
 ONGC,Oil & Natural Gas Corporation Limited,EQ,19-Jul-95,5,1,INE213A01029,5
-ONIDA,Onida Electronics Limited,BE,24-May-04,1,1,INE831A01028,1
+ONIDA,Onida Electronics Limited,EQ,24-May-04,1,1,INE831A01028,1
 ONMOBILE,OnMobile Global Limited,BE,19-Feb-08,10,1,INE809I01019,10
 ONWARDTEC,Onward Technologies Limited,EQ,7-Mar-01,10,1,INE229A01017,10
 OPTIEMUS,Optiemus Infracom Limited,EQ,8-Aug-17,10,1,INE350C01017,10
@@ -1547,8 +1553,7 @@ ORIENTPPR,Orient Paper & Industries Limited,EQ,29-Mar-95,1,1,INE592A01026,1
 ORIENTTECH,Orient Technologies Limited,EQ,28-Aug-24,10,1,INE0PPK01015,10
 ORISSAMINE,The Orissa Minerals Development Company Limited,EQ,29-Sep-10,1,1,INE725E01024,1
 ORKLAINDIA,Orkla India Limited,EQ,6-Nov-25,1,1,INE16NZ01023,1
-ORTEL,Ortel Communications Limited,BZ,19-Mar-15,10,1,INE849L01019,10
-ORTINGLOBE,ORTIN GLOBAL LIMITED,BE,30-Mar-21,10,1,INE749B01020,10
+ORTINGLOBE,ORTIN GLOBAL LIMITED,EQ,30-Mar-21,10,1,INE749B01020,10
 OSIAHYPER,Osia Hyper Retail Limited,BE,1-Dec-22,1,1,INE06IR01021,1
 OSWALAGRO,Oswal Agro Mills Limited,EQ,29-Mar-95,10,1,INE142A01012,10
 OSWALGREEN,Oswal Greentech Limited,EQ,28-Aug-96,10,1,INE143A01010,10
@@ -1586,7 +1591,7 @@ PCBL,PCBL Chemical Limited,EQ,29-Mar-95,1,1,INE602A01031,1
 PCJEWELLER,PC Jeweller Limited,EQ,27-Dec-12,1,1,INE785M01021,1
 PDMJEPAPER,Pudumjee Paper Products Limited,EQ,30-Mar-16,1,1,INE865T01018,1
 PDSL,PDS Limited,EQ,21-Oct-14,2,1,INE111Q01021,2
-PEARLPOLY,Pearl Polymers Limited,BE,11-Oct-95,10,1,INE844A01013,10
+PEARLPOLY,Pearl Polymers Limited,EQ,11-Oct-95,10,1,INE844A01013,10
 PENIND,Pennar Industries Limited,EQ,25-Nov-10,5,1,INE932A01024,5
 PENINLAND,Peninsula Land Limited,BE,8-Feb-95,2,1,INE138A01028,2
 PERSISTENT,Persistent Systems Limited,EQ,6-Apr-10,5,1,INE262H01021,5
@@ -1605,7 +1610,7 @@ PIDILITIND,Pidilite Industries Limited,EQ,29-Mar-95,1,1,INE318A01026,1
 PIGL,Power & Instrumentation (Gujarat) Limited,EQ,17-May-23,10,1,INE557Z01018,10
 PIIND,PI Industries Limited,EQ,15-Jun-11,1,1,INE603J01030,1
 PILANIINVS,Pilani Investment and Industries Corporation Limited,EQ,8-Dec-15,10,1,INE417C01014,10
-PILITA,PIL ITALICA LIFESTYLE LIMITED,BE,7-Oct-13,1,1,INE600A01035,1
+PILITA,PIL ITALICA LIFESTYLE LIMITED,EQ,7-Oct-13,1,1,INE600A01035,1
 PINELABS,Pine Labs Limited,EQ,14-Nov-25,1,1,INE15B701018,1
 PIONEEREMB,Pioneer Embroideries Limited,EQ,16-May-06,10,1,INE156C01018,10
 PIONRINV,Pioneer Investcorp Limited,BE,20-Apr-26,10,1,INE746D01014,10
@@ -1615,7 +1620,7 @@ PIXTRANS,Pix Transmissions Limited,EQ,28-Apr-22,10,1,INE751B01018,10
 PKTEA,The Peria Karamalai Tea & Produce Company Limited,EQ,19-Aug-15,10,1,INE431F01018,10
 PLASTIBLEN,Plastiblends India Limited,EQ,28-Dec-06,5,1,INE083C01022,5
 PLATIND,Platinum Industries Limited,EQ,5-Mar-24,10,1,INE0PT501018,10
-PLAZACABLE,Plaza Wires Limited,BE,12-Oct-23,10,1,INE0INJ01017,10
+PLAZACABLE,Plaza Wires Limited,EQ,12-Oct-23,10,1,INE0INJ01017,10
 PML,Paul Merchants Limited,EQ,20-Apr-26,10,1,INE291E01019,10
 PNB,Punjab National Bank,EQ,24-Apr-02,2,1,INE160A01022,2
 PNBGILTS,PNB Gilts Limited,EQ,18-Sep-00,10,1,INE859A01011,10
@@ -1683,7 +1688,7 @@ PVSL,Popular Vehicles and Services Limited,EQ,19-Mar-24,2,1,INE772T01024,2
 PWL,Physicswallah Limited,EQ,18-Nov-25,1,1,INE0LP301011,1
 PYRAMID,Pyramid Technoplast Limited,EQ,29-Aug-23,10,1,INE0MIS01010,10
 QMSMEDI,QMS Medical Allied Services Limited,EQ,18-Jun-26,10,1,INE0FMW01018,10
-QPOWER,Quality Power Electrical Equipments Limited,BE,24-Feb-25,10,1,INE0SII01026,10
+QPOWER,Quality Power Electrical Equipments Limited,EQ,24-Feb-25,10,1,INE0SII01026,10
 QUADFUTURE,Quadrant Future Tek Limited,EQ,14-Jan-25,10,1,INE0LRY01011,10
 QUESS,Quess Corp Limited,EQ,12-Jul-16,10,1,INE615P01015,10
 QUICKHEAL,Quick Heal Technologies Limited,BE,18-Feb-16,10,1,INE306L01010,10
@@ -1781,14 +1786,14 @@ RPEL,Raghav Productivity Enhancers Limited,EQ,8-Aug-24,10,1,INE912T01018,10
 RPGLIFE,RPG Life Sciences Limited,EQ,10-Jun-08,8,1,INE105J01010,8
 RPOWER,Reliance Power Limited,EQ,11-Feb-08,10,1,INE614G01033,10
 RPPINFRA,R.P.P. Infra Projects Limited,EQ,6-Dec-10,10,1,INE324L01013,10
-RPPL,Rajshree Polypack Limited,EQ,26-Nov-21,5,1,INE760W01023,5
+RPPL,Rajshree Polypack Limited,BE,26-Nov-21,5,1,INE760W01023,5
 RPSGVENT,RPSG VENTURES LIMITED,EQ,25-Jan-19,10,1,INE425Y01011,10
 RPTECH,Rashi Peripherals Limited,EQ,14-Feb-24,5,1,INE0J1F01024,5
 RRIL,RRIL Limited,EQ,20-Apr-26,5,1,INE951M01037,5
 RRKABEL,R R Kabel Limited,EQ,20-Sep-23,5,1,INE777K01022,5
 RSDFIN,RSD Finance Limited,BE,20-Apr-26,5,1,INE616F01022,5
 RSL,Rajputana Stainless Limited,EQ,19-Mar-26,10,1,INE313L01016,10
-RSSOFTWARE,R. S. Software (India) Limited,BE,19-May-99,5,1,INE165B01029,5
+RSSOFTWARE,R. S. Software (India) Limited,EQ,19-May-99,5,1,INE165B01029,5
 RSWM,RSWM Limited,BE,15-Feb-95,10,1,INE611A01016,10
 RSYSTEMS,R Systems International Limited,EQ,26-Apr-06,1,1,INE411H01032,1
 RTNINDIA,RattanIndia Enterprises Limited,EQ,30-Jul-12,2,1,INE834M01019,2
@@ -1877,7 +1882,7 @@ SECMARK,SecMark Consultancy Limited,EQ,16-Oct-23,10,1,INE0BTM01013,10
 SECURKLOUD,SECUREKLOUD TECHNOLOGIES LIMITED,EQ,29-Jan-14,5,1,INE650K01021,5
 SEDEMAC,SEDEMAC Mechatronics Limited,EQ,11-Mar-26,10,1,INE00XB01019,10
 SEIL,Shanti Educational Initiatives Limited,EQ,20-Apr-26,1,1,INE440T01028,1
-SEJALLTD,Sejal Glass Limited,BE,13-Dec-21,10,1,INE955I01044,10
+SEJALLTD,Sejal Glass Limited,EQ,13-Dec-21,10,1,INE955I01044,10
 SELMC,SEL Manufacturing Company Limited,EQ,26-Oct-21,10,1,INE105I01020,10
 SEMAC,Semac Construction Limited,BE,11-Aug-05,10,1,INE617A01013,10
 SENCO,Senco Gold Limited,EQ,14-Jul-23,5,1,INE602W01027,5
@@ -1903,6 +1908,7 @@ SHALBY,Shalby Limited,EQ,15-Dec-17,10,1,INE597J01018,10
 SHALPAINTS,Shalimar Paints Limited,BE,3-Mar-08,2,1,INE849C01026,2
 SHANKARA,Shankara Building Products Limited,EQ,5-Apr-17,10,1,INE274V01019,10
 SHANTI,Shanti Overseas (India) Limited,EQ,16-Sep-21,10,1,INE933X01016,10
+SHANTI-RE,Shanti Gold International Limited-RE,BE,14-Aug-26,10,1,INE06ZD20017,10
 SHANTIGEAR,Shanthi Gears Limited,EQ,17-Jan-96,1,1,INE631A01022,1
 SHANTIGOLD,Shanti Gold International Limited,EQ,1-Aug-25,10,1,INE06ZD01017,10
 SHARDACROP,Sharda Cropchem Limited,EQ,23-Sep-14,10,1,INE221J01015,10
@@ -1917,7 +1923,7 @@ SHILPAMED,Shilpa Medicare Limited,EQ,3-Dec-09,1,1,INE790G01031,1
 SHINDL,Sharat Industries Limited,EQ,20-Apr-26,10,1,INE220Z01013,10
 SHIVALIK,Shivalik Rasayan Limited,BE,9-Dec-21,5,1,INE788J01021,5
 SHIVAMAUTO,Shivam Autotech Limited,BE,21-Nov-06,2,1,INE637H01024,2
-SHIVAMILLS,Shiva Mills Limited,BE,26-Feb-18,10,1,INE644Y01017,10
+SHIVAMILLS,Shiva Mills Limited,EQ,26-Feb-18,10,1,INE644Y01017,10
 SHIVATEX,Shiva Texyarn Limited,EQ,26-Dec-17,10,1,INE705C01020,10
 SHIVAUM,Shiv Aum Steels Limited,EQ,14-Nov-25,10,1,INE719F01016,10
 SHK,S H Kelkar and Company Limited,EQ,16-Nov-15,10,1,INE500L01026,10
@@ -1935,6 +1941,7 @@ SHRINGARMS,Shringar House of Mangalsutra Limited,EQ,17-Sep-25,10,1,INE1B3L01017,
 SHRIPISTON,SPR Auto Technologies Limited,EQ,2-Jun-16,10,1,INE526E01018,10
 SHRIRAMFIN,Shriram Finance Limited,EQ,11-Dec-96,2,1,INE721A01047,2
 SHRIRAMPPS,Shriram Properties Limited,EQ,20-Dec-21,10,1,INE217L01019,10
+SHUKRAPHAR,Shukra Pharmaceuticals Limited,EQ,14-Aug-26,1,1,INE551C01044,1
 SHYAMCENT,Shyam Century Ferrous Limited,BE,28-Jul-15,1,1,INE979R01011,1
 SHYAMMETL,Shyam Metalics and Energy Limited,EQ,24-Jun-21,10,1,INE810G01011,10
 SHYAMTEL,Shyam Telecom Limited,BE,6-Nov-06,10,1,INE635A01023,10
@@ -1948,7 +1955,7 @@ SIGMAADV,SIGMA ADVANCED SYSTEMS LIMITED,BE,19-Jul-07,10,1,INE933B01012,10
 SIGNATURE,Signatureglobal (India) Limited,EQ,27-Sep-23,1,1,INE903U01023,1
 SIGNPOST,Signpost India Limited,EQ,14-Feb-24,2,1,INE0KGZ01021,2
 SIKA,Sika Interplant Systems Limited,EQ,20-Apr-26,2,1,INE438E01032,2
-SIKKO,Sikko Industries Limited,EQ,22-Oct-21,1,1,INE112X01025,1
+SIKKO,Sikko Industries Limited,BE,22-Oct-21,1,1,INE112X01025,1
 SIL,Standard Industries Limited,EQ,27-Jan-04,5,1,INE173A01025,5
 SILGO,Silgo Retail Limited,EQ,3-Mar-21,10,1,INE01II01013,10
 SILINV,SIL Investments Limited,EQ,22-May-96,10,1,INE923A01015,10
@@ -1979,7 +1986,7 @@ SMLT,Sarthak Metals Limited,EQ,25-Nov-21,10,1,INE017W01010,10
 SMSPHARMA,SMS Pharmaceuticals Limited,EQ,28-Feb-07,1,1,INE812G01025,1
 SNOWMAN,Snowman Logistics Limited,EQ,12-Sep-14,10,1,INE734N01019,10
 SOBHA,Sobha Limited,EQ,20-Dec-06,10,1,INE671H01015,10
-SOFTTECH,Softtech Engineers Limited,BE,25-Feb-22,10,1,INE728Z01015,10
+SOFTTECH,Softtech Engineers Limited,EQ,25-Feb-22,10,1,INE728Z01015,10
 SOLARA,Solara Active Pharma Sciences Limited,EQ,27-Jun-18,10,1,INE624Z01016,10
 SOLARINDS,Solar Industries India Limited,EQ,3-Apr-06,2,1,INE343H01029,2
 SOLARWORLD,Solarworld Energy Solutions Limited,EQ,30-Sep-25,5,1,INE0TY101024,5
@@ -1998,8 +2005,8 @@ SPAL,S. P. Apparels Limited,EQ,12-Aug-16,10,1,INE212I01016,10
 SPANDANA,Spandana Sphoorty Financial Limited,EQ,19-Aug-19,10,1,INE572J01011,10
 SPARC,Sun Pharma Advanced Research Company Limited,EQ,18-Jul-07,1,1,INE232I01014,1
 SPCENET,Spacenet Enterprises India Limited,EQ,10-Jan-17,1,1,INE970N01027,1
-SPECIALITY,Speciality Restaurants Limited,EQ,30-May-12,10,1,INE247M01014,10
-SPECTRUM,Spectrum Electrical Industries Limited,EQ,28-Mar-25,10,1,INE01EO01010,10
+SPECIALITY,Speciality Restaurants Limited,BE,30-May-12,10,1,INE247M01014,10
+SPECTRUM,Spectrum Electrical Industries Limited,BE,28-Mar-25,10,1,INE01EO01010,10
 SPENCERS,Spencer's Retail Limited,EQ,25-Jan-19,5,1,INE020801028,5
 SPIC,Southern Petrochemicals Industries Corporation  Limited,EQ,10-Jan-96,10,1,INE147A01011,10
 SPLIL,SPL Industries Limited,EQ,26-Jul-05,10,1,INE978G01016,10
@@ -2015,7 +2022,7 @@ SRM,SRM Contractors Limited,EQ,3-Apr-24,10,1,INE0R6Z01013,10
 SRTL,Shree Ram Twistex Limited,EQ,2-Mar-26,10,1,INE19GK01015,10
 SSDL,Saraswati Saree Depot Limited,EQ,20-Aug-24,10,1,INE0PQ101010,10
 SSWL,Steel Strips Wheels Limited,EQ,6-Jun-05,1,1,INE802C01033,1
-STALLION,Stallion India Fluorochemicals Limited,EQ,23-Jan-25,10,1,INE0RYC01010,10
+STALLION,Stallion India Fluorochemicals Limited,BE,23-Jan-25,10,1,INE0RYC01010,10
 STANLEY,Stanley Lifestyles Limited,EQ,28-Jun-24,2,1,INE01A001028,2
 STAR,Strides Pharma Science Limited,EQ,2-Feb-00,10,1,INE939A01011,10
 STARCEMENT,Star Cement Limited,EQ,16-Jun-17,1,1,INE460H01021,1
@@ -2028,13 +2035,13 @@ STEELCITY,Steel City Securities Limited,EQ,27-Jun-19,10,1,INE395H01011,10
 STEELXIND,STEEL EXCHANGE INDIA LIMITED,EQ,20-Jul-17,1,1,INE503B01021,1
 STEL,Stel Holdings Limited,EQ,9-Feb-11,10,1,INE577L01016,10
 STERTOOLS,Sterling Tools Limited,BE,2-Feb-06,2,1,INE334A01023,2
-STLNETWORK,STL Networks Limited,BE,4-Sep-25,2,1,INE1VXE01018,2
+STLNETWORK,STL Networks Limited,EQ,4-Sep-25,2,1,INE1VXE01018,2
 STLTECH,Sterlite Technologies Limited,BE,8-Dec-00,2,1,INE089C01029,2
 STOVEKRAFT,Stove Kraft Limited,EQ,5-Feb-21,10,1,INE00IN01015,10
 STUDDS,Studds Accessories Limited,EQ,7-Nov-25,5,1,INE00Q601028,5
 STYL,Seshaasai Technologies Limited,EQ,30-Sep-25,10,1,INE04VU01023,10
 STYLAMIND,Stylam Industries Limited,EQ,2-Aug-21,5,1,INE239C01020,5
-STYLEBAAZA,Baazar Style Retail Limited,BE,6-Sep-24,5,1,INE01FR01028,5
+STYLEBAAZA,Baazar Style Retail Limited,EQ,6-Sep-24,5,1,INE01FR01028,5
 STYRENIX,Styrenix Performance Materials Limited,EQ,29-Mar-95,10,1,INE189B01011,10
 SUBEXLTD,Subex Limited,BE,5-Nov-20,5,1,INE754A01055,5
 SUBROS,Subros Limited,EQ,13-Jul-05,2,1,INE287B01021,2
@@ -2083,6 +2090,7 @@ SVLL,Shree Vasu Logistics Limited,BE,21-Apr-23,10,1,INE00CE01017,10
 SVPGLOB,SVP GLOBAL TEXTILES LIMITED,BE,14-Jul-21,1,1,INE308E01029,1
 SWANCORP,SWAN CORP LIMITED,EQ,29-May-12,1,1,INE665A01038,1
 SWANDEF,Swan Defence and Heavy Industries Limited,BE,20-Jan-25,10,1,INE542F01020,10
+SWARAJ,Swaraj Suiting Limited,EQ,13-Aug-26,10,1,INE0GMR01016,10
 SWARAJENG,Swaraj Engines Limited,EQ,6-Dec-95,10,1,INE277A01016,10
 SWELECTES,Swelect Energy Systems Limited,EQ,9-May-06,10,1,INE409B01013,10
 SWIGGY,Swiggy Limited,EQ,13-Nov-24,1,1,INE00H001014,1
@@ -2095,7 +2103,7 @@ SYSTMTXC,Systematix Corporate Services Limited,BE,6-Oct-25,1,1,INE356B01024,1
 TAALTECH,Taal Tech Limited,EQ,20-Apr-26,10,1,INE524T01011,10
 TAINWALCHM,Tainwala Chemical and Plastic (I) Limited,EQ,27-Jul-95,10,1,INE123C01018,10
 TAJGVK,Taj GVK Hotels & Resorts Limited,EQ,20-Dec-00,2,1,INE586B01026,2
-TAKE,Take Solutions Limited,EQ,27-Aug-07,1,1,INE142I01023,1
+TAKE,TAKE Limited,EQ,27-Aug-07,1,1,INE142I01023,1
 TALBROAUTO,Talbros Automotive Components Limited,EQ,29-Sep-06,2,1,INE187D01029,2
 TAMBOLIIN,Tamboli Industries Limited,BE,20-Apr-26,10,1,INE864J01012,10
 TANLA,Tanla Platforms Limited,EQ,5-Jan-07,1,1,INE483C01032,1
@@ -2128,12 +2136,13 @@ TDPOWERSYS,TD Power Systems Limited,EQ,8-Sep-11,2,1,INE419M01027,2
 TEAMGTY,Team India Guaranty Limited,EQ,11-Jun-02,10,1,INE289C01025,10
 TEAMLEASE,Teamlease Services Limited,EQ,12-Feb-16,10,1,INE985S01024,10
 TECHM,Tech Mahindra Limited,EQ,28-Aug-06,5,1,INE669C01036,5
+TECHNOCRAF,Technocraft Ventures Limited,EQ,14-Aug-26,10,1,INE1D0W01018,10
 TECHNOE,Techno Electric & Engineering Company Limited,EQ,4-Dec-18,2,1,INE285K01026,2
 TECHNVISN,TechNVision Ventures Limited,EQ,20-Apr-26,10,1,INE314H01012,10
 TECILCHEM,TECIL Chemicals and Hydro Power Limited,EQ,6-Dec-95,10,50,INE014B01011,10
 TEGA,Tega Industries Limited,EQ,13-Dec-21,10,1,INE011K01018,10
 TEJASNET,Tejas Networks Limited,EQ,27-Jun-17,10,1,INE010J01012,10
-TEMBO,Tembo Global Industries Limited,EQ,23-Apr-21,10,1,INE869Y01028,10
+TEMBO,Tembo Global Industries Limited,EQ,23-Apr-21,1,1,INE869Y01028,1
 TENNIND,Tenneco Clean Air India Limited,EQ,19-Nov-25,10,1,INE19RI01016,10
 TERASOFT,Tera Software Limited,EQ,29-Dec-16,10,1,INE482B01010,10
 TEXINFRA,Texmaco Infrastructure & Holdings Limited,EQ,9-Sep-04,1,1,INE435C01024,1
@@ -2159,7 +2168,7 @@ TIGERLOGS,Tiger Logistics (India) Limited,BE,18-Sep-25,1,1,INE906O01029,1
 TIIL,Technocraft Industries (India) Limited,EQ,12-Feb-07,10,1,INE545H01011,10
 TIINDIA,Tube Investments of India Limited,EQ,2-Nov-17,1,1,INE974X01010,1
 TIJARIA,Tijaria Polypipes Limited,EQ,14-Oct-11,10,1,INE440L01017,10
-TIL,TIL Limited,EQ,27-Sep-95,10,1,INE806C01018,10
+TIL,TIL Limited,BE,27-Sep-95,10,1,INE806C01018,10
 TIMETECHNO,Time Technoplast Limited,EQ,13-Jun-07,1,1,INE508G01029,1
 TIMEX,Timex Group India Limited,EQ,20-Apr-26,1,1,INE064A01026,1
 TIMKEN,Timken India Limited,EQ,6-Feb-07,10,1,INE325A01013,10
@@ -2176,7 +2185,7 @@ TMPV,Tata Motors Passenger Vehicles Limited,EQ,22-Jul-98,2,1,INE155A01022,2
 TNPETRO,Tamilnadu PetroProducts Limited,EQ,27-Oct-99,10,1,INE148A01019,10
 TNPL,Tamil Nadu Newsprint & Papers Limited,EQ,14-Feb-96,10,1,INE107A01015,10
 TNTELE,Tamilnadu Telecommunication Limited,EQ,4-Feb-03,10,1,INE141D01018,10
-TOKYOPLAST,Tokyo Plast International Limited,BE,11-Oct-95,10,1,INE932C01012,10
+TOKYOPLAST,Tokyo Plast International Limited,EQ,11-Oct-95,10,1,INE932C01012,10
 TOLINS,Tolins Tyres Limited,EQ,16-Sep-24,5,1,INE0RWQ01014,5
 TORNTPHARM,Torrent Pharmaceuticals Limited,EQ,25-Nov-02,5,1,INE685A01028,5
 TORNTPOWER,Torrent Power Limited,EQ,28-Nov-06,10,1,INE813H01021,10
@@ -2185,7 +2194,7 @@ TOUCHWOOD,Touchwood Entertainment Limited,EQ,21-Jan-20,10,1,INE486Y01013,10
 TPHQ,Teamo Productions HQ Limited,EQ,30-Jan-09,1,1,INE065J01024,1
 TPLPLASTEH,TPL Plastech Limited,EQ,20-May-15,2,1,INE413G01022,2
 TRACXN,Tracxn Technologies Limited,EQ,20-Oct-22,1,1,INE0HMF01019,1
-TRANSPEK,Transpek Industry Limited,EQ,20-Apr-26,10,1,INE687A01016,10
+TRANSPEK,Transpek Industry Limited,BE,20-Apr-26,10,1,INE687A01016,10
 TRANSRAILL,Transrail Lighting Limited,EQ,27-Dec-24,2,1,INE454P01035,2
 TRANSWORLD,TRANSWORLD SHIPPING LINES LIMITED,BE,1-Mar-95,10,1,INE757B01015,10
 TRAVELFOOD,Travel Food Services Limited,EQ,14-Jul-25,1,1,INE103V01028,1
@@ -2218,7 +2227,7 @@ UCAL,UCAL LIMITED,EQ,13-Sep-95,10,1,INE139B01016,10
 UCOBANK,UCO Bank,EQ,9-Oct-03,10,1,INE691A01018,10
 UDS,Updater Services Limited,EQ,4-Oct-23,10,1,INE851I01011,10
 UEL,Ujaas Energy Limited,EQ,16-Apr-24,1,1,INE899L01030,1
-UFBL,United Foodbrands Limited,EQ,7-Apr-21,5,1,INE382M01027,5
+UFBL,United Foodbrands Limited,BE,7-Apr-21,5,1,INE382M01027,5
 UFLEX,UFLEX Limited,EQ,23-Aug-95,10,1,INE516A01017,10
 UFO,UFO Moviez India Limited,EQ,14-May-15,10,1,INE527H01019,10
 UGARSUGAR,The Ugar Sugar Works Limited,EQ,23-Aug-10,1,1,INE071E01023,1
@@ -2233,7 +2242,7 @@ UNICHEMLAB,Unichem Laboratories Limited,EQ,7-Feb-01,2,1,INE351A01035,2
 UNIDT,United Drilling Tools Limited,BE,25-Sep-20,10,1,INE961D01019,10
 UNIECOM,Unicommerce Esolutions Limited,EQ,13-Aug-24,1,1,INE00U401027,1
 UNIENTER,Uniphos Enterprises Limited,EQ,23-Jan-04,2,1,INE037A01022,2
-UNIINFO,Uniinfo Telecom Services Limited,BE,12-Jan-22,10,1,INE481Z01011,10
+UNIINFO,Uniinfo Telecom Services Limited,EQ,12-Jan-22,10,1,INE481Z01011,10
 UNIMECH,Unimech Aerospace and Manufacturing Limited,EQ,31-Dec-24,5,1,INE0U3I01011,5
 UNIONBANK,Union Bank of India,EQ,24-Sep-02,10,1,INE692A01016,10
 UNIPARTS,Uniparts India Limited,EQ,12-Dec-22,10,1,INE244O01017,10
@@ -2255,19 +2264,19 @@ UTIAMC,UTI Asset Management Company Limited,EQ,12-Oct-20,10,1,INE094J01016,10
 UTKARSHBNK,Utkarsh Small Finance Bank Limited,EQ,21-Jul-23,10,1,INE735W01017,10
 UTLSOLAR,Fujiyama Power Systems Limited,EQ,20-Nov-25,1,1,INE12UR01024,1
 UTTAMSUGAR,Uttam Sugar Mills Limited,EQ,10-Apr-06,10,1,INE786F01031,10
-UYFINCORP,U. Y. Fincorp Limited,EQ,3-Oct-24,5,1,INE152C01025,5
+UYFINCORP,U. Y. Fincorp Limited,BE,3-Oct-24,5,1,INE152C01025,5
 V2RETAIL,V2 Retail Limited,EQ,4-Jul-07,1,1,INE945H01021,1
 VADILALIND,Vadilal Industries Limited,EQ,15-Jun-11,10,1,INE694D01016,10
 VAIBHAVGBL,Vaibhav Global Limited,EQ,5-Apr-04,2,1,INE884A01027,2
 VAISHALI,Vaishali Pharma Limited,EQ,15-Jan-20,2,1,INE972X01022,2
 VAKRANGEE,Vakrangee Limited,EQ,3-Apr-06,1,1,INE051B01021,1
-VALIANTLAB,Valiant Laboratories Limited,BE,6-Oct-23,10,1,INE0JWS01017,10
+VALIANTLAB,Valiant Laboratories Limited,EQ,6-Oct-23,10,1,INE0JWS01017,10
 VALIANTORG,Valiant Organics Limited,BE,23-Jul-21,10,1,INE565V01010,10
 VAML,Vedanta Aluminium Metal Limited,EQ,15-Jun-26,1,1,INE1CDF01017,1
 VARDHACRLC,Vardhman Acrylics Limited,BE,30-Sep-03,10,1,INE116G01013,10
 VARDMNPOLY,Vardhman Polytex Limited,EQ,12-May-03,1,1,INE835A01029,1
 VARROC,Varroc Engineering Limited,EQ,6-Jul-18,1,1,INE665L01035,1
-VASCONEQ,Vascon Engineers Limited,BE,15-Feb-10,10,1,INE893I01013,10
+VASCONEQ,Vascon Engineers Limited,EQ,15-Feb-10,10,1,INE893I01013,10
 VASWANI,Vaswani Industries Limited,EQ,20-Sep-11,10,1,INE590L01019,10
 VBL,Varun Beverages Limited,EQ,8-Nov-16,2,1,INE200M01039,2
 VCL,Vaxtex Cotfab Limited,EQ,19-Apr-22,1,1,INE098201036,1
@@ -2299,7 +2308,7 @@ VIMTALABS,Vimta Labs Limited,EQ,15-Dec-05,2,1,INE579C01029,2
 VINATIORGA,Vinati Organics Limited,EQ,28-Jul-09,1,1,INE410B01037,1
 VINCOFE,Vintage Coffee And Beverages Limited,EQ,18-Oct-24,10,1,INE498Q01014,10
 VINDHYATEL,Vindhya Telelinks Limited,EQ,8-Feb-95,10,1,INE707A01012,10
-VINEETLAB,Vineet Laboratories Limited,BE,15-Jun-21,10,1,INE505Y01010,10
+VINEETLAB,Vineet Laboratories Limited,EQ,15-Jun-21,10,1,INE505Y01010,10
 VINNY,Vinny Overseas Limited,EQ,28-Nov-22,1,1,INE01KI01027,1
 VINYLINDIA,Vinyl Chemicals (India) Limited,EQ,21-Jul-08,1,1,INE250B01029,1
 VIPCLOTHNG,VIP Clothing Limited,BE,6-Aug-07,2,1,INE450G01024,2
@@ -2320,12 +2329,12 @@ VLEGOV,VL E-Governance & IT Solutions Limited,BE,14-Aug-23,10,1,INE03HW01020,10
 VLSFINANCE,VLS Finance Limited,EQ,25-May-95,10,1,INE709A01018,10
 VMART,V-Mart Retail Limited,EQ,20-Feb-13,10,1,INE665J01013,10
 VMM,Vishal Mega Mart Limited,EQ,18-Dec-24,10,1,INE01EA01019,10
-VMSTMT,VMS TMT Limited,BE,24-Sep-25,10,1,INE0SJA01013,10
+VMSTMT,VMS TMT Limited,EQ,24-Sep-25,10,1,INE0SJA01013,10
 VOEPL,Virtuoso Optoelectronics Limited,EQ,1-Jul-26,10,1,INE0I0T01010,10
 VOGL,Vedanta Oil and Gas Limited,EQ,15-Jun-26,1,1,INE704J01044,1
 VOLTAMP,Voltamp Transformers Limited,EQ,20-Sep-06,10,1,INE540H01012,10
 VOLTAS,Voltas Limited,EQ,12-Apr-95,1,1,INE226A01021,1
-VPRPL,Vishnu Prakash R Punglia Limited,BE,5-Sep-23,10,1,INE0AE001013,10
+VPRPL,Vishnu Prakash R Punglia Limited,EQ,5-Sep-23,10,1,INE0AE001013,10
 VRAJ,Vraj Iron and Steel Limited,EQ,3-Jul-24,10,1,INE0S2V01010,10
 VRLLOG,VRL Logistics Limited,EQ,30-Apr-15,10,1,INE366I01010,10
 VSSL,Vardhman Special Steels Limited,EQ,17-May-12,10,1,INE050M01012,10
@@ -2371,7 +2380,7 @@ XCHANGING,Xchanging Solutions Limited,EQ,9-Mar-05,10,1,INE692G01013,10
 XELPMOC,Xelpmoc Design And Tech Limited,EQ,4-Feb-19,10,1,INE01P501012,10
 XPROINDIA,Xpro India Limited,EQ,27-Apr-04,10,1,INE445C01015,10
 XTGLOBAL,Xtglobal Infotech Limited,EQ,16-Sep-24,1,1,INE547B01028,1
-XTRANET,Xtranet Technologies Limited,BE,30-Jul-26,10,1,INE0NG701011,10
+XTRANET,Xtranet Technologies Limited,EQ,30-Jul-26,10,1,INE0NG701011,10
 YASHO,Yasho Industries Limited,EQ,21-Aug-23,10,1,INE616Z01012,10
 YATHARTH,Yatharth Hospital & Trauma Care Services Limited,EQ,7-Aug-23,10,1,INE0JO301016,10
 YATRA,Yatra Online Limited,EQ,28-Sep-23,1,1,INE0JR601024,1
