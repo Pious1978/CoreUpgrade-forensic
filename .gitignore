@@ -11,6 +11,7 @@ target/
 # Local/runtime market data
 market_cache/
 parquet_cache/
+parquet_cache_archive_yahoo/
 *.db
 *.sqlite
 *.sqlite3
