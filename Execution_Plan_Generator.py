@@ -21,11 +21,12 @@ Paper execution only.
 
 """
 
+import os
 import sqlite3
 import pandas as pd
 from datetime import datetime
 
-from core.config import DB_PATH
+from core.config import DB_PATH, PARQUET_CACHE_DIR
 
 
 
@@ -63,6 +64,45 @@ class ExecutionPlanGenerator:
             .upper()
             .strip()
         )
+
+
+
+    # ---------------------------------------------------
+    # Get current price from bhav-copy-derived parquet cache
+    # ---------------------------------------------------
+
+    def get_current_price(self, ticker, fallback_price):
+        """
+        Reads the most recent closing price for a ticker from the
+        bhav-copy-derived parquet cache. This runs as part of the nightly
+        batch pipeline (after market close), so today's closing price is
+        the correct "current price" - no live feed needed.
+
+        Falls back to the given price (the pivot) if the parquet file is
+        missing or unreadable, preserving the previous safe behavior
+        rather than crashing.
+        """
+
+        path = os.path.join(
+            PARQUET_CACHE_DIR,
+            f"{ticker}.parquet"
+        )
+
+        if not os.path.exists(path):
+            return fallback_price
+
+        try:
+            df = pd.read_parquet(path)
+
+            if df.empty:
+                return fallback_price
+
+            latest = df.sort_values("date").iloc[-1]
+
+            return float(latest["close"])
+
+        except Exception:
+            return fallback_price
 
 
 
@@ -168,14 +208,10 @@ class ExecutionPlanGenerator:
 
 
 
-            #
-            # Current price unavailable currently.
-            #
-            # Until Market_Data_Cache integration,
-            # assume price is near pivot.
-            #
-
-            current_price=pivot
+            current_price = self.get_current_price(
+                self.normalize_ticker(ticker),
+                fallback_price=pivot,
+            )
 
 
 
