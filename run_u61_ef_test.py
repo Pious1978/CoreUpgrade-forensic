@@ -26,6 +26,7 @@ from portfolio.construction.portfolio_builder import PortfolioBuilder
 from portfolio.engines.rebalance_orchestration_service import (
     RebalanceOrchestrationService,
 )
+from portfolio.engines.portfolio_valuation_engine import PortfolioValuationEngine
 
 timestamp = datetime(2026, 8, 23, 12, 0, tzinfo=timezone.utc)
 
@@ -95,7 +96,7 @@ certificate = PortfolioCertificate(
 )
 
 # ---------------------------------------------------------------------------
-# CANONICAL PORTFOLIO → REBALANCE → EXECUTION → OMS SPINE
+# CANONICAL PORTFOLIO -> REBALANCE -> EXECUTION -> OMS SPINE
 # ---------------------------------------------------------------------------
 
 strategy = CertifiedStrategyContract(
@@ -135,6 +136,7 @@ holdings_snapshot = HoldingsSnapshotContract(
             average_price=Decimal("180"),
         ),
     ),
+    cash_balance=Decimal("90000"),
     timestamp=timestamp,
 )
 
@@ -160,6 +162,13 @@ assert len(oms_orders) == 1, (
 
 oms_intent = oms_orders[0]
 
+valuation_engine = PortfolioValuationEngine()
+computed_portfolio_value = valuation_engine.compute_total_value(
+    holdings_snapshot=holdings_snapshot,
+    current_prices={"AAPL": Decimal("200")},
+)
+print(f"DEBUG computed_portfolio_value = {computed_portfolio_value}  (cash 90000 + 50 shares * 200 = 100000)")
+
 risk_req = RiskCheckRequest(
     request_id="RISK-REQ-001",
     portfolio_id="PORT-001",
@@ -169,7 +178,7 @@ risk_req = RiskCheckRequest(
     quantity=Decimal("50"),
     price=Decimal("200"),
     current_position=Decimal("50"),
-    portfolio_value=Decimal("1000000.0"),
+    portfolio_value=computed_portfolio_value,
     daily_pnl=Decimal("0.0"),
     currency="USD",
     timestamp=timestamp,
