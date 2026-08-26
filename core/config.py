@@ -144,3 +144,10 @@ REGIME_MULTIPLIERS = {
     "DISTRIBUTION": 0.25,
     "BEAR": 0.25,
 }
+
+# Benchmark used for relative-strength comparison in RelativeStrengthEngine.
+# NSE bhav copies don't include the Nifty 50 index itself (it's not a listed
+# security), so a liquid, low-tracking-error ETF that tracks the index is
+# used as a proxy instead - this flows through the same bhav-copy pipeline
+# as everything else, with no separate manual download required.
+NIFTY_BENCHMARK_SYMBOL = "NIFTYBEES"

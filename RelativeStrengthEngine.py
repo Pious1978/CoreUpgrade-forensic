@@ -11,7 +11,7 @@ import sqlite3
 import pandas as pd
 from datetime import datetime, timedelta
 
-from core.config import DB_PATH, PARQUET_CACHE_DIR, MIN_TRADING_DAYS_RS
+from core.config import DB_PATH, PARQUET_CACHE_DIR, MIN_TRADING_DAYS_RS, NIFTY_BENCHMARK_SYMBOL
 
 def run_relative_strength_engine():
     print("=" * 70)
@@ -48,7 +48,7 @@ def run_relative_strength_engine():
         conn.close()
         return
 
-    nifty_path = os.path.join(PARQUET_CACHE_DIR, "^NSEI.parquet")
+    nifty_path = os.path.join(PARQUET_CACHE_DIR, f"{NIFTY_BENCHMARK_SYMBOL}.parquet")
     nifty_return = 0.0
     if os.path.exists(nifty_path):
         ndf = pd.read_parquet(nifty_path)
