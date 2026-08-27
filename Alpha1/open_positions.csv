@@ -1,0 +1,4 @@
+symbol,entry_date,entry_price,stop,units,base_low,measured_move,mid_target,ema21_seed,ma10w_seed,quality,status,partial_sold,notes
+IIFLCAPS,2026-07-03,349.5,341.95,57,263.04,435.96,392.73,340.93,340.47,7.38,CLOSED,False,Closed 2026-07-06: 🚨 EXIT — Daily close below 21 EMA (early in trade — stop out)
+POWERGRID,2026-07-03,295.2,288.78,67,282.15,308.25,301.73,288.78,295.71,6.56,CLOSED,False,Closed 2026-07-06: 🚨 EXIT — Daily close below 21 EMA (early in trade — stop out)
+DIVISLAB,2026-07-03,6887.5,8356.27,2,5850.0,7925.0,7406.25,6663.83,6679.05,6.9,OPEN,True,
