@@ -1,0 +1,11 @@
+policy:
+  approval:
+    minimum_compliance_score: 90
+    maximum_risk_score: 20
+
+  conditional:
+    minimum_compliance_score: 80
+    maximum_risk_score: 50
+
+  rejection:
+    critical_findings_allowed: 0

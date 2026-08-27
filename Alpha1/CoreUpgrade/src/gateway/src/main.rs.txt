@@ -1,0 +1,213 @@
+// Cargo.toml dependencies required:
+// [dependencies]
+// tokio = { version = "1.0", features = ["full"] }
+// p384 = { version = "0.13", features = ["ecdsa"] }
+// ecdsa = { version = "0.16", features = ["verifying"] }
+// sha2 = "0.10"
+// serde = { version = "1.0", features = ["derive"] }
+// serde_json = "1.0"
+// canonicaljson = "1.0"
+// hex = "0.4"
+
+// src/gateway/src/main.rs
+
+use std::collections::HashSet;
+use std::os::unix::fs::PermissionsExt;
+use std::path::Path;
+use std::sync::Arc;
+
+use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
+use tokio::net::UnixListener;
+use tokio::sync::Mutex;
+
+use ecdsa::signature::hazmat::PrehashVerifier;
+use p384::ecdsa::{Signature, VerifyingKey};
+use sha2::{Digest, Sha384};
+
+const SOCKET_PATH: &str = "/run/trading-engine/secure-gateway.sock";
+const ORDER_GATE_CONTEXT: &[u8] = b"TRADING_ENGINE_ORDER_GATE_V1\0";
+
+#[derive(serde::Deserialize)]
+struct OrderAuthorization {
+    epoch_token: u64,
+    certificate_signature_hex: String,
+    leaf_public_key_der_hex: String,
+}
+
+#[derive(serde::Deserialize)]
+struct OrderProposal {
+    order_payload: serde_json::Value,
+    authorization: OrderAuthorization,
+}
+
+#[derive(serde::Serialize)]
+struct GatewayResponse {
+    status: String,
+    reason: Option<String>,
+}
+
+struct GatewayState {
+    seen_nonces: HashSet<String>,
+    active_epoch: u64,
+}
+
+pub fn verify_execution_authorization(
+    public_key_der: &[u8],
+    signature_hex: &str,
+    rfc8785_payload_bytes: &[u8],
+) -> Result<bool, &'static str> {
+    
+    // 1. Decode DER Public Key & Signature
+    let verifying_key = VerifyingKey::from_public_key_der(public_key_der)
+        .map_err(|_| "Invalid public key DER format")?;
+    
+    let sig_bytes = hex::decode(signature_hex)
+        .map_err(|_| "Invalid signature hex format")?;
+        
+    let signature = Signature::from_der(&sig_bytes)
+        .map_err(|_| "Invalid ECDSA signature DER format")?;
+
+    // 2. Strict Cryptographic Domain Separation (Identical to Python's StrictCryptographicEngine)
+    let mut hasher = Sha384::new();
+    hasher.update(ORDER_GATE_CONTEXT);
+    hasher.update(rfc8785_payload_bytes);
+    let digest = hasher.finalize();
+
+    // 3. Digest Verification
+    match verifying_key.verify_prehash(&digest, &signature) {
+        Ok(_) => Ok(true),
+        Err(_) => Ok(false),
+    }
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    if Path::new(SOCKET_PATH).exists() {
+        tokio::fs::remove_file(SOCKET_PATH).await?;
+    }
+
+    let listener = UnixListener::bind(SOCKET_PATH)?;
+    tokio::fs::set_permissions(SOCKET_PATH, std::fs::Permissions::from_mode(0o600)).await?;
+
+    let state = Arc::new(Mutex::new(GatewayState {
+        seen_nonces: HashSet::new(),
+        active_epoch: 1,
+    }));
+
+    println!("Secure Execution Gateway Sidecar listening on {}", SOCKET_PATH);
+
+    loop {
+        let (stream, _) = listener.accept().await?;
+        let state_clone = Arc::clone(&state);
+
+        tokio::spawn(async move {
+            if let Err(e) = handle_connection(stream, state_clone).await {
+                eprintln!("Connection error: {}", e);
+            }
+        });
+    }
+}
+
+async fn handle_connection(
+    stream: tokio::net::UnixStream,
+    state: Arc<Mutex<GatewayState>>,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let (reader, mut writer) = stream.into_split();
+    let mut buf_reader = BufReader::new(reader);
+    let mut line = String::new();
+
+    if buf_reader.read_line(&mut line).await? == 0 {
+        return Ok(());
+    }
+
+    let proposal: OrderProposal = match serde_json::from_str(&line) {
+        Ok(p) => p,
+        Err(e) => {
+            let resp = GatewayResponse {
+                status: "REJECTED".to_string(),
+                reason: Some(format!("Invalid JSON payload: {}", e)),
+            };
+            writer.write_all(serde_json::to_string(&resp)?.as_bytes()).await?;
+            return Ok(());
+        }
+    };
+
+    let response = process_order(proposal, state).await;
+    writer.write_all(serde_json::to_string(&response)?.as_bytes()).await?;
+    writer.write_all(b"\n").await?;
+
+    Ok(())
+}
+
+async fn process_order(proposal: OrderProposal, state: Arc<Mutex<GatewayState>>) -> GatewayResponse {
+    let mut guard = state.lock().await;
+
+    // 1. Verify Epoch Token
+    if proposal.authorization.epoch_token < guard.active_epoch {
+        return GatewayResponse {
+            status: "REJECTED".to_string(),
+            reason: Some("Stale state epoch token".to_string()),
+        };
+    }
+
+    // 2. Extract and Validate Order Nonce
+    let nonce = match proposal.order_payload.get("nonce").and_then(|v| v.as_str()) {
+        Some(n) => n.to_string(),
+        None => {
+            return GatewayResponse {
+                status: "REJECTED".to_string(),
+                reason: Some("Missing order nonce".to_string()),
+            };
+        }
+    };
+
+    if guard.seen_nonces.contains(&nonce) {
+        return GatewayResponse {
+            status: "REJECTED".to_string(),
+            reason: Some("Replayed order nonce detected".to_string()),
+        };
+    }
+
+    // 3. Canonicalize (RFC8785)
+    let canonical_payload = match canonicaljson::to_string(&proposal.order_payload) {
+        Ok(c) => c,
+        Err(_) => {
+            return GatewayResponse {
+                status: "REJECTED".to_string(),
+                reason: Some("Canonicalization failed".to_string()),
+            };
+        }
+    };
+
+    // 4. Decode Key
+    let leaf_pub_bytes = match hex::decode(&proposal.authorization.leaf_public_key_der_hex) {
+        Ok(b) => b,
+        Err(_) => return GatewayResponse {
+            status: "REJECTED".to_string(),
+            reason: Some("Invalid public key hex".to_string()),
+        },
+    };
+
+    // 5. Cryptographic Verification using the Contract Method
+    match verify_execution_authorization(
+        &leaf_pub_bytes,
+        &proposal.authorization.certificate_signature_hex,
+        canonical_payload.as_bytes(),
+    ) {
+        Ok(true) => {
+            guard.seen_nonces.insert(nonce);
+            GatewayResponse {
+                status: "ACCEPTED".to_string(),
+                reason: None,
+            }
+        },
+        Ok(false) => GatewayResponse {
+            status: "REJECTED".to_string(),
+            reason: Some("Cryptographic ECDSA verification failed".to_string()),
+        },
+        Err(err_msg) => GatewayResponse {
+            status: "REJECTED".to_string(),
+            reason: Some(err_msg.to_string()),
+        },
+    }
+}

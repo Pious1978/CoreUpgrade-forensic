@@ -1,0 +1,762 @@
+PROJECT ROOT
+│
+├── core/
+│   │
+│   ├── configuration.py
+│   ├── paths.py
+│   ├── logger.py
+│   ├── utils.py
+│   ├── indicators.py
+│   ├── market_calendar.py
+│   │
+│   ├── audit_context.py
+│   ├── audit_result.py
+│   ├── stage_status.py
+│   ├── event_bus.py
+│   ├── dag_scheduler.py
+│   ├── retry.py
+│   ├── plugin_loader.py
+│   ├── configuration_validator.py
+│   └── metrics_exporter.py
+│
+│
+├── data/
+│   │
+│   ├── parquet_cache/
+│   │       ├── RELIANCE.parquet
+│   │       ├── TCS.parquet
+│   │       └── ...
+│   │
+│   ├── databases/
+│   │       ├── market_data.db
+│   │       ├── research.db
+│   │       ├── historical_snapshots.db
+│   │       ├── target_database.db
+│   │       └── audit_history.db
+│   │
+│   └── raw/
+│
+│
+├── collectors/
+│
+│   ├── market_data_collector.py
+│   ├── fundamental_collector.py
+│   ├── industry_data_collector.py
+│   └── news_event_collector.py
+│
+│
+========================================================
+                 MARKET UNIVERSE
+========================================================
+
+                 NSE / BSE Universe
+
+                        |
+                        v
+
+
+========================================================
+                 DATA COLLECTION LAYER
+========================================================
+
+
+                 market_data_collector.py
+
+
+                        |
+        ----------------------------------
+        |                                |
+        v                                v
+
+
+Historical OHLCV                  Fundamental Data
+
+Parquet Cache                     TTM Financials
+
+Daily Prices                      Revenue Growth
+
+Volume                            EPS
+
+Delivery Data                     ROCE
+
+Corporate Actions                 Industry Data
+
+
+
+                        |
+                        v
+
+
+========================================================
+             DISCOVERY & ALPHA ENGINE
+========================================================
+
+
+alpha_engine/
+
+
+├── RS_Accel_Delivery_Trend.py
+│
+│   Purpose:
+│   - Relative Strength acceleration
+│   - Institutional accumulation
+│   - Delivery confirmation
+│
+│
+├── Hybrid_Alpha_Scanner1.py
+│
+│   Purpose:
+│   - Multi factor ranking
+│   - Composite alpha score
+│   - Quality filters
+│
+│
+├── Consolidation_Scanner1.py
+│
+│   Purpose:
+│   - VCP detection
+│   - Volatility contraction
+│   - Base quality
+│
+│
+├── Earnings_Gap_Scanner.py
+│
+│   Purpose:
+│   - Earnings moves
+│   - Gap strength
+│
+│
+├── Emerging_Leader_Scanner.py
+│
+│   Purpose:
+│   - Future leaders
+│   - Growth + momentum
+│
+│
+├── Cup_and_Handle.py
+│
+│   Purpose:
+│   - Classical breakout bases
+│
+│
+└── Fundamental_Scanner.py
+
+
+                        |
+                        v
+
+
+========================================================
+          INSTITUTIONAL RESEARCH WORKBENCH
+========================================================
+
+
+research/
+
+
+├── research_engine.py
+├── ranking_engine.py
+├── scoring_engine.py
+└── watchlist_manager.py
+
+
+
+Databases:
+
+
+research.db
+
+
+        |
+        |
+
+        +----------------------------+
+
+        |                            |
+
+        v                            v
+
+
+research_watchlist              RS History Database
+
+
+3697+ candidates                12 month reconstruction
+
+                                 percentile tracking
+
+
+
+                        |
+                        v
+
+
+
+========================================================
+                  MASTER TERMINAL
+========================================================
+
+
+Master_Terminal.py
+
+
+
+Responsibilities:
+
+
+- Combine scanner outputs
+
+- Apply ranking model
+
+- Generate institutional ranking
+
+- Produce final watchlist
+
+
+
+Outputs:
+
+
+outputs/
+
+
+├── ALPHA_WATCHLIST.xlsx
+
+├── COMPOSITE_ALPHA_OUTPUT.xlsx
+
+└── Institutional_Meta_Ranking.csv
+
+
+
+Examples:
+
+
+ADANIPORTS
+    |
+    Institutional Accumulation
+
+
+GRASIM
+    |
+    Emerging Leadership
+
+
+RPTECH
+    |
+    Holding
+
+
+IRCON
+    |
+    Holding
+
+
+
+                        |
+                        v
+
+
+========================================================
+              BREAKOUT EXECUTION ENGINE
+========================================================
+
+
+execution/
+
+
+├── Breakout_Trigger_Scanner.py
+├── VCP_Execution.py
+├── Pivot_Validator.py
+└── Trade_Candidate_Generator.py
+
+
+
+Checks:
+
+
+Pivot breakout
+
+Volume expansion
+
+RS confirmation
+
+Market condition
+
+
+Outputs:
+
+
+execution_plan
+
+
+        |
+
+        v
+
+
+trade_candidates
+
+
+        |
+
+        v
+
+
+positions
+
+
+
+                        |
+                        v
+
+
+
+========================================================
+                AUDIT CONTROL ENGINE
+========================================================
+
+
+audits/
+
+
+├── audit_suite.py
+│
+├── database_audit.py
+│
+├── schema_audit.py
+│
+├── research_audit.py
+│
+├── risk_audit.py
+│
+├── target_audit.py
+│
+├── position_audit.py
+│
+├── liquidity_audit.py
+│
+├── market_data_audit.py
+│
+├── pipeline_flow_audit.py
+│
+└── report_generator.py
+
+
+
+========================================================
+              DATABASE AUDIT FRAMEWORK
+========================================================
+
+
+audits/database/
+
+
+├── __init__.py
+│
+├── config.py
+│
+├── base.py
+│
+├── utils.py
+│
+├── scoring.py
+│
+├── connectivity.py
+│
+├── file_health.py
+│
+├── integrity.py
+│
+├── schema.py
+│
+├── data_quality.py
+│
+├── temporal.py
+│
+├── performance.py
+│
+└── exports.py
+
+
+
+Checks:
+
+
+SQLite Health
+
+|
+
+├── Database existence
+
+├── Connection
+
+├── WAL status
+
+├── File fragmentation
+
+├── Integrity check
+
+├── Foreign keys
+
+├── Primary keys
+
+├── Schema drift
+
+├── Missing columns
+
+├── Duplicate records
+
+├── Temporal gaps
+
+├── Query performance
+
+└── Index validation
+
+
+
+                        |
+                        v
+
+
+
+========================================================
+                 TRADE VALIDATION LAYER
+========================================================
+
+
+risk_audit.py
+
+
+Checks:
+
+
+Entry validity
+
+ATR stop distance
+
+Risk per share
+
+Capital exposure
+
+
+
+Example:
+
+
+Entry
+
+₹1000
+
+
+Stop
+
+₹940
+
+
+Risk
+
+₹60/share
+
+
+Result:
+
+
+PASS / FAIL
+
+
+
+--------------------------------------------------------
+
+
+target_audit.py
+
+
+Checks:
+
+
+Target 1
+
+Target 2
+
+Reward/Risk
+
+ATR extension
+
+
+
+Rule:
+
+
+Entry < Target 1 < Target 2
+
+
+RR >= minimum
+
+
+
+--------------------------------------------------------
+
+
+position_audit.py
+
+
+Checks:
+
+
+Capital allocation
+
+Position size
+
+Portfolio exposure
+
+Sector concentration
+
+
+
+--------------------------------------------------------
+
+
+liquidity_audit.py
+
+
+Checks:
+
+
+Average volume
+
+ADTV
+
+Delivery liquidity
+
+Position capacity
+
+
+
+Purpose:
+
+
+Avoid:
+
+
+"Good stock but impossible execution"
+
+
+
+                        |
+                        v
+
+
+
+========================================================
+                 DATA CONTROL LAYER
+========================================================
+
+
+
+market_data_audit.py
+
+
+Checks:
+
+
+Parquet:
+
+
+- File exists
+
+- Correct columns
+
+- OHLC validity
+
+- Volume available
+
+- Latest date
+
+- Data freshness
+
+
+
+database_audit.py
+
+
+Checks:
+
+
+SQLite:
+
+- Tables exist
+
+- Row count
+
+- Updates
+
+- Connection health
+
+
+
+schema_audit.py
+
+
+Creates data contracts:
+
+
+Input:
+
+
+Pivot_Price
+
+ATR14
+
+Composite_Score
+
+
+
+Internal:
+
+
+pivot
+
+atr_14
+
+composite_score
+
+
+
+                        |
+                        v
+
+
+
+========================================================
+              PIPELINE FLOW MONITORING
+========================================================
+
+
+
+pipeline_flow_audit.py
+
+
+
+Tracks:
+
+
+
+Universe
+
+   |
+
+   v
+
+
+Research Watchlist
+
+   |
+
+   v
+
+
+Execution Plan
+
+   |
+
+   v
+
+
+Trade Candidates
+
+   |
+
+   v
+
+
+Positions
+
+
+
+Detects:
+
+
+- Dropped symbols
+
+- Missing transitions
+
+- Pipeline leakage
+
+- Broken dependency flow
+
+
+
+                        |
+                        v
+
+
+
+========================================================
+                ORCHESTRATION ENGINE
+========================================================
+
+
+Orchestrates_Audit_Execution.py
+
+
+
+Responsibilities:
+
+
+- Load audit plugins
+
+- Execute dependency graph
+
+- Manage failures
+
+- Retry failed checks
+
+- Publish events
+
+
+
+Uses:
+
+
+core/
+
+
+├── dag_scheduler.py
+
+├── event_bus.py
+
+├── retry.py
+
+└── plugin_loader.py
+
+
+
+                        |
+                        v
+
+
+
+========================================================
+                  AUDIT REPORTING
+========================================================
+
+
+reporting/
+
+
+├── console_dashboard.py
+
+├── html_dashboard.py
+
+├── pdf_report.py
+
+├── json_exporter.py
+
+└── recommendation_engine.py
+
+
+
+Outputs:
+
+
+audit_reports/
+

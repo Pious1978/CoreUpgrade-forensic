@@ -1,0 +1,14 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowPKISigningKeyAccess",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Sign",
+        "kms:GetPublicKey"
+      ],
+      "Resource": "arn:aws:kms:ap-south-1:ACCOUNT_ID:key/PKI_CA_KEY_UUID"
+    }
+  ]
+}
