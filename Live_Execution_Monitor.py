@@ -473,13 +473,17 @@ def run_live_monitor():
             )
 
 
+            stop_loss_check = float(row.get("stop_loss", 0))
+
+
             new_state=evaluate_trade(
 
                 price,
                 pivot,
                 trigger,
                 rvol,
-                old_state
+                old_state,
+                stop_loss=stop_loss_check
 
             )
 

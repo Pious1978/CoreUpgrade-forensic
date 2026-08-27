@@ -9,11 +9,21 @@ def evaluate_trade(
         pivot: float,
         trigger: float,
         rvol: float,
-        prev_state: str = "WAITING"
+        prev_state: str = "WAITING",
+        stop_loss: float = 0.0
 ):
 
     if price <= 0 or pivot <= 0:
         return "WAITING"
+
+
+    # Stop-loss breach - highest priority check. If the live price has
+    # fallen to or below the calculated stop, nothing else about the
+    # setup matters until this is resolved - the setup is invalidated,
+    # not "still building a base". stop_loss=0.0 (default) disables
+    # this check for any caller that doesn't have a stop to check.
+    if stop_loss > 0 and price <= stop_loss:
+        return "STOP_BREACHED"
 
 
     # Failed breakout detection
