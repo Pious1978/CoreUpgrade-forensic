@@ -113,7 +113,7 @@ class LivePriceEngine:
             rvol=round(
                 current_volume/avg_volume,
                 2
-            ) if avg_volume>0 else 1.0
+            ) if (avg_volume>0 and current_volume>0) else 1.0
 
 
 
