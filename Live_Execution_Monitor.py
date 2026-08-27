@@ -312,6 +312,52 @@ def calculate_entry_score(
     )
 
 
+def get_read(state, discount_pct, vdry_ratio, rvol):
+    """
+    Translates the raw board metrics into a short, plain-language verdict -
+    synthesis of what the existing numbers already say, not a new signal.
+    """
+
+    if state == "STOP_BREACHED":
+        return "STOP HIT - setup invalidated, below calculated stop"
+
+    if state == "FAILED_BREAKOUT":
+        return "BREAKOUT FAILED - fell back below pivot after triggering"
+
+    if rvol is not None and rvol >= 3.0:
+        return f"VOLUME SPIKE - RVOL {rvol}x normal, verify catalyst before acting"
+
+    if state == "VALID_BREAKOUT":
+        return "CONFIRMED BREAKOUT - crossed pivot with volume confirmation"
+
+    if state == "LOW_VOLUME_BREAKOUT":
+        return "BREAKOUT UNCONFIRMED - crossed pivot but volume below 1.5x threshold"
+
+    if state == "RETEST_SUCCESS":
+        return "RETEST HOLDING - pulled back to pivot and held"
+
+    if discount_pct is not None and vdry_ratio is not None:
+
+        if discount_pct > 8 and vdry_ratio > 1.2:
+            return f"EXTENDED - up {discount_pct}% from EMA20, volume expanding, not a fresh coil"
+
+        if abs(discount_pct) < 2 and vdry_ratio < 0.7:
+            return "TIGHT - resting at EMA20, volume contracting, classic pre-breakout coil"
+
+        if vdry_ratio < 0.5:
+            return f"QUIET - volume drying up ({vdry_ratio}x baseline), watch for a trigger"
+
+    fallback = {
+        "BASE_BUILDING": "FORMING - still well below pivot",
+        "APPROACHING": "APPROACHING - nearing pivot, not yet triggered",
+        "TESTING": "AT PIVOT - testing the breakout level now",
+        "WAITING": "NO SIGNAL YET",
+        "EXTENDED": "EXTENDED - already well above trigger",
+    }
+
+    return fallback.get(state, state)
+
+
 
 # ================================================================
 # MAIN ENGINE
@@ -680,6 +726,10 @@ def run_live_monitor():
             f"{x['state']}"
 
             )
+
+            read_text = get_read(x['state'], x['discount_pct'], x['vdry_ratio'], x['rvol'])
+            print(f"          Read: {read_text}")
+            print()
 
 
 
