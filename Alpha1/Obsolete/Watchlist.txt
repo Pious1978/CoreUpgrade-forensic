@@ -1,0 +1,105 @@
+Scanner	Opportunity
+Strategist	Quality
+Analyst	Precision
+Executor	Timing
+
+python update_trade.py
+python Scanning Tool.py
+python alpha_strategist.py
+python research_analyst.py
+
+python tracking_trade Tool.py (Discovery)
+
+Strong Compounders - 50% (25000)
+Growth Stocks - 30% (15000)
+High-Risk Bets - 20% (10000)
+
+Strong Compounders
+Dixon Technologies, Kaynes Technology,  Amber Enterprises, Larsen & Toubro (L&T),Container Corporation of India (CONCOR), Adani Ports and Special Economic Zone, HAL, BEL, Tata Power, NTPC Limited, BSE Limited, HDFC Asset Management Company, Infosys, Siemens Limited (India), ABB India, HCL Technologies, 360 ONE WAM, Reliance Industries, Tata Consultancy Services (TCS), Titan Company Limited, Mahindra & Mahindra (M&M), SRF Limited, Aarti Industries, Nippon Life India Asset Management,  Computer Age Management Services (CAMS), Nippon AMC, Gujarat Fluorochemicals (GFL), PI Industries, Deepak Nitrite, Navin Fluorine International, 
+
+Growth Stocks
+Cyient DLM,  Container Corporation of India (CONCOR), Kirloskar Oil Engines, Gujarat Pipavav Port, Thermax Limited, MAZGAON, DATA PATTERNS, BDL, Adani Green Energy,  360 ONE WAM, Angel One, KPIT Technologies, Titan Company, Maruti Suzuki India, Tata Elxsi, Persistent Systems, Cyient Limited, JSW Energy, Coforge Limited, Trent Limited, Eicher Motors, Neogen Chemicals, Ami Organics? Measures the stock price relative to its earnings, Compare the stock price to its book value, Compare stock price to revenue, compare Enterprise Value to EBITDA (EV/EBITDA). Also consider how much they have corrected from their all time high, their order book, management holding, consider best placed today or close to Value entry zones,  red flags etc.
+
+High Risks Bets
+Avalon Technologies, PG Electroplast, Syrma SGS Technology, Amber Enterprises,Sahasra Electronics, DCX Systems, JSW Infrastructure, Allcargo Logistics, Ircon International, Gateway Distriparks, Reliance Naval and Engineering, Cochin Shipyard, Paras Defence and Space Technologies, Astra Microwave Products, DCX Systems, Borosil Renewables, Inox Wind, Suzlon Energy, Angel One, Motilal Oswal Financial Services, PB Fintech (Policybazaar & Paisabazaar), 5paisa Capital, Happiest Minds Technologies, Tata Elxsi, Black Box Limited (formerly AGC Networks), 
+
+
+This is how my portfolio looks like now:
+Groww:
+JSW Infra - 940 units at 289 each
+HDFCbank - 30 units at 816.79 each
+PG Electroplast - 15 units at 460 each
+Reliance - 35 units at 1353.66 each
+Hindustan Copper - 20 units at 520 each
+HAL - 2 units at 3900 each
+Anant Raj - 5 units at 467 each
+AWHCL - 30 units at 469.67 each
+Jiofin - 30 units at 231.57 each
+TCI - 5 units at 951.68 each
+CGpower - 2 units at 655 each
+GDMC - 20 units at 525 each
+Persistent Systems - 2 units at 4725 each
+Ecoreco - 20 units at 385.20 each
+AIAENG - 4 units at 3680 each
+BIOCON - 10 units at 348 each
+CONCOR - 20 units at 473.55 each
+
+This is how my portfolio looks like now:
+Zerodha:
+Ircon - 818 units at 189.29 each
+JSWinfra - 204 units at 318.95 each
+Drreddy - 10 units at 1258.85 each
+Concor - 18 units at 472 each
+Mazdock - 6 units at 2360 each
+Gravita - 7 units at 1420 each
+Elecon - 2 units at 395 each
+Thermax - 3 units at 3165 each
+M&M - 5 units at 2960 each
+EIMCOELECO - 2 units at 1536 each
+LT - 2 units at 3450 each
+
+List the exit price partial or full. In which all stocks there is value to be added more if the market falls and at what price on each how much more should be added ? 
+
+Bear Market Execution Protocol
+hybrid_alpha_scanner1.py
+momentum.py
+alpha_strategist.py
+research_analyst.py
+long_planner1.py
+order_momentumswing.py
+
+===============
+StepScriptAction
+1. Filter corrected_month.py Identify market-wide crashes or sector dips.
+2. ExportTickertape/CSVExport your shortlisted "Action List."
+3. Sync sync_trade.py Identify which new stocks haven't been deep-dived yet.
+4. Research research_analyst.py Run the 4-Phase Prompt in Gemini for those specific stocks.
+5. Plan long_planner1.py Determine if you should Accumulate, Hold, or Monitor.
+6. Execute order_size.py Calculate the exact Qty based on your ₹500 risk/1% rule.
+
+Price-to-Earnings (P/E) Ratio: Measures the stock price relative to its earnings. A high P/E might indicate overvaluation, while a low P/E might suggest undervaluation.
+Price-to-Book (P/B) Ratio: Compares the stock price to its book value. Useful for assessing asset-heavy companies like banks.
+Price-to-Sales (P/S) Ratio: Compares stock price to revenue, helpful for companies with low or volatile earnings.
+Enterprise Value to EBITDA (EV/EBITDA): Useful for comparing companies with different capital structures.
+
+
+Which of these have been best placed today or close to Value entry zones: L&T, HCL Tech, HAL, Reliance, TataPOWER, Waaree Energies, NMDC, GMDC, Gravita, Dr. Reddy’s, TC, CONCOR, GESHIP, AdaniPORTS, HDFCBANK, JIOFIN
+
+Which of these have been best placed today in terms valuation, PE, RSI, red flags etc, Compare Dixon Technologies, CG Power & Industrial Solutions, L&T, Kaynes Technology, Bharat Electronics (BEL) and HCL Technologies under Semiconductor & Electronics Ecosystem Sector
+
+Which of these have been best placed today in terms valuation, PE, RSI, red flags etc Compare HAL (Hindustan Aeronautics), Mazagon Dock, L& T,  Data Patterns, Solar Industries and Bharat Dynamics (BDL) under Defence & Space Tech
+
+Which of these have been best placed today in terms valuation, PE, RSI, red flags etc Compare L& T, Netweb Technologies , Adani Enterprises, Reliance Industries and Persistent Systems under AI-Driven Infrastructure
+
+Which of these have been best placed today in terms valuation, PE, RSI, red flags etc Compare Adani Green Energy, Waaree Energies and Tata Power under Energy Transition Compare GMDC, Hindustan Copper, Anupam Rasayan, Vedanta (Copper Div) , NMDC, PI Industries and Gravita India, under Critical Minerals & Specialty Chemicals
+
+Which of these have been best placed today in terms valuation, PE, RSI, red flags etc Compare Sun Pharma, Biocon, Divi’s Laboratories, Apollo Hospitals and Dr. Reddy’s under Biopharma & Healthcare
+
+Which of these have been best placed today in terms valuation, PE, RSI, red flags etc Compare Delhivery, Container Corp (CONCOR), Blue Dart Express, TCI (Transport Corp of India) and Allcargo Logistics under Logistics & Warehousing
+
+Which of these have been best placed today in terms valuation, PE, RSI, red flags etc Compare Adani Ports (APSEZ), JSW Infrastructure, Gujarat Pipavav Port, Shipping Corp of India (SCI) and Great Eastern Shipping under Port and Shipping 
+
+Which of these have been best placed today in terms valuation, PE, RSI, red flags etc Compare Jio Financial Services, HDFC Bank PB Fintech (PolicyBazaar) and BSE Ltd, under Financial Services & FinTech
+
+
+
