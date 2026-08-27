@@ -42,9 +42,10 @@ from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
-from core.config import DB_PATH
+from core.config import DB_PATH, PARQUET_CACHE_DIR
 from core.Live_Price_Engine import LivePriceEngine
 from core.Execution_State_Machine import evaluate_trade
+from core.technical_indicators import get_technical_context
 
 
 
@@ -429,3 +430,273 @@ def run_live_monitor():
             ticker=row["ticker"]
 
             pivot=float(row["pivot"])
+
+            trigger=float(
+                row.get(
+                    "breakout_trigger",
+                    pivot*1.005
+                )
+            )
+
+
+            old_state=row.get(
+                "execution_state",
+                "WAITING"
+            )
+
+
+
+            quote=quotes.get(
+                ticker,
+                {}
+            )
+
+
+            price=quote.get(
+                "ltp",
+                row.get("last_price",pivot)
+            )
+
+
+            rvol=quote.get(
+                "rvol",
+                1.0
+            )
+
+
+            distance=round(
+
+                ((price-pivot)/pivot)*100,
+
+                2
+
+            )
+
+
+            new_state=evaluate_trade(
+
+                price,
+                pivot,
+                trigger,
+                rvol,
+                old_state
+
+            )
+
+
+            counters[new_state]=counters.get(
+                new_state,
+                0
+            )+1
+
+
+
+            updates.append(
+
+                (
+                new_state,
+                price,
+                distance,
+                rvol,
+                datetime.now().strftime("%H:%M:%S"),
+                ticker
+                )
+
+            )
+
+
+
+            if new_state!=old_state:
+
+                log_event(
+
+                    ticker,
+                    old_state,
+                    new_state,
+                    price,
+                    rvol
+
+                )
+
+
+
+            score=calculate_entry_score(
+
+                float(row.get(
+                    "execution_score",
+                    50
+                )),
+
+                regime,
+
+                distance,
+
+                rvol
+
+            )
+
+
+            stop_loss = float(row.get("stop_loss", 0))
+            target_1 = float(row.get("target_1", 0))
+            target_2 = float(row.get("target_2", 0))
+            total_shares = int(row.get("shares", 0))
+
+            # Scale-out plan: split evenly between Target 1 and Target 2.
+            # This is a suggested default, not a discovered rule - adjust
+            # the split ratio here if you want a different plan (e.g. sell
+            # more at T1 and let a smaller remainder ride to T2).
+            sell_at_t1 = total_shares // 2
+            sell_at_t2 = total_shares - sell_at_t1
+            clean_ticker = str(ticker).replace(".NS","").upper().strip()
+            tech = get_technical_context(clean_ticker)
+
+            board.append({
+
+                "ticker":ticker,
+
+                "score":score,
+
+                "price":price,
+
+                "qty":total_shares,
+
+                "pivot":pivot,
+
+                "stop_loss":stop_loss,
+
+                "target_1":target_1,
+
+                "target_2":target_2,
+
+                "sell_at_t1":sell_at_t1,
+
+                "sell_at_t2":sell_at_t2,
+                
+                "discount_pct":tech["discount_pct"],
+
+                "vdry_ratio":tech["vdry_ratio"],
+
+                "distance":distance,
+
+                "rvol":rvol,
+
+                "state":new_state
+
+            })
+
+
+
+        update_states(updates)
+
+
+
+        board=sorted(
+
+            board,
+
+            key=lambda x:x["score"],
+
+            reverse=True
+
+        )
+
+
+
+        duration=round(
+            time.time()-start,
+            2
+        )
+
+
+        print("\n"+"="*75)
+
+        print(
+            f"🎯 LIVE EXECUTION TERMINAL | {timestamp}"
+        )
+
+        print("="*75)
+
+
+        print(
+            f"Regime       : {regime}"
+        )
+
+        print(
+            f"Exposure     : {int(multiplier*100)}%"
+        )
+
+        print(
+            f"Mode         : {mode}"
+        )
+
+        print(
+            f"Candidates   : {len(df)}"
+        )
+
+
+        print("\nSTATE DISTRIBUTION")
+
+
+        for k,v in counters.items():
+
+            print(
+                f"{k:<22}: {v}"
+            )
+
+
+        print("\nTOP EXECUTION BOARD")
+
+        print(
+        f"{'Stock':<10}{'Score':<7}{'Price':<9}{'Qty':<6}{'SL':<9}{'T1':<9}{'T2':<9}{'Qty@T1':<7}{'Qty@T2':<7}{'Dist':<8}{'RVOL':<6}{'Disc%':<8}{'VDry':<6}{'State'}"
+        )
+
+        print("-"*75)
+
+
+        for x in board[:10]:
+
+            disc_str = f"{x['discount_pct']:+.1f}%" if x['discount_pct'] is not None else "N/A"
+            vdry_str = f"{x['vdry_ratio']}" if x['vdry_ratio'] is not None else "N/A"
+
+            print(
+
+            f"{x['ticker']:<10}"
+            f"{x['score']:<7}"
+            f"{x['price']:<9.2f}"
+            f"{x['qty']:<6}"
+            f"{x['stop_loss']:<9.2f}"
+            f"{x['target_1']:<9.2f}"
+            f"{x['target_2']:<9.2f}"
+            f"{x['sell_at_t1']:<7}"
+            f"{x['sell_at_t2']:<7}"
+            f"{x['distance']:+.2f}%  "
+            f"{x['rvol']:<6}"
+            f"{disc_str:<8}"
+            f"{vdry_str:<6}"
+            f"{x['state']}"
+
+            )
+
+
+
+        print("-"*75)
+
+        print(
+            f"Cycle Time : {duration}s"
+        )
+
+        print(
+            "Next Scan : 60 seconds"
+        )
+
+        print("="*75)
+
+
+
+        time.sleep(60)
+
+
+
+if __name__=="__main__":
+
+    run_live_monitor()
