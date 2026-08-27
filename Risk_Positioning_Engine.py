@@ -279,6 +279,11 @@ class RiskPositioningEngine:
             )
 
 
+            if shares<=0:
+
+                continue
+
+
 
             output.append({
 
@@ -399,6 +404,56 @@ class RiskPositioningEngine:
 
 if __name__=="__main__":
 
-    engine=RiskPositioningEngine()
+    while True:
+
+        capital_input = input(
+            "Enter your available trading capital for today (Rs): "
+        ).strip()
+
+        try:
+
+            capital_value = float(capital_input)
+
+            if capital_value <= 0:
+                print("Capital must be a positive number. Please try again.")
+                continue
+
+            break
+
+        except ValueError:
+            print("Please enter a valid number (e.g. 500000).")
+
+
+    while True:
+
+        risk_input = input(
+            "Enter risk per trade as a percentage (e.g. 1 for 1%): "
+        ).strip()
+
+        try:
+
+            risk_pct_value = float(risk_input)
+
+            if risk_pct_value <= 0:
+                print("Risk percentage must be positive. Please try again.")
+                continue
+
+            if risk_pct_value > 5:
+                print(
+                    f"WARNING: {risk_pct_value}% per trade is above the "
+                    f"commonly-cited 1-2% range and is generally considered "
+                    f"aggressive. Proceeding with your value."
+                )
+
+            break
+
+        except ValueError:
+            print("Please enter a valid number (e.g. 1 or 0.5).")
+
+
+    engine=RiskPositioningEngine(
+        total_capital=capital_value,
+        risk_per_trade_pct=risk_pct_value/100
+    )
 
     engine.run()

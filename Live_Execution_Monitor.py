@@ -134,6 +134,25 @@ def init_execution_db():
     """)
 
 
+    # trade_candidates (written by Risk_Positioning_Engine.py) doesn't
+    # have the live-tracking columns this monitor needs to persist state
+    # into. Add them here, idempotently, so this is safe to run every day.
+    new_columns = [
+        ("execution_state", "TEXT"),
+        ("last_price", "REAL"),
+        ("distance_pct", "REAL"),
+        ("live_rvol", "REAL"),
+        ("last_signal_time", "TEXT"),
+    ]
+
+    for col_name, col_type in new_columns:
+        try:
+            cur.execute(f"ALTER TABLE trade_candidates ADD COLUMN {col_name} {col_type}")
+        except sqlite3.OperationalError as e:
+            if "duplicate column" not in str(e):
+                raise
+
+
     conn.commit()
     conn.close()
 
@@ -351,7 +370,7 @@ def run_live_monitor():
 
         SELECT *
         FROM trade_candidates
-        ORDER BY execution_score DESC
+        ORDER BY composite_score DESC
 
         """,conn)
 
@@ -410,232 +429,3 @@ def run_live_monitor():
             ticker=row["ticker"]
 
             pivot=float(row["pivot"])
-
-            trigger=float(
-                row.get(
-                    "breakout_trigger",
-                    pivot*1.005
-                )
-            )
-
-
-            old_state=row.get(
-                "execution_state",
-                "WAITING"
-            )
-
-
-
-            quote=quotes.get(
-                ticker,
-                {}
-            )
-
-
-            price=quote.get(
-                "ltp",
-                row.get("last_price",pivot)
-            )
-
-
-            rvol=quote.get(
-                "rvol",
-                1.0
-            )
-
-
-            distance=round(
-
-                ((price-pivot)/pivot)*100,
-
-                2
-
-            )
-
-
-            new_state=evaluate_trade(
-
-                price,
-                pivot,
-                trigger,
-                rvol,
-                old_state
-
-            )
-
-
-            counters[new_state]=counters.get(
-                new_state,
-                0
-            )+1
-
-
-
-            updates.append(
-
-                (
-                new_state,
-                price,
-                distance,
-                rvol,
-                datetime.now().strftime("%H:%M:%S"),
-                ticker
-                )
-
-            )
-
-
-
-            if new_state!=old_state:
-
-                log_event(
-
-                    ticker,
-                    old_state,
-                    new_state,
-                    price,
-                    rvol
-
-                )
-
-
-
-            score=calculate_entry_score(
-
-                float(row.get(
-                    "execution_score",
-                    50
-                )),
-
-                regime,
-
-                distance,
-
-                rvol
-
-            )
-
-
-            board.append({
-
-                "ticker":ticker,
-
-                "score":score,
-
-                "price":price,
-
-                "pivot":pivot,
-
-                "distance":distance,
-
-                "rvol":rvol,
-
-                "state":new_state
-
-            })
-
-
-
-        update_states(updates)
-
-
-
-        board=sorted(
-
-            board,
-
-            key=lambda x:x["score"],
-
-            reverse=True
-
-        )
-
-
-
-        duration=round(
-            time.time()-start,
-            2
-        )
-
-
-        print("\n"+"="*75)
-
-        print(
-            f"🎯 LIVE EXECUTION TERMINAL | {timestamp}"
-        )
-
-        print("="*75)
-
-
-        print(
-            f"Regime       : {regime}"
-        )
-
-        print(
-            f"Exposure     : {int(multiplier*100)}%"
-        )
-
-        print(
-            f"Mode         : {mode}"
-        )
-
-        print(
-            f"Candidates   : {len(df)}"
-        )
-
-
-        print("\nSTATE DISTRIBUTION")
-
-
-        for k,v in counters.items():
-
-            print(
-                f"{k:<22}: {v}"
-            )
-
-
-        print("\nTOP EXECUTION BOARD")
-
-        print(
-        f"{'Stock':<12}{'Score':<8}{'Price':<10}{'Dist':<8}{'RVOL':<8}{'State'}"
-        )
-
-        print("-"*75)
-
-
-        for x in board[:10]:
-
-            print(
-
-            f"{x['ticker']:<12}"
-            f"{x['score']:<8}"
-            f"₹{x['price']:<9.2f}"
-            f"{x['distance']:+<7}%"
-            f"{x['rvol']:<8}"
-            f"{x['state']}"
-
-            )
-
-
-
-        print("-"*75)
-
-        print(
-            f"Cycle Time : {duration}s"
-        )
-
-        print(
-            "Next Scan : 60 seconds"
-        )
-
-        print("="*75)
-
-
-
-        time.sleep(60)
-
-
-
-if __name__=="__main__":
-
-    run_live_monitor()
