@@ -695,6 +695,8 @@ def run_live_monitor(total_capital):
 
                 "vdry_ratio":tech["vdry_ratio"],
 
+                "breach_pct": round(((stop_loss - price) / stop_loss) * 100, 2) if stop_loss > 0 and price < stop_loss else None,
+
                 "distance":distance,
 
                 "rvol":rvol,
@@ -808,79 +810,79 @@ def run_live_monitor(total_capital):
             print("-"*68)
 
             print(
-                f"  Status        : {x['state']}"
+                f"  Status       : {x['state']}"
             )
 
             print(
-                f"  Price         : Rs{x['price']:.2f}  |  Pivot: Rs{x['pivot']:.2f}  |  Ext: {x['distance']:+.2f}%"
+                f"  Price        : Rs{x['price']:.2f}  |  Pivot: Rs{x['pivot']:.2f}  |  Ext: {x['distance']:+.2f}%"
             )
 
             print(
-                f"  RVOL          : {x['rvol']}x"
+                f"  RVOL         : {x['rvol']}x"
             )
 
             print("-"*68)
 
             print(
-                f"  Entry         : Rs{x['price']:.2f}"
+                f"  Entry        : Rs{x['price']:.2f}"
             )
 
             print(
-                f"  Stop Loss     : Rs{x['stop_loss']:.2f}"
+                f"  Stop Loss    : Rs{x['stop_loss']:.2f}"
             )
 
             if x['t1_pct_away'] is not None:
 
                 print(
-                    f"  Target 1      : Rs{x['target_1']:.2f}  (+{x['t1_pct_away']}% away)"
+                    f"  Target 1     : Rs{x['target_1']:.2f}  (+{x['t1_pct_away']}% away)"
                 )
 
                 print(
-                    f"  Target 2      : Rs{x['target_2']:.2f}  (+{x['t2_pct_away']}% away)"
+                    f"  Target 2     : Rs{x['target_2']:.2f}  (+{x['t2_pct_away']}% away)"
                 )
 
                 print(
-                    f"  Remaining R   : {x['remaining_r']}x"
+                    f"  Remaining R  : {x['remaining_r']}x"
                 )
 
             else:
 
                 print(
-                    f"  Target 1      : Rs{x['target_1']:.2f}"
+                    f"  Target 1     : Rs{x['target_1']:.2f}"
                 )
 
                 print(
-                    f"  Target 2      : Rs{x['target_2']:.2f}"
+                    f"  Target 2     : Rs{x['target_2']:.2f}"
                 )
 
                 print(
-                    f"  Remaining R   : N/A - stop already breached"
+                    f"  Remaining R  : N/A - stop already breached"
                 )
 
             print("-"*68)
 
             print(
-                f"  Units         : {x['qty']} shares"
+                f"  Units        : {x['qty']} shares"
             )
 
             if x['capital_pct'] is not None:
 
                 print(
-                    f"  Capital Used  : Rs{x['capital_used']:,.0f}  ({x['capital_pct']}% of portfolio)"
+                    f"  Capital Used : Rs{x['capital_used']:,.0f}  ({x['capital_pct']}% of portfolio)"
                 )
 
                 print(
-                    f"  Max Loss      : Rs{x['max_loss']:,.0f}  ({x['max_loss_pct']}% of capital)"
+                    f"  Max Loss     : Rs{x['max_loss']:,.0f}  ({x['max_loss_pct']}% of capital)"
                 )
 
             else:
 
                 print(
-                    f"  Capital Used  : Rs{x['capital_used']:,.0f}"
+                    f"  Capital Used : Rs{x['capital_used']:,.0f}"
                 )
 
                 print(
-                    f"  Max Loss      : Rs{x['max_loss']:,.0f}"
+                    f"  Max Loss     : Rs{x['max_loss']:,.0f}"
                 )
 
             print("-"*68)
@@ -892,7 +894,7 @@ def run_live_monitor(total_capital):
             print("-"*68)
 
             print(
-                f"  Tier          : {x['tier']}"
+                f"  Tier         : {x['tier']}"
             )
 
             print(
@@ -902,22 +904,42 @@ def run_live_monitor(total_capital):
             read_text = get_read(x['state'], x['discount_pct'], x['vdry_ratio'], x['rvol'])
 
             print(
-                f"  Read          : {read_text}"
+                f"  Read         : {read_text}"
             )
 
 
         if invalidated_board:
 
+            total_count = len(active_board) + len(invalidated_board)
+
+            invalidation_rate = round((len(invalidated_board) / total_count) * 100, 1)
+
             print("\n" + "-"*68)
 
-            print("  RECENTLY INVALIDATED (stop breached / breakout failed)")
+            print(
+                f"  RECENTLY INVALIDATED  |  Rate: {invalidation_rate}% ({len(invalidated_board)}/{total_count})"
+            )
+
+            if invalidation_rate >= 60:
+
+                print(
+                    "  -> Unusually high - worth treating today's setups with added caution"
+                )
+
+            elif invalidation_rate >= 30:
+
+                print(
+                    "  -> Elevated"
+                )
 
             print("-"*68)
 
-            for x in invalidated_board:
+            for x in sorted(invalidated_board, key=lambda x: x.get("breach_pct") or 0, reverse=True):
+
+                breach_str = f"{x['breach_pct']}% below stop" if x.get("breach_pct") is not None else "N/A"
 
                 print(
-                    f"  {x['ticker']:<12} {x['state']}"
+                    f"  {x['ticker']:<12} {x['state']:<16} {breach_str}"
                 )
 
 
