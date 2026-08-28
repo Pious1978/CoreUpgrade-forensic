@@ -48,6 +48,9 @@ from core.Execution_State_Machine import evaluate_trade
 from core.technical_indicators import get_technical_context
 
 
+INVALIDATED_STATES = ("STOP_BREACHED", "FAILED_BREAKOUT")
+
+
 
 # ================================================================
 # MARKET REGIME
@@ -358,13 +361,51 @@ def get_read(state, discount_pct, vdry_ratio, rvol):
     return fallback.get(state, state)
 
 
+def get_hold_period(score):
+    """
+    Suggested review point within a 1-2 week swing-trade hold, scaled by
+    the blended entry score (calculate_entry_score output), calibrated to
+    its real observed range (~20-70) rather than an assumed 0-100 range.
+
+    This originally used composite_score, but that value turned out to be
+    exactly 1.0 for nearly every candidate in trade_candidates - a real,
+    separate issue in Master_Terminal.py where Composite_Score is built
+    from rank(pct=True) (percentile rank) over a currently small candidate
+    pool (most of the universe still fails each scanner's minimum-history
+    gate at ~38-40 real trading days). With a small pool, the top-ranked
+    stock lands near the 100th percentile almost by construction,
+    regardless of its true absolute quality - this should self-correct as
+    more bhav-copy history accumulates and candidate pools grow. Using
+    composite_score here provided zero differentiation in the meantime, so
+    this uses the blended score instead, which is not subject to the same
+    small-pool collapse.
+    """
+
+    try:
+        s = float(score)
+    except (TypeError, ValueError):
+        s = 20.0
+
+    clamped = max(20, min(70, s))
+    hold_days = round(5 + ((clamped - 20) / 50) * 5)
+
+    if hold_days <= 5:
+        conviction = "lower conviction setup"
+    elif hold_days <= 7:
+        conviction = "moderate conviction setup"
+    else:
+        conviction = "higher conviction setup"
+
+    return f"Review at {hold_days} trading days - {conviction}"
+
+
 
 # ================================================================
 # MAIN ENGINE
 # ================================================================
 
 
-def run_live_monitor():
+def run_live_monitor(total_capital):
 
 
     init_execution_db()
@@ -590,6 +631,8 @@ def run_live_monitor():
             target_1 = float(row.get("target_1", 0))
             target_2 = float(row.get("target_2", 0))
             total_shares = int(row.get("shares", 0))
+            tier = row.get("tier", "N/A")
+            hold_period = get_hold_period(score)
 
             # Scale-out plan: split evenly between Target 1 and Target 2.
             # This is a suggested default, not a discovered rule - adjust
@@ -599,6 +642,32 @@ def run_live_monitor():
             sell_at_t2 = total_shares - sell_at_t1
             clean_ticker = str(ticker).replace(".NS","").upper().strip()
             tech = get_technical_context(clean_ticker)
+
+            # Capital-aware fields - need real total_capital, entered
+            # interactively when this script starts (same pattern as
+            # Risk_Positioning_Engine.py).
+            capital_used = round(total_shares * price, 2)
+            capital_pct = round((capital_used / total_capital) * 100, 1) if total_capital > 0 else None
+
+            # Max Loss uses pivot, not live price - this is the risk that
+            # was actually budgeted when Risk_Positioning_Engine.py sized
+            # this position (risk = pivot - stop). Using live price instead
+            # would make this go negative and nonsensical once price has
+            # already moved past the stop.
+            max_loss = round(total_shares * (pivot - stop_loss), 2)
+            max_loss_pct = round((max_loss / total_capital) * 100, 2) if total_capital > 0 else None
+
+            # Remaining R and target-distance percentages only make sense
+            # while price is still above the stop - if the stop has been
+            # breached, there is no "remaining" risk-reward left to show.
+            if price - stop_loss > 0:
+                remaining_r = round((target_1 - price) / (price - stop_loss), 2)
+                t1_pct_away = round(((target_1 - price) / price) * 100, 1)
+                t2_pct_away = round(((target_2 - price) / price) * 100, 1)
+            else:
+                remaining_r = None
+                t1_pct_away = None
+                t2_pct_away = None
 
             board.append({
 
@@ -621,7 +690,7 @@ def run_live_monitor():
                 "sell_at_t1":sell_at_t1,
 
                 "sell_at_t2":sell_at_t2,
-                
+
                 "discount_pct":tech["discount_pct"],
 
                 "vdry_ratio":tech["vdry_ratio"],
@@ -630,7 +699,25 @@ def run_live_monitor():
 
                 "rvol":rvol,
 
-                "state":new_state
+                "state":new_state,
+
+                "tier":tier,
+
+                "hold_period":hold_period,
+
+                "capital_used":capital_used,
+
+                "capital_pct":capital_pct,
+
+                "max_loss":max_loss,
+
+                "max_loss_pct":max_loss_pct,
+
+                "remaining_r":remaining_r,
+
+                "t1_pct_away":t1_pct_away,
+
+                "t2_pct_away":t2_pct_away
 
             })
 
@@ -640,9 +727,18 @@ def run_live_monitor():
 
 
 
-        board=sorted(
+        # Invalidated setups (stop already breached, or a breakout that
+        # failed after triggering) don't belong in a ranked "top
+        # candidates" board - showing a full Entry/Exit-Strategy block for
+        # a dead setup is misleading, not just noisy. They get a short,
+        # separate, unranked list instead.
+        active_board = [x for x in board if x["state"] not in INVALIDATED_STATES]
 
-            board,
+        invalidated_board = [x for x in board if x["state"] in INVALIDATED_STATES]
+
+        active_board=sorted(
+
+            active_board,
 
             key=lambda x:x["score"],
 
@@ -661,7 +757,7 @@ def run_live_monitor():
         print("\n"+"="*75)
 
         print(
-            f"🎯 LIVE EXECUTION TERMINAL | {timestamp}"
+            f"LIVE EXECUTION TERMINAL | {timestamp}"
         )
 
         print("="*75)
@@ -683,6 +779,10 @@ def run_live_monitor():
             f"Candidates   : {len(df)}"
         )
 
+        print(
+            f"Capital      : Rs{total_capital:,.0f}"
+        )
+
 
         print("\nSTATE DISTRIBUTION")
 
@@ -696,44 +796,133 @@ def run_live_monitor():
 
         print("\nTOP EXECUTION BOARD")
 
-        print(
-        f"{'Stock':<10}{'Score':<7}{'Price':<9}{'Qty':<6}{'SL':<9}{'T1':<9}{'T2':<9}{'Qty@T1':<7}{'Qty@T2':<7}{'Dist':<8}{'RVOL':<6}{'Disc%':<8}{'VDry':<6}{'State'}"
-        )
 
-        print("-"*75)
+        for x in active_board[:10]:
 
-
-        for x in board[:10]:
-
-            disc_str = f"{x['discount_pct']:+.1f}%" if x['discount_pct'] is not None else "N/A"
-            vdry_str = f"{x['vdry_ratio']}" if x['vdry_ratio'] is not None else "N/A"
+            print("\n" + "-"*68)
 
             print(
+                f"  {x['ticker']}  |  Score: {x['score']}"
+            )
 
-            f"{x['ticker']:<10}"
-            f"{x['score']:<7}"
-            f"{x['price']:<9.2f}"
-            f"{x['qty']:<6}"
-            f"{x['stop_loss']:<9.2f}"
-            f"{x['target_1']:<9.2f}"
-            f"{x['target_2']:<9.2f}"
-            f"{x['sell_at_t1']:<7}"
-            f"{x['sell_at_t2']:<7}"
-            f"{x['distance']:+.2f}%  "
-            f"{x['rvol']:<6}"
-            f"{disc_str:<8}"
-            f"{vdry_str:<6}"
-            f"{x['state']}"
+            print("-"*68)
 
+            print(
+                f"  Status        : {x['state']}"
+            )
+
+            print(
+                f"  Price         : Rs{x['price']:.2f}  |  Pivot: Rs{x['pivot']:.2f}  |  Ext: {x['distance']:+.2f}%"
+            )
+
+            print(
+                f"  RVOL          : {x['rvol']}x"
+            )
+
+            print("-"*68)
+
+            print(
+                f"  Entry         : Rs{x['price']:.2f}"
+            )
+
+            print(
+                f"  Stop Loss     : Rs{x['stop_loss']:.2f}"
+            )
+
+            if x['t1_pct_away'] is not None:
+
+                print(
+                    f"  Target 1      : Rs{x['target_1']:.2f}  (+{x['t1_pct_away']}% away)"
+                )
+
+                print(
+                    f"  Target 2      : Rs{x['target_2']:.2f}  (+{x['t2_pct_away']}% away)"
+                )
+
+                print(
+                    f"  Remaining R   : {x['remaining_r']}x"
+                )
+
+            else:
+
+                print(
+                    f"  Target 1      : Rs{x['target_1']:.2f}"
+                )
+
+                print(
+                    f"  Target 2      : Rs{x['target_2']:.2f}"
+                )
+
+                print(
+                    f"  Remaining R   : N/A - stop already breached"
+                )
+
+            print("-"*68)
+
+            print(
+                f"  Units         : {x['qty']} shares"
+            )
+
+            if x['capital_pct'] is not None:
+
+                print(
+                    f"  Capital Used  : Rs{x['capital_used']:,.0f}  ({x['capital_pct']}% of portfolio)"
+                )
+
+                print(
+                    f"  Max Loss      : Rs{x['max_loss']:,.0f}  ({x['max_loss_pct']}% of capital)"
+                )
+
+            else:
+
+                print(
+                    f"  Capital Used  : Rs{x['capital_used']:,.0f}"
+                )
+
+                print(
+                    f"  Max Loss      : Rs{x['max_loss']:,.0f}"
+                )
+
+            print("-"*68)
+
+            print(
+                f"  Exit Strategy : Sell {x['sell_at_t1']} at T1 -> Sell {x['sell_at_t2']} at T2"
+            )
+
+            print("-"*68)
+
+            print(
+                f"  Tier          : {x['tier']}"
+            )
+
+            print(
+                f"  Hold Period   : {x['hold_period']}"
             )
 
             read_text = get_read(x['state'], x['discount_pct'], x['vdry_ratio'], x['rvol'])
-            print(f"          Read: {read_text}")
-            print()
+
+            print(
+                f"  Read          : {read_text}"
+            )
+
+
+        if invalidated_board:
+
+            print("\n" + "-"*68)
+
+            print("  RECENTLY INVALIDATED (stop breached / breakout failed)")
+
+            print("-"*68)
+
+            for x in invalidated_board:
+
+                print(
+                    f"  {x['ticker']:<12} {x['state']}"
+                )
 
 
 
-        print("-"*75)
+        print("\n" + "-"*75)
 
         print(
             f"Cycle Time : {duration}s"
@@ -753,4 +942,24 @@ def run_live_monitor():
 
 if __name__=="__main__":
 
-    run_live_monitor()
+    while True:
+
+        capital_input = input(
+            "Enter your total trading capital (Rs): "
+        ).strip()
+
+        try:
+
+            capital_value = float(capital_input)
+
+            if capital_value <= 0:
+                print("Capital must be a positive number. Please try again.")
+                continue
+
+            break
+
+        except ValueError:
+            print("Please enter a valid number (e.g. 500000).")
+
+
+    run_live_monitor(total_capital=capital_value)
