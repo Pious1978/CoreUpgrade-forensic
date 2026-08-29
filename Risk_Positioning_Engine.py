@@ -20,6 +20,7 @@ from datetime import datetime
 import pandas as pd
 
 from core.config import DB_PATH
+from core.technical_indicators import compute_atr
 
 
 
@@ -243,7 +244,10 @@ class RiskPositioningEngine:
 
 
             #
-            # ATR fallback
+            # ATR - try a real, stock-specific calculation first, using
+            # the same technical_indicators module the live monitor uses.
+            # Only falls back to the flat 3%-of-pivot estimate if there
+            # genuinely isn't enough history yet for that specific stock.
             #
 
             atr=row["atr_14"]
@@ -251,7 +255,11 @@ class RiskPositioningEngine:
 
             if pd.isna(atr):
 
-                atr=pivot*0.03
+                clean_ticker_for_atr = str(row["Ticker"]).replace(".NS","").upper().strip()
+
+                real_atr, _ = compute_atr(clean_ticker_for_atr)
+
+                atr = real_atr if real_atr is not None else pivot*0.03
 
 
 
