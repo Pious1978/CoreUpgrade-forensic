@@ -10,10 +10,15 @@ Earnings_Gap_Scanner all read via PARQUET_CACHE_DIR.
 Only SERIES == 'EQ' rows are kept (excludes government securities, bonds,
 and other non-equity instruments that also appear in the raw bhav copy).
 
-Idempotent: re-running with the same or additional bhav copy files
-regenerates each symbol's parquet file fully from all available daily
-files, rather than appending, so there is no risk of duplicate rows from
-re-running this on the same date twice.
+Idempotent for the bhav-covered date range: re-running with the same or
+additional bhav copy files regenerates each symbol's parquet file for
+every date covered by HistoricalBhavcopies, so there is no risk of
+duplicate rows from re-running this on the same date twice.
+
+Preserves older history: if a symbol's existing parquet file has rows
+predating the earliest bhav copy (e.g. from backfill_from_yahoo_archive.py),
+those older rows are kept, not wiped out. Only the bhav-covered range gets
+regenerated fresh each run - anything older than that stays untouched.
 """
 
 import glob
@@ -77,6 +82,7 @@ def convert() -> dict:
 
     symbols = sorted(combined["SYMBOL"].unique())
     written = 0
+    preserved_older_history = 0
 
     for symbol in symbols:
         sym_df = combined[combined["SYMBOL"] == symbol].sort_values("DATE1")
@@ -93,12 +99,36 @@ def convert() -> dict:
         })
 
         out_path = os.path.join(PARQUET_CACHE_DIR, f"{symbol}.parquet")
+
+        # Preserve any older history already in the file (e.g. from
+        # backfill_from_yahoo_archive.py) that predates what this run's
+        # bhav copies cover. Only the bhav-covered range gets regenerated.
+        if os.path.exists(out_path):
+            try:
+                existing = pd.read_parquet(out_path)
+                existing["date"] = pd.to_datetime(existing["date"])
+
+                bhav_start = out["date"].min()
+                older_existing = existing[existing["date"] < bhav_start]
+
+                if not older_existing.empty:
+                    out = pd.concat([older_existing, out], ignore_index=True)
+                    out = out.sort_values("date").drop_duplicates(subset="date", keep="last")
+                    preserved_older_history += 1
+
+            except Exception:
+                # If the existing file is unreadable for any reason, fall
+                # back to writing fresh bhav-only data rather than crashing
+                # the whole conversion run.
+                pass
+
         out.to_parquet(out_path, index=False)
         written += 1
 
     return {
         "files_read": len(glob.glob(os.path.join(BHAV_DIR, "bhav_*.csv"))),
         "symbols_written": written,
+        "symbols_with_preserved_older_history": preserved_older_history,
         "date_range": (
             str(combined["DATE1"].min().date()),
             str(combined["DATE1"].max().date()),
@@ -110,4 +140,5 @@ if __name__ == "__main__":
     result = convert()
     print(f"Bhav copy files read: {result['files_read']}")
     print(f"Symbol parquet files written: {result['symbols_written']}")
-    print(f"Date range covered: {result['date_range'][0]} to {result['date_range'][1]}")
+    print(f"Symbols with preserved older (backfilled) history: {result['symbols_with_preserved_older_history']}")
+    print(f"Date range covered by bhav copies: {result['date_range'][0]} to {result['date_range'][1]}")
