@@ -26,22 +26,16 @@ from core.technical_indicators import compute_atr
 
 class RiskPositioningEngine:
 
-
     def __init__(
         self,
         total_capital=1000000,
         risk_per_trade_pct=0.005
     ):
-
         self.total_capital = total_capital
         self.risk_per_trade_pct = risk_per_trade_pct
 
-
-
     def get_market_regime(self, conn):
-
         try:
-
             df = pd.read_sql(
                 """
                 SELECT *
@@ -53,9 +47,7 @@ class RiskPositioningEngine:
             )
 
             if df.empty:
-
                 return 0.25
-
 
             return float(
                 df.iloc[0]
@@ -65,78 +57,48 @@ class RiskPositioningEngine:
                 )
             )
 
-
         except:
-
             return 0.25
 
-
-
     def load_candidates(self, conn):
-
-
         query = """
-
         SELECT
-
         rw.Ticker,
         rw.Composite_Score,
         rw.Tier,
         rw.pattern,
         rw.pattern_confidence,
-
-
         cp.pivot_price,
         cp.confidence AS pivot_confidence,
         NULL AS atr_14
-
-
         FROM research_watchlist rw
-
-
         LEFT JOIN consensus_pivots cp
-
-
         ON REPLACE(
             UPPER(rw.Ticker),
             '.NS',
             ''
         )
-
         =
-        
         REPLACE(
             UPPER(cp.ticker),
             '.NS',
             ''
         )
-
         AND cp.date = (SELECT MAX(date) FROM consensus_pivots)
-
-
         WHERE rw.Readiness =
         'Immediate Trigger Watch'
-
         AND rw.Date = (SELECT MAX(Date) FROM research_watchlist)
-
-
         """
-
 
         df = pd.read_sql(
             query,
             conn
         )
 
-
         if df.empty:
-
             return df
 
-
-
         # normalize ticker
-
         df["clean"] = (
             df["Ticker"]
             .astype(str)
@@ -148,12 +110,9 @@ class RiskPositioningEngine:
             .str.upper()
         )
 
-
-
         #
         # keep one pivot per stock
         #
-
         df = (
             df
             .sort_values(
@@ -165,83 +124,52 @@ class RiskPositioningEngine:
             )
         )
 
-
         return df
 
-
-
     def run(self):
-
-
         conn = sqlite3.connect(DB_PATH)
-
-
 
         print()
         print("="*70)
         print("🛡️ RISK & POSITIONING COMPILER")
         print("="*70)
 
-
-
         multiplier = self.get_market_regime(conn)
-
 
         print(
             f"Exposure Multiplier : {multiplier*100:.0f}%"
         )
 
-
-
         df = self.load_candidates(conn)
-
-
 
         print(
             f"Research Candidates : {len(df)}"
         )
 
-
-
         if df.empty:
-
             print(
                 "[!] No candidates received"
             )
-
             conn.close()
             return
-
-
 
         capital = (
             self.total_capital *
             multiplier
         )
 
-
         risk_budget = (
             capital *
             self.risk_per_trade_pct
         )
 
+        output = []
 
-
-        output=[]
-
-
-
-        for _,row in df.iterrows():
-
-
-            pivot=row["pivot_price"]
-
+        for _, row in df.iterrows():
+            pivot = row["pivot_price"]
 
             if pd.isna(pivot):
-
                 continue
-
-
 
             #
             # ATR - try a real, stock-specific calculation first, using
@@ -249,55 +177,51 @@ class RiskPositioningEngine:
             # Only falls back to the flat 3%-of-pivot estimate if there
             # genuinely isn't enough history yet for that specific stock.
             #
-
-            atr=row["atr_14"]
-
+            atr = row["atr_14"]
 
             if pd.isna(atr):
-
-                clean_ticker_for_atr = str(row["Ticker"]).replace(".NS","").upper().strip()
-
+                clean_ticker_for_atr = str(row["Ticker"]).replace(".NS", "").upper().strip()
                 real_atr, _ = compute_atr(clean_ticker_for_atr)
-
-                atr = real_atr if real_atr is not None else pivot*0.03
-
-
+                atr = real_atr if real_atr is not None else pivot * 0.03
 
             stop = (
                 pivot -
-                (1.5*atr)
+                (1.5 * atr)
             )
-
 
             risk = (
                 pivot -
                 stop
             )
 
-
-
-            if risk<=0:
-
+            if risk <= 0:
                 continue
 
-
-
-            shares=int(
-                risk_budget/risk
+            shares = int(
+                risk_budget / risk
             )
 
+            # 20% concentration cap - a stock with a very tight stop
+            # (small risk_per_share) can otherwise pass pure risk-based
+            # sizing with far more capital than sensible for a single
+            # position. Real testing showed this could recommend
+            # oversized positions in low-priced, tight-stop stocks -
+            # capping here matches Alpha1's own approach.
+            max_shares_by_concentration = int(
+                (self.total_capital * 0.20) / pivot
+            )
 
-            if shares<=0:
+            concentration_capped = shares > max_shares_by_concentration
 
+            if concentration_capped:
+                shares = max_shares_by_concentration
+
+            if shares <= 0:
                 continue
 
-
-
             output.append({
-
                 "ticker":
                 row["Ticker"],
-
 
                 "pivot":
                 round(
@@ -305,14 +229,11 @@ class RiskPositioningEngine:
                     2
                 ),
 
-
                 "pattern":
                 row["pattern"],
 
-
                 "confidence":
                 row["pattern_confidence"],
-
 
                 "atr14":
                 round(
@@ -320,27 +241,23 @@ class RiskPositioningEngine:
                     2
                 ),
 
-
                 "stop_loss":
                 round(
                     stop,
                     2
                 ),
 
-
                 "target_1":
                 round(
-                    pivot+2*risk,
+                    pivot + 2 * risk,
                     2
                 ),
-
 
                 "target_2":
                 round(
-                    pivot+3*risk,
+                    pivot + 3 * risk,
                     2
                 ),
-
 
                 "risk_per_share":
                 round(
@@ -348,41 +265,28 @@ class RiskPositioningEngine:
                     2
                 ),
 
-
                 "composite_score":
                 row["Composite_Score"],
-
 
                 "tier":
                 row["Tier"],
 
-
                 "shares":
                 shares,
-
 
                 "date":
                 datetime.now()
                 .strftime("%Y-%m-%d")
-
             })
 
-
-
-        result=pd.DataFrame(output)
-
-
+        result = pd.DataFrame(output)
 
         if result.empty:
-
             print(
                 "[!] No risk plans created"
             )
-
             conn.close()
             return
-
-
 
         result.to_sql(
             "trade_candidates",
@@ -391,35 +295,24 @@ class RiskPositioningEngine:
             index=False
         )
 
-
-
         conn.close()
-
-
 
         print(
             f"[+] Trade Plans Generated : {len(result)}"
         )
-
         print(
             "[+] trade_candidates updated"
         )
-
         print("="*70)
 
 
-
-
-if __name__=="__main__":
-
+if __name__ == "__main__":
     while True:
-
         capital_input = input(
             "Enter your available trading capital for today (Rs): "
         ).strip()
 
         try:
-
             capital_value = float(capital_input)
 
             if capital_value <= 0:
@@ -431,15 +324,12 @@ if __name__=="__main__":
         except ValueError:
             print("Please enter a valid number (e.g. 500000).")
 
-
     while True:
-
         risk_input = input(
             "Enter risk per trade as a percentage (e.g. 1 for 1%): "
         ).strip()
 
         try:
-
             risk_pct_value = float(risk_input)
 
             if risk_pct_value <= 0:
@@ -458,10 +348,9 @@ if __name__=="__main__":
         except ValueError:
             print("Please enter a valid number (e.g. 1 or 0.5).")
 
-
-    engine=RiskPositioningEngine(
+    engine = RiskPositioningEngine(
         total_capital=capital_value,
-        risk_per_trade_pct=risk_pct_value/100
+        risk_per_trade_pct=risk_pct_value / 100
     )
 
     engine.run()
