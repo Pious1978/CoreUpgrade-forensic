@@ -50,6 +50,19 @@ from core.technical_indicators import get_technical_context
 
 INVALIDATED_STATES = ("STOP_BREACHED", "FAILED_BREAKOUT")
 
+STATE_PRIORITY = {
+    "VALID_BREAKOUT": 1,
+    "RETEST_SUCCESS": 2,
+    "LOW_VOLUME_BREAKOUT": 3,
+    "TESTING": 4,
+    "APPROACHING": 5,
+    "BASE_BUILDING": 6,
+    "EXTENDED": 7,
+    "WAITING": 8,
+}
+
+PRIORITY_ALERT_STATES = ("VALID_BREAKOUT", "RETEST_SUCCESS")
+
 
 
 # ================================================================
@@ -742,11 +755,11 @@ def run_live_monitor(total_capital):
 
             active_board,
 
-            key=lambda x:x["score"],
-
-            reverse=True
+            key=lambda x: (STATE_PRIORITY.get(x["state"], 99), -x["score"])
 
         )
+
+        priority_alerts = [x for x in active_board if x["state"] in PRIORITY_ALERT_STATES]
 
 
 
@@ -784,6 +797,25 @@ def run_live_monitor(total_capital):
         print(
             f"Capital      : Rs{total_capital:,.0f}"
         )
+
+
+        if priority_alerts:
+
+            print()
+
+            print(f"  PRIORITY ALERTS - look here first ({len(priority_alerts)})")
+
+            print("  " + "-"*66)
+
+            for x in priority_alerts:
+
+                print(
+
+                f"  {x['ticker']:<12} {x['state']:<16} "
+                f"Rs{x['price']:<9.2f} Entry near pivot Rs{x['pivot']:<9.2f} "
+                f"Score {x['score']}"
+
+                )
 
 
         print("\nSTATE DISTRIBUTION")
