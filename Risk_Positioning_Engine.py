@@ -23,6 +23,44 @@ from core.config import DB_PATH
 from core.technical_indicators import compute_atr
 
 
+# Base R:R stays 2:1/3:1 (the original, reasonable baseline) - real
+# improvement comes from adjusting AROUND that baseline based on market
+# regime and setup quality, rather than applying the same fixed
+# multiplier to every single trade regardless of context.
+REGIME_RR_ADJUSTMENT = {
+    "CONFIRMED_UPTREND": 1.2,
+    "EARLY_RECOVERY": 1.0,
+    "CHOPPY_ACCUMULATION": 0.9,
+    "DISTRIBUTION": 0.7,
+    "BEAR": 0.6,
+}
+
+
+def calculate_dynamic_rr_multipliers(regime, composite_score):
+    """
+    Known limitation: Composite_Score is the only setup-quality signal
+    available at this stage of the pipeline (this runs end-of-day,
+    before the live intraday data the newer conviction score in
+    Live_Execution_Monitor.py depends on even exists) - it's the best
+    available signal here, not a perfectly differentiated one (see the
+    Master_Terminal.py tier-assignment fix for the known small-pool
+    saturation issue this doesn't fully resolve).
+    """
+
+    try:
+        cs = float(composite_score)
+    except (TypeError, ValueError):
+        cs = 0.5
+
+    regime_factor = REGIME_RR_ADJUSTMENT.get(regime, 0.85)
+    quality_factor = 0.85 + (cs * 0.30)
+    combined = regime_factor * quality_factor
+
+    t1_multiplier = round(2.0 * combined, 2)
+    t2_multiplier = round(3.0 * combined, 2)
+
+    return t1_multiplier, t2_multiplier
+
 
 class RiskPositioningEngine:
 
@@ -47,18 +85,17 @@ class RiskPositioningEngine:
             )
 
             if df.empty:
-                return 0.25
+                return 0.25, "NEUTRAL"
 
-            return float(
-                df.iloc[0]
-                .get(
-                    "position_multiplier",
-                    0.25
-                )
+            row = df.iloc[0]
+
+            return (
+                float(row.get("position_multiplier", 0.25)),
+                str(row.get("regime", "NEUTRAL"))
             )
 
         except:
-            return 0.25
+            return 0.25, "NEUTRAL"
 
     def load_candidates(self, conn):
         query = """
@@ -134,7 +171,7 @@ class RiskPositioningEngine:
         print("🛡️ RISK & POSITIONING COMPILER")
         print("="*70)
 
-        multiplier = self.get_market_regime(conn)
+        multiplier, regime = self.get_market_regime(conn)
 
         print(
             f"Exposure Multiplier : {multiplier*100:.0f}%"
@@ -219,6 +256,11 @@ class RiskPositioningEngine:
             if shares <= 0:
                 continue
 
+            t1_mult, t2_mult = calculate_dynamic_rr_multipliers(
+                regime,
+                row.get("Composite_Score", 0.5)
+            )
+
             output.append({
                 "ticker":
                 row["Ticker"],
@@ -249,13 +291,13 @@ class RiskPositioningEngine:
 
                 "target_1":
                 round(
-                    pivot + 2 * risk,
+                    pivot + t1_mult * risk,
                     2
                 ),
 
                 "target_2":
                 round(
-                    pivot + 3 * risk,
+                    pivot + t2_mult * risk,
                     2
                 ),
 

@@ -49,8 +49,40 @@ def init_journal_db():
     )
     """)
 
+    # A position can now be exited in more than one tranche (e.g. sell
+    # half at T1, trail the rest to T2) - each exit is its own row here,
+    # rather than overwriting a single exit_price/exit_shares column on
+    # trade_journal, which could only ever represent one final exit.
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS trade_journal_exits (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        journal_id INTEGER,
+        exit_price REAL,
+        exit_date TEXT,
+        exit_shares INTEGER,
+        realized_pnl REAL,
+        realized_pct REAL,
+        r_multiple REAL,
+        reason TEXT
+    )
+    """)
+
     conn.commit()
     conn.close()
+
+
+def get_remaining_shares(conn, journal_id, entry_shares):
+    """
+    Entry shares minus everything already exited (across one or more
+    partial exits) against this specific position.
+    """
+
+    exited = conn.execute(
+        "SELECT COALESCE(SUM(exit_shares), 0) FROM trade_journal_exits WHERE journal_id=?",
+        (journal_id,)
+    ).fetchone()[0]
+
+    return entry_shares - exited
 
 
 def sync_alerts():
@@ -148,6 +180,70 @@ def log_execution():
     print(f"[+] Logged execution for {match[1]}.")
 
 
+def log_manual_entry():
+    """
+    For a trade this system never alerted on - a past purchase, something
+    you found through your own research, or anything bought before this
+    pipeline existed. Creates a new position directly as EXECUTED, rather
+    than requiring it to have started as an ALERTED row from
+    sync_alerts(). Stop/target are optional here - Live_Execution_Monitor.py
+    already handles a missing stop/target gracefully (shows "no stop on
+    file, monitor manually" instead of breaking).
+    """
+
+    conn = sqlite3.connect(DB_PATH)
+
+    ticker = input("Ticker: ").strip().upper()
+
+    if not ticker:
+        print("Ticker can't be empty.")
+        conn.close()
+        return
+
+    try:
+        entry_price = float(input("Entry price (Rs): ").strip())
+        entry_shares = int(input("Quantity bought: ").strip())
+    except ValueError:
+        print("Invalid number.")
+        conn.close()
+        return
+
+    entry_date_input = input("Entry date (YYYY-MM-DD, blank for today): ").strip()
+    entry_date = entry_date_input if entry_date_input else datetime.now().strftime("%Y-%m-%d")
+
+    pattern = input("Pattern/reason for the trade (optional, e.g. 'Own research'): ").strip() or "MANUAL"
+
+    stop_input = input("Planned stop-loss (Rs, blank if none): ").strip()
+    t1_input = input("Target 1 (Rs, blank if none): ").strip()
+    t2_input = input("Target 2 (Rs, blank if none): ").strip()
+
+    try:
+        planned_stop = float(stop_input) if stop_input else 0.0
+        planned_target_1 = float(t1_input) if t1_input else 0.0
+        planned_target_2 = float(t2_input) if t2_input else 0.0
+    except ValueError:
+        print("Invalid number for stop/target.")
+        conn.close()
+        return
+
+    conn.execute("""
+        INSERT INTO trade_journal
+        (ticker, pattern, alert_date, planned_pivot, planned_stop,
+         planned_target_1, planned_target_2, planned_shares, status,
+         entry_price, entry_date, entry_shares)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'EXECUTED', ?, ?, ?)
+    """, (
+        ticker, pattern, entry_date, entry_price, planned_stop,
+        planned_target_1, planned_target_2, entry_shares,
+        entry_price, entry_date, entry_shares
+    ))
+
+    conn.commit()
+    conn.close()
+
+    print(f"[+] Logged manual entry for {ticker}: {entry_shares} shares at Rs{entry_price} on {entry_date}.")
+
+
 def log_exit():
 
     conn = sqlite3.connect(DB_PATH)
@@ -163,12 +259,18 @@ def log_exit():
         conn.close()
         return
 
+    # Show REMAINING shares, not the original entry_shares - a position
+    # may already have had a partial exit logged against it.
     print("\nOpen positions:")
+    remaining_map = {}
     for row in open_positions:
-        print(f"  [{row[0]}] {row[1]} | entry {row[2]} | qty {row[3]}")
+        journal_id, ticker, entry_price, entry_shares, planned_stop = row
+        remaining = get_remaining_shares(conn, journal_id, entry_shares)
+        remaining_map[journal_id] = remaining
+        print(f"  [{journal_id}] {ticker} | entry {entry_price} | remaining qty {remaining} (of {entry_shares} original)")
 
     try:
-        journal_id = int(input("\nEnter the [id] of the position you closed: ").strip())
+        journal_id = int(input("\nEnter the [id] of the position you're exiting (fully or partially): ").strip())
     except ValueError:
         print("Invalid id.")
         conn.close()
@@ -181,12 +283,18 @@ def log_exit():
         return
 
     _, ticker, entry_price, entry_shares, planned_stop = match
+    remaining = remaining_map[journal_id]
 
     try:
         exit_price = float(input("Exit price (Rs): ").strip())
-        exit_shares = int(input(f"Quantity sold (default {entry_shares}): ").strip() or entry_shares)
+        exit_shares = int(input(f"Quantity sold (default {remaining}, your full remaining position): ").strip() or remaining)
     except ValueError:
         print("Invalid number.")
+        conn.close()
+        return
+
+    if exit_shares <= 0 or exit_shares > remaining:
+        print(f"Invalid quantity - must be between 1 and {remaining} (your remaining position).")
         conn.close()
         return
 
@@ -206,16 +314,33 @@ def log_exit():
     exit_date = datetime.now().strftime("%Y-%m-%d")
 
     conn.execute("""
-        UPDATE trade_journal
-        SET status='CLOSED', exit_price=?, exit_date=?, exit_shares=?,
-            realized_pnl=?, realized_pct=?, r_multiple=?, reason=?
-        WHERE id=?
-    """, (exit_price, exit_date, exit_shares, realized_pnl, realized_pct, r_multiple, reason, journal_id))
+        INSERT INTO trade_journal_exits
+        (journal_id, exit_price, exit_date, exit_shares, realized_pnl, realized_pct, r_multiple, reason)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """, (journal_id, exit_price, exit_date, exit_shares, realized_pnl, realized_pct, r_multiple, reason))
+
+    new_remaining = remaining - exit_shares
+
+    if new_remaining <= 0:
+
+        # Fully closed now - also populate the legacy single-exit columns
+        # on trade_journal itself, for anything that still reads them
+        # directly, using this final exit's values.
+        conn.execute("""
+            UPDATE trade_journal
+            SET status='CLOSED', exit_price=?, exit_date=?, exit_shares=?,
+                realized_pnl=?, realized_pct=?, r_multiple=?, reason=?
+            WHERE id=?
+        """, (exit_price, exit_date, exit_shares, realized_pnl, realized_pct, r_multiple, reason, journal_id))
+
+        print(f"[+] Closed {ticker} (final exit): Rs {realized_pnl} ({realized_pct}%, {r_multiple}R)")
+
+    else:
+
+        print(f"[+] Partial exit for {ticker}: sold {exit_shares}, Rs {realized_pnl} ({realized_pct}%, {r_multiple}R). {new_remaining} shares remain open.")
 
     conn.commit()
     conn.close()
-
-    print(f"[+] Closed {ticker}: Rs {realized_pnl} ({realized_pct}%, {r_multiple}R)")
 
 
 def show_open_positions():
@@ -223,30 +348,38 @@ def show_open_positions():
     conn = sqlite3.connect(DB_PATH)
 
     rows = conn.execute("""
-        SELECT ticker, entry_date, entry_price, entry_shares, planned_stop, planned_target_1, planned_target_2
+        SELECT id, ticker, entry_date, entry_price, entry_shares, planned_stop, planned_target_1, planned_target_2
         FROM trade_journal WHERE status='EXECUTED'
         ORDER BY entry_date DESC
     """).fetchall()
 
-    conn.close()
-
     if not rows:
         print("No open positions.")
+        conn.close()
         return
 
     print(f"\n{'Ticker':<12}{'Entry Date':<12}{'Entry':<9}{'Qty':<6}{'Stop':<9}{'T1':<9}{'T2':<9}")
     print("-" * 66)
     for r in rows:
-        print(f"{r[0]:<12}{r[1]:<12}{r[2]:<9.2f}{r[3]:<6}{r[4]:<9.2f}{r[5]:<9.2f}{r[6]:<9.2f}")
+        journal_id, ticker, entry_date, entry_price, entry_shares, stop, t1, t2 = r
+        remaining = get_remaining_shares(conn, journal_id, entry_shares)
+        print(f"{ticker:<12}{entry_date:<12}{entry_price:<9.2f}{remaining:<6}{stop:<9.2f}{t1:<9.2f}{t2:<9.2f}")
+
+    conn.close()
 
 
 def show_statistics():
 
     conn = sqlite3.connect(DB_PATH)
 
+    # Every exit event counts toward statistics as soon as it happens -
+    # not just fully-closed positions. A partial exit at T1 is real,
+    # already-realized P&L, and shouldn't stay invisible to statistics
+    # until the rest of the position eventually closes too.
     closed = conn.execute("""
-        SELECT ticker, pattern, realized_pnl, realized_pct, r_multiple, reason
-        FROM trade_journal WHERE status='CLOSED'
+        SELECT tj.ticker, tj.pattern, te.realized_pnl, te.realized_pct, te.r_multiple, te.reason
+        FROM trade_journal_exits te
+        JOIN trade_journal tj ON tj.id = te.journal_id
     """).fetchall()
 
     conn.close()
@@ -302,7 +435,8 @@ def main_menu():
         print("3. Log an exit (I closed this position)")
         print("4. Show open positions")
         print("5. Show statistics")
-        print("6. Exit")
+        print("6. Log a manual/past entry (not from an alert)")
+        print("7. Exit")
 
         choice = input("\nChoice: ").strip()
 
@@ -317,6 +451,8 @@ def main_menu():
         elif choice == "5":
             show_statistics()
         elif choice == "6":
+            log_manual_entry()
+        elif choice == "7":
             break
         else:
             print("Invalid choice.")

@@ -443,13 +443,31 @@ def run():
 
 
 
-    def tier(score,cov):
+    # Minimum real relative-strength requirement for Tier-1, checked
+    # independently of Composite_Score. rs_percentile is ranked against
+    # the WHOLE universe (a much larger, more stable pool than any single
+    # small-pool pattern scanner feeding into Composite_Score), so it
+    # isn't subject to the same small-candidate-pool inflation that can
+    # saturate Composite_Score toward 1.0 for every stock while real
+    # history is still accumulating. This doesn't replace Composite_Score
+    # - it just stops that inflation alone from promoting a stock to the
+    # top tier. Verified against real, known-active breakouts (RS
+    # 74.8-97.3) - all correctly stayed Tier-1 at this threshold.
+    MIN_RS_FOR_TIER1 = 60.0
+
+
+    def tier(score,cov,rs_pct=None):
 
         if cov < MIN_FACTOR_COVERAGE:
             return "INSUFFICIENT DATA"
 
-        if score >= .70:
+        rs_ok = rs_pct is None or pd.isna(rs_pct) or rs_pct >= MIN_RS_FOR_TIER1
+
+        if score >= .70 and rs_ok:
             return "TIER-1: Core Institutional Leader"
+
+        elif score >= .70 and not rs_ok:
+            return "TIER-2: High Probability Setup"
 
         elif score >= .50:
             return "TIER-2: High Probability Setup"
@@ -463,11 +481,12 @@ def run():
 
     df["Tier"] = [
 
-        tier(a,b)
+        tier(a,b,c)
 
-        for a,b in zip(
+        for a,b,c in zip(
             df["Composite_Score"],
-            df["_coverage"]
+            df["_coverage"],
+            df["rs_percentile"] if "rs_percentile" in df.columns else [None]*len(df)
         )
 
     ]

@@ -22,7 +22,6 @@ from core.config import PARQUET_CACHE_DIR
 
 
 def get_technical_context(ticker):
-
     path = os.path.join(PARQUET_CACHE_DIR, f"{ticker}.parquet")
 
     if not os.path.exists(path):
@@ -96,3 +95,46 @@ def compute_atr(ticker, period=14):
 
     except Exception:
         return None, None
+
+
+def compute_weekly_rvol(ticker, trailing_weeks=10):
+    """
+    Real weekly RVOL: current week's volume-to-date vs a trailing N-week
+    average. Mirrors the same real, working calculation already used in
+    Confirmation_Factor_Generator.py, but returns the raw, interpretable
+    ratio directly - that file applies a percentile-rank transform before
+    storing to scanner_factors, which is useful for cross-sectional
+    ranking but not for showing an actual "2.5x weekly volume" style
+    number on the board.
+    """
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker}.parquet")
+
+    if not os.path.exists(path):
+        return None
+
+    try:
+        df = pd.read_parquet(path)
+        df.columns = [str(c).lower() for c in df.columns]
+
+        if not all(c in df.columns for c in ["volume", "date"]):
+            return None
+
+        df["date"] = pd.to_datetime(df["date"])
+        df = df.set_index("date").sort_index()
+
+        df_weekly = df.resample("W").agg({"volume": "sum"}).dropna()
+
+        if len(df_weekly) < trailing_weeks + 1:
+            return None
+
+        weekly_vol_sma = df_weekly["volume"].rolling(window=trailing_weeks).mean().iloc[-1]
+        latest_weekly_vol = float(df_weekly["volume"].iloc[-1])
+
+        if weekly_vol_sma <= 0:
+            return None
+
+        return round(latest_weekly_vol / weekly_vol_sma, 2)
+
+    except Exception:
+        return None

@@ -9,6 +9,10 @@ import pandas as pd
 import time
 
 
+MAX_RETRIES = 3
+RETRY_BASE_DELAY_SECONDS = 1.5
+
+
 class LivePriceEngine:
 
 
@@ -23,142 +27,170 @@ class LivePriceEngine:
             else ticker+".NS"
         )
 
-        try:
+        for attempt in range(MAX_RETRIES):
 
-            df = yf.download(
-                symbol,
-                period="5d",
-                interval="5m",
-                progress=False
-            )
+            try:
 
-
-            latency=round(
-                time.time()-start,
-                2
-            )
-
-
-            if df.empty:
-
-                return LivePriceEngine.empty(
-                    ticker,
-                    latency
+                df = yf.download(
+                    symbol,
+                    period="5d",
+                    interval="5m",
+                    progress=False
                 )
 
 
-            if isinstance(df.columns,pd.MultiIndex):
+                latency=round(
+                    time.time()-start,
+                    2
+                )
 
-                df.columns=[
-                    c[0].lower()
-                    for c in df.columns
+
+                if df.empty:
+
+                    if attempt < MAX_RETRIES - 1:
+                        time.sleep(RETRY_BASE_DELAY_SECONDS * (attempt + 1))
+                        continue
+
+                    return LivePriceEngine.empty(
+                        ticker,
+                        latency
+                    )
+
+
+                if isinstance(df.columns,pd.MultiIndex):
+
+                    df.columns=[
+                        c[0].lower()
+                        for c in df.columns
+                    ]
+
+                else:
+
+                    df.columns=[
+                        c.lower()
+                        for c in df.columns
+                    ]
+
+
+
+                df=df.dropna()
+
+
+                today=df.index[-1].date()
+
+
+                today_data=df[
+                    df.index.date==today
                 ]
 
-            else:
 
-                df.columns=[
-                    c.lower()
-                    for c in df.columns
+                previous=df[
+                    df.index.date < today
                 ]
 
 
 
-            df=df.dropna()
+                ltp=float(
+                    today_data["close"].iloc[-1]
+                )
 
 
-            today=df.index[-1].date()
+                today_open=float(
+                    today_data["open"].iloc[0]
+                )
 
 
-            today_data=df[
-                df.index.date==today
-            ]
+                # Today's high/low so far - derived from the same
+                # already-fetched intraday bars used for RVOL, no extra
+                # API call needed. Used for candle-body-ratio fakeout
+                # detection: a genuine breakout should close near its
+                # session high, not spike and fall back.
+                today_high=float(
+                    today_data["high"].max()
+                )
 
 
-            previous=df[
-                df.index.date < today
-            ]
+                today_low=float(
+                    today_data["low"].min()
+                )
 
 
-
-            ltp=float(
-                today_data["close"].iloc[-1]
-            )
-
-
-            today_open=float(
-                today_data["open"].iloc[0]
-            )
-
-
-            prev_close=float(
-                previous["close"].iloc[-1]
-            )
-
-
-
-            current_volume=float(
-                today_data["volume"].iloc[-1]
-            )
+                prev_close=float(
+                    previous["close"].iloc[-1]
+                )
 
 
 
-            avg_volume=float(
-                today_data["volume"]
-                .iloc[:-1]
-                .mean()
-            )
+                current_volume=float(
+                    today_data["volume"].iloc[-1]
+                )
 
 
 
-            rvol=round(
-                current_volume/avg_volume,
-                2
-            ) if (avg_volume>0 and current_volume>0) else 1.0
+                avg_volume=float(
+                    today_data["volume"]
+                    .iloc[:-1]
+                    .mean()
+                )
 
 
 
-            gap=round(
-                (
-                (today_open-prev_close)
-                /
-                prev_close
-                )*100,
-                2
-            )
+                rvol=round(
+                    current_volume/avg_volume,
+                    2
+                ) if (avg_volume>0 and current_volume>0) else 1.0
 
 
 
-            return {
-
-                "ticker":ticker,
-
-                "ltp":ltp,
-
-                "open":today_open,
-
-                "previous_close":prev_close,
-
-                "gap_pct":gap,
-
-                "volume":current_volume,
-
-                "rvol":rvol,
-
-                "latency":latency,
-
-                "status":"SUCCESS"
-
-            }
+                gap=round(
+                    (
+                    (today_open-prev_close)
+                    /
+                    prev_close
+                    )*100,
+                    2
+                )
 
 
 
-        except Exception:
+                return {
+
+                    "ticker":ticker,
+
+                    "ltp":ltp,
+
+                    "open":today_open,
+
+                    "high":today_high,
+
+                    "low":today_low,
+
+                    "previous_close":prev_close,
+
+                    "gap_pct":gap,
+
+                    "volume":current_volume,
+
+                    "rvol":rvol,
+
+                    "latency":latency,
+
+                    "status":"SUCCESS"
+
+                }
 
 
-            return LivePriceEngine.empty(
-                ticker,
-                round(time.time()-start,2)
-            )
+            except Exception:
+
+                if attempt < MAX_RETRIES - 1:
+                    time.sleep(RETRY_BASE_DELAY_SECONDS * (attempt + 1))
+                    continue
+
+
+        return LivePriceEngine.empty(
+            ticker,
+            round(time.time()-start,2)
+        )
 
 
 
@@ -172,6 +204,10 @@ class LivePriceEngine:
             "ltp":0,
 
             "open":0,
+
+            "high":0,
+
+            "low":0,
 
             "previous_close":0,
 
