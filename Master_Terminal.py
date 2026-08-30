@@ -25,6 +25,7 @@ from datetime import datetime
 
 from core.config import DB_PATH, MASTER_OUTPUT_PATH
 from core.factor_registry import FACTOR_DEFINITIONS
+from core.excel_utils import save_excel_with_retry
 
 
 MIN_FACTOR_COVERAGE = 0.40
@@ -565,7 +566,8 @@ def run():
     )
 
 
-    df.to_excel(
+    save_excel_with_retry(
+        df,
         MASTER_OUTPUT_PATH,
         index=False
     )

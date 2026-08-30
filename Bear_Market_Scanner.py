@@ -32,6 +32,7 @@ import os
 from datetime import datetime
 
 from core.config import PARQUET_CACHE_DIR, DB_PATH, UNIVERSE_CSV_PATH, NIFTY_BENCHMARK_SYMBOL, BASE_DIR
+from core.excel_utils import save_excel_with_retry
 
 MIN_PRICE = 20
 MIN_VOLUME = 200000
@@ -299,7 +300,7 @@ def run():
     conn.close()
 
     excel_path = os.path.join(BASE_DIR, "BEAR_MARKET_WATCHLIST.xlsx")
-    out.to_excel(excel_path, index=False)
+    actual_excel_path = save_excel_with_retry(out, excel_path, index=False)
 
     deep_value = out[out["signal"] == "DEEP VALUE"]
     value_buy = out[out["signal"] == "VALUE BUY"]
@@ -312,7 +313,7 @@ def run():
     print(f"ACCUMULATE  : {len(accumulate)}")
     print(f"WATCH       : {len(watch)}")
     print(f"TOTAL       : {len(out)}")
-    print(f"[+] Written to bear_market_candidates and {excel_path}")
+    print(f"[+] Written to bear_market_candidates and {actual_excel_path}")
     print("=" * 70)
 
 
