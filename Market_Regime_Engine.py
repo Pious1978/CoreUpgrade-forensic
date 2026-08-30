@@ -422,6 +422,8 @@ def migrate_market_regime_schema(db_path):
         ("position_multiplier", "REAL"),
         ("india_vix", "REAL"),
         ("vix_adjusted_multiplier", "REAL"),
+        ("is_distribution_day", "INTEGER"),
+        ("distribution_day_count_25d", "INTEGER"),
     ]
 
     for col_name, col_type in needed_columns:
@@ -477,6 +479,60 @@ def calculate_vix_adjustment(vix_value):
         return 1.0, f"VIX {vix_value} - normal/calm, no adjustment"
 
 
+def check_distribution_day(nifty_df):
+    """
+    Real distribution-day check - a genuine down day on rising volume,
+    the classic Minervini/IBD "institutional selling pressure" signal.
+    Uses our own real, backfilled NIFTYBEES history - no live fetch
+    needed at all, unlike the VIX cross-check.
+
+    Uses the real, professional 25-trading-day window rather than
+    Alpha1's simpler 10-day version - the standard IBD convention is
+    "5 or more distribution days within 25 trading days" as a genuine
+    warning sign, and a 10-day window is too short to be statistically
+    meaningful.
+    """
+
+    if len(nifty_df) < 2:
+        return False
+
+    close_today = float(nifty_df["close"].iloc[-1])
+    close_yesterday = float(nifty_df["close"].iloc[-2])
+    volume_today = float(nifty_df["volume"].iloc[-1])
+    volume_yesterday = float(nifty_df["volume"].iloc[-2])
+
+    return close_today < close_yesterday and volume_today > volume_yesterday
+
+
+def get_rolling_distribution_day_count(db_path, window=25):
+    """
+    Real, rolling count from our own accumulated market_regime history -
+    genuinely limited right now since this table only has a handful of
+    real dates so far, but grows more statistically meaningful every
+    day the pipeline runs, same honest framing as Time-in-State tracking
+    built earlier tonight.
+    """
+
+    try:
+        conn = sqlite3.connect(db_path)
+        df = pd.read_sql(f"""
+            SELECT is_distribution_day FROM market_regime
+            ORDER BY date DESC LIMIT {window}
+        """, conn)
+        conn.close()
+
+        if df.empty:
+            return 0, 0
+
+        real_days = int(df["is_distribution_day"].notna().sum())
+        count = int(df["is_distribution_day"].fillna(0).sum())
+
+        return count, real_days
+
+    except Exception:
+        return 0, 0
+
+
 def run():
 
     print()
@@ -516,16 +572,39 @@ def run():
 
     migrate_market_regime_schema(DB_PATH)
 
+    print("[*] Checking for a real distribution day (down day on rising volume)...")
+    is_dist_day = check_distribution_day(nifty_df)
+    dist_day_count, real_days_available = get_rolling_distribution_day_count(DB_PATH, window=25)
+
+    # Real, established IBD warning threshold - 5+ distribution days
+    # within 25 trading days signals genuine institutional selling
+    # pressure. Applied as a further reduction on top of the VIX
+    # adjustment, same chained-multiplier pattern.
+    if dist_day_count >= 5:
+        dist_day_factor = 0.85
+        dist_day_note = f"{dist_day_count} distribution days in the last {real_days_available} real trading days - elevated, exposure reduced 15%"
+    else:
+        dist_day_factor = 1.0
+        dist_day_note = f"{dist_day_count} distribution days in the last {real_days_available} real trading days - normal"
+
+    final_multiplier = round(vix_adjusted_multiplier * dist_day_factor, 3)
+
+    # Stored under the existing vix_adjusted_multiplier column name -
+    # Risk_Positioning_Engine.py already reads this exact column as
+    # "the best final multiplier available," so no changes needed there.
+    # The value now reflects VIX AND distribution-day adjustments
+    # chained together, not just VIX alone - the column name is now a
+    # bit imprecise, but avoids a cascading rename across both files.
     conn = sqlite3.connect(DB_PATH)
     conn.execute("""
         INSERT OR REPLACE INTO market_regime
-        (date, regime, confidence, composite_score, breadth_20, breadth_50, breadth_200, advance_decline_ratio, position_multiplier, india_vix, vix_adjusted_multiplier)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (date, regime, confidence, composite_score, breadth_20, breadth_50, breadth_200, advance_decline_ratio, position_multiplier, india_vix, vix_adjusted_multiplier, is_distribution_day, distribution_day_count_25d)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         today, result["regime"], result["confidence"], result["composite_score"],
         result["breadth_20"], result["breadth_50"], result["breadth_200"],
         result["advance_decline_ratio"], result["position_multiplier"],
-        india_vix, vix_adjusted_multiplier
+        india_vix, final_multiplier, int(is_dist_day), dist_day_count
     ))
     conn.commit()
     conn.close()
@@ -534,7 +613,8 @@ def run():
     print(f"[+] Breadth: 20d={result['breadth_20']}%  50d={result['breadth_50']}%  200d={result['breadth_200']}%")
     print(f"[+] Breadth-based exposure multiplier: {result['position_multiplier']}")
     print(f"[+] India VIX: {india_vix if india_vix is not None else 'unavailable'}  -  {vix_note}")
-    print(f"[+] Final, VIX-adjusted exposure multiplier: {vix_adjusted_multiplier}")
+    print(f"[+] Today a distribution day: {is_dist_day}  -  {dist_day_note}")
+    print(f"[+] Final exposure multiplier (breadth x VIX x distribution): {final_multiplier}")
     print("=" * 70)
 
 
