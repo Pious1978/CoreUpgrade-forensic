@@ -1,0 +1,27 @@
+config - Total Portfolio Value assessment
+
+Hybrid_alpha_scanner.py -is a sophisticated Regime-Adaptive Market Scanner. It doesn't just look for stocks; it first assesses the "health" of the overall market (Nifty) and then changes its scanning criteria to match that environment.
+
+
+hybrid_alpha_scanner1 - The script monitors over 50 specific high-growth tickers categorized into thematic buckets. This ensures you aren't looking at "junk" stocks, but rather established leaders in sectors like Defense, Rail, and Metals
+
+alpha_strategist - acts as your Automated Trade Hunter and Assistant. It bridge the gap between "finding a stock" and "doing the math" for your portfolio.
+Specifically, it scans the market for 61.8% Fibonacci Retracement opportunities—the "Golden Ratio" you use to find deep value in high-quality stocks.
+
+corrected_month - This script, corrected_month, is a Market Crash Detector. Its primary job is to scan the entire Indian stock market to find "victims" of a specific sell-off period.
+Instead of looking for gainers, this script acts like a Bloodhound for Discounts, specifically hunting for stocks that have lost a significant chunk of their value since a specific date.
+
+Cup_and_Handle - This script, Cup_and_Handle, is a specialized technical analysis tool designed to identify the classic "Cup and Handle" chart pattern, which is one of the most reliable bullish continuation patterns used by legendary traders like William O'Neil.
+Instead of looking for crashes, this script hunts for strength—identifying stocks that have consolidated for several months and are now ready to break out to new highs.
+
+long_planner - This script, long_planner, is a comprehensive Portfolio Management and Investment Strategy Tool. Its primary goal is to act as a "Wealth Manager" that looks at what you currently own and compares it against three strategic watchlists to give you a clear plan for the future.
+
+long_planner_Compounders - This script, long_planner_Compounders, is an automated Long-Term Wealth Building Tool. Its primary purpose is to find "Compounders"—high-quality companies that have a history of consistent growth—and determine exactly how much to invest in them while managing risk.
+Think of it as a Digital Fund Manager that filters out "junk" stocks and only keeps the "Gold."
+
+long_planner_Growth - This script, long_planner_Growth, is a highly disciplined Sector-Balanced Growth SIP Engine. It is designed to manage a ₹15,000 monthly investment by identifying the strongest "Growth" stocks while ensuring your portfolio isn't overly concentrated in a single industry (like IT or Chemicals).
+Unlike the "Compounder" script which looks at 5-year stability, this script focuses on Relative Strength—finding which stocks are currently "beating the market."
+
+long_planner_Highrisk - This script, long_planner_Highrisk, is a Dual-Strategy Portfolio Optimizer. It is designed to manage two distinct "buckets" of money simultaneously using two completely different mathematical philosophies: one for safety (Core) and one for explosive growth (High Risk).
+In financial terms, this implements a Core-Satellite Investment Strategy, where the majority of your capital is in stable "Compounders," while a smaller portion is used for high-reward "Moonshots."
+
