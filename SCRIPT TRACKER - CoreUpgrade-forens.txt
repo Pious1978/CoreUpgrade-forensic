@@ -1,0 +1,159 @@
+SCRIPT TRACKER - CoreUpgrade-forensic Root Pipeline
+=====================================================
+Plain-English notes on what each real, active script does - matching
+the same style as your own Alpha1/Obsolete/Script Tracker.txt, so the
+same kind of at-a-glance reference exists for this system too.
+
+Covers the real, verified, currently-active pipeline only. Does not
+cover the separate Canonical OMS Spine architecture (oms/, risk/,
+control_plane/, contracts/ packages, and the build_gate*/certify.py/
+wire_contracts.py files) - that's a real, separate, already-proven
+system with its own history, not something this tracker speaks to.
+Also does not cover Scrap/ (confirmed-dead code) or the diagnostic
+check_*.py scripts written purely as one-off verification tools.
+
+
+DATA LAYER
+----------
+
+bhav_to_parquet_converter.py - Converts the daily NSE bhav copy CSV
+into the parquet_cache your whole system runs on. Preserves any
+Yahoo-backfilled older history rather than overwriting it - only
+regenerates the date range the new bhav copy actually covers.
+
+backfill_from_yahoo_archive.py - The one-time (already-run) tool that
+extended ~2,050 stocks from ~38 days of real history to 1.5-2 years,
+by splicing in older Yahoo Finance data - but only after verifying it
+genuinely agrees with real bhav-copy prices on overlapping dates, so a
+hidden stock split or dividend adjustment can't quietly corrupt the
+data. 8 real splits were correctly caught and rejected this way.
+
+Universe_Updater.py - Intentionally NOT part of the automated pipeline.
+Its live NSE fetch proved unreliable (a partial response once caused it
+to treat 268 actively-trading stocks as delisted and delete real data).
+Keep this manual until it has a sanity check against implausibly large
+single-day universe changes.
+
+
+MARKET INTELLIGENCE
+--------------------
+
+RelativeStrengthEngine.py - Computes each stock's relative-strength
+percentile (how it's performed vs. the market, ranked against the
+FULL universe, not a pre-filtered shortlist - ranking against a small
+pool inflates every score) and a delivery-percentage score. Writes to
+daily_snapshot. Requires 252+ real trading days of history before
+including a stock, specifically to keep newly-listed IPOs from
+distorting the ranking for everyone else.
+
+Market_Regime_Engine.py - Figures out whether the overall market is in
+a genuine uptrend, a recovery, distribution, a real bear phase, or just
+choppy - using real market breadth (% of the whole universe trading
+above their own 20/50/200-day averages) plus the Nifty's own trend.
+This used to be a library-only file with no persistence layer at all -
+nothing ever wrote its output to the database, so every regime-aware
+calculation in the system was silently running on a hardcoded NEUTRAL
+fallback. Now genuinely computes and saves a real regime every run.
+
+
+DISCOVERY ENGINES (run conditionally based on the real regime above)
+----------------------------------------------------------------------
+
+Consolidation_Scanner.py, Hybrid_Alpha_Scanner.py,
+Emerging_Leader_Scanner.py, Earnings_Gap_Scanner.py, Cup_and_Handle.py
+- The five bullish, continuation-pattern scanners. Look for stocks
+building a tight base and getting ready to break out. Run when the
+regime is anything except BEAR or DISTRIBUTION.
+
+Bear_Market_Scanner.py - Fundamentally different philosophy: looks for
+stocks that have genuinely fallen 25-80% from their 52-week high but
+show real signs of stabilizing - oversold RSI, holding a meaningful
+Fibonacci retracement level, and critically, genuine relative strength
+against the index despite the fall (an anti-value-trap filter - a
+stock that's fallen AND is still underperforming the market gets
+rejected, not just any stock that's fallen a lot). Runs instead of the
+five bullish scanners when the regime is BEAR or DISTRIBUTION.
+
+
+RANKING AND CONSENSUS
+-----------------------
+
+Confirmation_Factor_Generator.py - Computes live-relevant confirmation
+factors (intraday/weekly RVOL, pivot extension) for candidates that
+cleared the discovery engines.
+
+core/factor_registry.py - The shared definition of which factors belong
+to which weighted family (relative_strength, institutional, structure,
+confirmation, risk_liquidity) - the single source of truth several
+other scripts pull their weighting scheme from.
+
+Pivot_Consensus_Engine.py - Where multiple scanners might flag the same
+stock with different suggested pivot levels; resolves that down to one
+real, agreed pivot per stock.
+
+Master_Terminal.py - Pulls everything together into one ranked research
+watchlist, with a Composite_Score and Tier. The tier assignment now
+also cross-checks real relative-strength percentile (ranked against the
+whole universe, a much larger and more stable pool) before allowing the
+top tier - stops small-candidate-pool score inflation alone from
+promoting a stock that isn't genuinely strong.
+
+
+RISK AND EXECUTION PLANNING
+-----------------------------
+
+Risk_Positioning_Engine.py - Turns each research candidate into an
+actual, sized trade plan: real 14-day ATR-based stop-loss, a 20%
+per-stock concentration cap, and dynamic profit targets that adjust
+based on the real current market regime and the setup's own quality
+score - rather than the same fixed 2:1/3:1 reward-to-risk on every
+single trade regardless of context.
+
+Execution_Plan_Generator.py - Downstream formatting/output of the risk
+layer's sized plans.
+
+
+LIVE MONITORING AND TOOLS
+----------------------------
+
+Live_Execution_Monitor.py - The main live terminal you actually watch
+during the day. Tracks every candidate's real-time state (approaching,
+testing, valid breakout, stop breached, etc.), a real multi-factor
+conviction score split into Opportunity and Readiness, extension-based
+sizing rejection, candle-body fakeout detection, RVOL-aware messaging
+that distinguishes a heavy-volume stop breach from a possible shakeout,
+Expected-Days-to-Pivot estimates, how long a stock has genuinely been
+sitting in its current state (persists across sessions), a 3-step exit
+plan that tracks whether Target 1 has actually been reached, and a real
+Position Monitor section for whatever you've told Trade_Journal.py
+you're actually holding - using your real entry price, not a
+hypothetical one.
+
+Stock_Lookup.py - Ad-hoc, on-demand analysis for any single ticker,
+whether or not it made the overnight scan - the "something just moved,
+check it right now" tool. Falls back to a genuine 20-day-high pivot
+estimate if the ticker was never flagged by any scanner. Includes a
+volatility-adjusted position-sizing factor and a PULLBACK_ENTRY tag
+(price below EMA20 in an established EMA20>EMA50 uptrend) as a
+complementary read alongside the main pivot-based state. Prints
+guidance on when its read is actually trustworthy during the day
+(avoid the first 15 minutes after open - RVOL is noise before real
+volume builds up).
+
+Trade_Journal.py - Where you log what you actually did: sync today's
+alerts, log a real execution, log a full or partial exit (tracked as
+separate, real exit events so a partial profit at T1 doesn't stay
+invisible to your win-rate statistics until the rest of the position
+eventually closes too), see open positions, see real statistics, or
+log a manual/past entry for anything that was never generated by this
+system's own alerts.
+
+
+ORCHESTRATION
+--------------
+
+Pipeline_DAG_Executor.py - Runs the whole nightly sequence in order,
+with retries and checkpoints. Reads the real, current regime right
+after Market_Regime_Engine.py runs, and picks the bullish discovery
+engines or Bear_Market_Scanner.py accordingly before continuing on to
+ranking, consensus, risk, and execution planning.

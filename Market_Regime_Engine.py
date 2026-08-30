@@ -5,6 +5,12 @@ import glob
 import sqlite3
 from datetime import datetime
 
+try:
+    import yfinance as yf
+    YFINANCE_AVAILABLE = True
+except ImportError:
+    YFINANCE_AVAILABLE = False
+
 from core.config import PARQUET_CACHE_DIR, DB_PATH, NIFTY_BENCHMARK_SYMBOL
 
 
@@ -414,6 +420,8 @@ def migrate_market_regime_schema(db_path):
         ("breadth_200", "REAL"),
         ("advance_decline_ratio", "REAL"),
         ("position_multiplier", "REAL"),
+        ("india_vix", "REAL"),
+        ("vix_adjusted_multiplier", "REAL"),
     ]
 
     for col_name, col_type in needed_columns:
@@ -425,6 +433,48 @@ def migrate_market_regime_schema(db_path):
 
     conn.commit()
     conn.close()
+
+
+def fetch_india_vix():
+    """
+    Live India VIX fetch - genuinely different information from our
+    breadth-based regime detection (options-implied fear/uncertainty,
+    not price/breadth action). Never allowed to break the proven,
+    breadth-based regime calculation if this fails - returns None on
+    any failure, and every caller treats None as "no adjustment,"
+    not an error.
+    """
+
+    if not YFINANCE_AVAILABLE:
+        return None
+
+    try:
+        vix_data = yf.Ticker("^INDIAVIX").history(period="1d")
+        if vix_data.empty:
+            return None
+        return round(float(vix_data["Close"].iloc[-1]), 2)
+    except Exception:
+        return None
+
+
+def calculate_vix_adjustment(vix_value):
+    """
+    Real, documented thresholds based on typical India VIX ranges:
+    <20 normal/calm, 20-25 elevated, >=25 high fear. A modest,
+    transparent reduction layered on top of the breadth-based exposure -
+    not an override of the regime classification itself, since VIX can
+    spike ahead of price/breadth fully reflecting real market stress.
+    """
+
+    if vix_value is None:
+        return 1.0, "VIX unavailable - no adjustment applied"
+
+    if vix_value >= 25:
+        return 0.70, f"VIX {vix_value} - high fear, exposure reduced 30%"
+    elif vix_value >= 20:
+        return 0.85, f"VIX {vix_value} - elevated, exposure reduced 15%"
+    else:
+        return 1.0, f"VIX {vix_value} - normal/calm, no adjustment"
 
 
 def run():
@@ -457,6 +507,11 @@ def run():
     engine = MarketRegimeEngine()
     result = engine.evaluate_market_breadth_and_regime(nifty_df, breadth_data, all_stocks_returns)
 
+    print("[*] Fetching real-time India VIX for a complementary volatility check...")
+    india_vix = fetch_india_vix()
+    vix_factor, vix_note = calculate_vix_adjustment(india_vix)
+    vix_adjusted_multiplier = round(result["position_multiplier"] * vix_factor, 3)
+
     today = datetime.now().strftime("%Y-%m-%d")
 
     migrate_market_regime_schema(DB_PATH)
@@ -464,19 +519,22 @@ def run():
     conn = sqlite3.connect(DB_PATH)
     conn.execute("""
         INSERT OR REPLACE INTO market_regime
-        (date, regime, confidence, composite_score, breadth_20, breadth_50, breadth_200, advance_decline_ratio, position_multiplier)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (date, regime, confidence, composite_score, breadth_20, breadth_50, breadth_200, advance_decline_ratio, position_multiplier, india_vix, vix_adjusted_multiplier)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         today, result["regime"], result["confidence"], result["composite_score"],
         result["breadth_20"], result["breadth_50"], result["breadth_200"],
-        result["advance_decline_ratio"], result["position_multiplier"]
+        result["advance_decline_ratio"], result["position_multiplier"],
+        india_vix, vix_adjusted_multiplier
     ))
     conn.commit()
     conn.close()
 
     print(f"[+] Regime: {result['regime']}  (confidence: {result['confidence']}, composite: {result['composite_score']})")
     print(f"[+] Breadth: 20d={result['breadth_20']}%  50d={result['breadth_50']}%  200d={result['breadth_200']}%")
-    print(f"[+] Exposure multiplier: {result['position_multiplier']}")
+    print(f"[+] Breadth-based exposure multiplier: {result['position_multiplier']}")
+    print(f"[+] India VIX: {india_vix if india_vix is not None else 'unavailable'}  -  {vix_note}")
+    print(f"[+] Final, VIX-adjusted exposure multiplier: {vix_adjusted_multiplier}")
     print("=" * 70)
 
 

@@ -21,6 +21,7 @@ import pandas as pd
 
 from core.config import DB_PATH
 from core.technical_indicators import compute_atr
+from core.sector_map import get_sector
 
 
 # Base R:R stays 2:1/3:1 (the original, reasonable baseline) - real
@@ -89,8 +90,20 @@ class RiskPositioningEngine:
 
             row = df.iloc[0]
 
+            # Prefer the VIX-adjusted multiplier when available - a real
+            # complementary volatility cross-check on top of the
+            # breadth-based exposure. Falls back to the plain
+            # breadth-based value if VIX data wasn't available that day
+            # (older rows, or a failed live fetch), never breaks.
+            vix_adjusted = row.get("vix_adjusted_multiplier")
+
+            if vix_adjusted is not None and pd.notna(vix_adjusted):
+                multiplier = float(vix_adjusted)
+            else:
+                multiplier = float(row.get("position_multiplier", 0.25))
+
             return (
-                float(row.get("position_multiplier", 0.25)),
+                multiplier,
                 str(row.get("regime", "NEUTRAL"))
             )
 
@@ -200,6 +213,40 @@ class RiskPositioningEngine:
             self.risk_per_trade_pct
         )
 
+        # Portfolio-wide governance - real gaps found while investigating
+        # an unconnected paper-trading cluster tonight (Portfolio_Risk_
+        # Controller.py had a MAX_POSITIONS concept nothing else in this
+        # system had). Since this script generates candidates, not
+        # actual executions, it can't know which ones you'll take - so
+        # rather than silently drop specific candidates, it checks your
+        # REAL current open positions (from trade_journal) and warns
+        # clearly if you're already at or near a sensible ceiling.
+        MAX_POSITIONS = 10
+        MAX_PER_SECTOR = 3
+
+        try:
+            open_count = conn.execute(
+                "SELECT COUNT(*) FROM trade_journal WHERE status='EXECUTED'"
+            ).fetchone()[0]
+        except Exception:
+            open_count = 0
+
+        if open_count >= MAX_POSITIONS:
+            print(f"[!] PORTFOLIO WARNING: {open_count} real open positions already logged "
+                  f"(ceiling {MAX_POSITIONS}) - consider whether taking new positions tonight makes sense.")
+        elif open_count >= MAX_POSITIONS * 0.8:
+            print(f"[*] {open_count} real open positions logged - approaching the {MAX_POSITIONS} ceiling.")
+
+        # Sector concentration - flags, never excludes. A candidate that
+        # would push a sector past MAX_PER_SECTOR is still sized and
+        # included normally; it just carries a clear warning so you can
+        # weigh it yourself, rather than making a genuinely good setup
+        # silently disappear from the board. Only actually protects
+        # candidates within our curated sector mapping (core/sector_map.py,
+        # now expanded to 212 real, NSE-sourced stocks) - anything else
+        # returns UNKNOWN and never gets this warning.
+        sector_counts = {}
+
         output = []
 
         for _, row in df.iterrows():
@@ -207,6 +254,15 @@ class RiskPositioningEngine:
 
             if pd.isna(pivot):
                 continue
+
+            sector = get_sector(row["Ticker"])
+
+            sector_warning = None
+            if sector != "UNKNOWN" and sector_counts.get(sector, 0) >= MAX_PER_SECTOR:
+                sector_warning = (
+                    f"SECTOR CONCENTRATION - {sector_counts[sector]} other {sector} "
+                    f"candidates already in this batch"
+                )
 
             #
             # ATR - try a real, stock-specific calculation first, using
@@ -256,6 +312,9 @@ class RiskPositioningEngine:
             if shares <= 0:
                 continue
 
+            if sector != "UNKNOWN":
+                sector_counts[sector] = sector_counts.get(sector, 0) + 1
+
             t1_mult, t2_mult = calculate_dynamic_rr_multipliers(
                 regime,
                 row.get("Composite_Score", 0.5)
@@ -264,6 +323,12 @@ class RiskPositioningEngine:
             output.append({
                 "ticker":
                 row["Ticker"],
+
+                "sector":
+                sector,
+
+                "sector_warning":
+                sector_warning,
 
                 "pivot":
                 round(

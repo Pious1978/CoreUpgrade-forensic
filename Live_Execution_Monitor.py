@@ -1174,6 +1174,8 @@ def run_live_monitor(total_capital):
 
                 "sizing_rejected":sizing_rejected,
 
+                "sector_warning":row.get("sector_warning"),
+
                 "body_ratio":body_ratio,
 
                 "t1_hit":t1_hit_now,
@@ -1383,6 +1385,12 @@ def run_live_monitor(total_capital):
 
                 print(
                     f"  ⚠ SIZING REJECTED - too extended or remaining R too low, wait for a pullback"
+                )
+
+            if x.get('sector_warning'):
+
+                print(
+                    f"  ⚠ {x['sector_warning']} - still worth considering, just be aware of the concentration"
                 )
 
             if x['capital_pct'] is not None:
