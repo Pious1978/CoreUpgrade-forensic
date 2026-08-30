@@ -142,7 +142,80 @@ def compute_fallback_pivot_and_stop(ticker, current_price, atr_abs):
         return None, None
 
 
-def lookup(ticker):
+def compute_ema50(ticker):
+    """
+    Local, small calculation - EMA20 already comes from
+    get_technical_context(), but EMA50 isn't part of that shared
+    function. Kept separate here rather than modifying that shared
+    function, since EMA50 is only needed for this tool's pullback
+    classification, not anywhere else in the live board.
+    """
+
+    import os
+    from core.config import PARQUET_CACHE_DIR
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+
+    if not os.path.exists(path):
+        return None
+
+    try:
+        df = pd.read_parquet(path).sort_values("date")
+
+        if len(df) < 55:
+            return None
+
+        return round(float(df["close"].ewm(span=50, adjust=False).mean().iloc[-1]), 2)
+
+    except Exception:
+        return None
+
+
+def classify_pullback(price, ema20, ema50):
+    """
+    Adapted from Alpha1's real Trade_Execution_Engine.py - a
+    complementary classification to our own pivot-based state machine
+    (BASE_BUILDING/APPROACHING/TESTING/breakout states, all relative to
+    a pattern-derived pivot). This recognizes something different: a
+    stock in a genuine uptrend (EMA20 > EMA50) that has pulled back
+    below EMA20 - the classic "buy the dip in an established trend"
+    setup, which our pivot-relative state machine has no equivalent for.
+    """
+
+    if ema20 is None or ema50 is None:
+        return None
+
+    if ema20 > ema50 and price < ema20:
+        return "PULLBACK_ENTRY - price below EMA20 in an established uptrend (EMA20 > EMA50), classic buy-the-dip setup"
+
+    return None
+
+
+def get_size_factor(atr_pct):
+    """
+    Adapted from Alpha1's real Trade_Execution_Engine.py - a genuine
+    second layer of risk control on top of the stop-distance-based
+    sizing we already do. A wider stop on a volatile stock already
+    reduces share count once; this additionally reduces it further for
+    genuinely high-ATR% stocks, and allows slightly larger size for
+    genuinely low-ATR% ones, rather than trusting stop-distance math
+    alone.
+    """
+
+    if atr_pct is None:
+        return 1.0
+
+    atr_fraction = atr_pct / 100
+
+    if atr_fraction > 0.05:
+        return 0.75
+    elif atr_fraction < 0.02:
+        return 1.25
+    else:
+        return 1.0
+
+
+def lookup(ticker, capital=None, risk_pct=None):
 
     ticker = ticker.upper().strip().replace(".NS", "")
 
@@ -250,7 +323,27 @@ def lookup(ticker):
     print(f"  Status           : {real_state}")
     print(f"  Read             : {read_text}")
 
+    ema50 = compute_ema50(ticker)
+    pullback_note = classify_pullback(price, tech.get("ema20"), ema50)
+    if pullback_note:
+        print(f"  Also             : {pullback_note}")
+
     print(f"  Market Regime    : {regime}  (exposure {int(multiplier*100)}%)")
+
+    if capital is not None and risk_pct is not None and risk > 0:
+
+        risk_amt = capital * (risk_pct / 100)
+        size_factor = get_size_factor(atr_pct)
+        qty = int((risk_amt * size_factor) / risk)
+        capital_used = round(qty * price, 2)
+
+        print("-" * 68)
+        print(f"  Suggested Qty    : {qty} shares  (Rs{capital_used:,.0f} used)")
+
+        if size_factor != 1.0:
+            note = "reduced - high volatility (ATR)" if size_factor < 1.0 else "increased - low volatility (ATR)"
+            print(f"    -> size factor {size_factor}x applied ({note})")
+
     print("=" * 68)
 
     conn.close()
@@ -259,6 +352,30 @@ def lookup(ticker):
 if __name__ == "__main__":
 
     print("Stock Lookup - type a ticker for an instant real analysis, or 'exit' to quit.")
+    print()
+    print("When to trust this tool's read:")
+    print("  - Avoid the first 15 min after open (9:15-9:30) - RVOL is unreliable")
+    print("    before real volume has built up; a dramatic-looking ratio here is")
+    print("    often just opening-auction noise, not a genuine signal.")
+    print("  - ~9:30-9:45 onward is the first genuinely trustworthy checkpoint.")
+    print("  - Best used reactively - the moment something catches your eye or")
+    print("    triggers an alert - rather than on a fixed schedule.")
+    print("  - If sweeping proactively, ~11:30-12:00 or ~2:30-3:00 are cleaner")
+    print("    windows than midday, which often sees a real lull.")
+
+    capital = None
+    risk_pct = None
+
+    size_answer = input("\nWant position sizing too? Enter capital (Rs), or blank to skip: ").strip()
+
+    if size_answer:
+        try:
+            capital = float(size_answer)
+            risk_pct = float(input("Risk per trade as a % (e.g. 1 for 1%): ").strip())
+        except ValueError:
+            print("Invalid number - continuing without position sizing.")
+            capital = None
+            risk_pct = None
 
     while True:
 
@@ -270,4 +387,4 @@ if __name__ == "__main__":
         if not user_input:
             continue
 
-        lookup(user_input)
+        lookup(user_input, capital=capital, risk_pct=risk_pct)
