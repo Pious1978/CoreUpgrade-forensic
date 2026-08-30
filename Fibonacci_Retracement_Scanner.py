@@ -30,6 +30,16 @@ ZONE_TOLERANCE_PCT = 5.0
 MIN_PRICE = 20
 MIN_VOLUME = 200000
 
+# A stop tighter than typical single-day noise isn't a meaningful risk
+# boundary - real ATR% readings seen across this system tonight
+# commonly range 1.5-3%, so a stop closer than this could easily be hit
+# by ordinary daily movement, not a genuine trend reversal. An
+# eye-catching R:R built on top of a stop this tight is an artifact,
+# not real edge - surfaced directly by real output tonight (SAMHI
+# showed a 68x "R:R" purely because its recent 30-day low happened to
+# sit Rs0.45 from the current price).
+MIN_RISK_PCT = 2.0
+
 
 def load_universe():
     """Reuses the same NSE_EQ.csv universe file every other scanner in
@@ -133,6 +143,12 @@ def analyze_stock(ticker):
         reward_per_share = round(target - current_price, 2)
         rr = round(reward_per_share / risk_per_share, 2) if risk_per_share > 0 else None
 
+        risk_pct = round((risk_per_share / current_price) * 100, 2) if current_price > 0 else None
+        tight_stop_warning = (
+            f"TIGHT STOP - only {risk_pct}% away, R:R may be inflated and unreliable"
+            if risk_pct is not None and risk_pct < MIN_RISK_PCT else None
+        )
+
         return {
             "ticker": ticker,
             "current_price": round(current_price, 2),
@@ -143,6 +159,8 @@ def analyze_stock(ticker):
             "stop_loss": recent_low,
             "target": target,
             "rr": rr,
+            "risk_pct": risk_pct,
+            "tight_stop_warning": tight_stop_warning,
         }
 
     except Exception:
@@ -182,6 +200,7 @@ def run():
     result_df["date"] = today
 
     conn = sqlite3.connect(DB_PATH)
+
     conn.execute("""
         CREATE TABLE IF NOT EXISTS fibonacci_retracement_candidates (
             ticker TEXT,
@@ -197,6 +216,18 @@ def run():
             PRIMARY KEY (ticker, date)
         )
     """)
+
+    # Idempotent, safe migration - CREATE TABLE IF NOT EXISTS only helps
+    # for a brand-new table; if the table already exists from a run
+    # before these two columns existed, this adds them without
+    # disturbing existing rows.
+    for col_name, col_type in [("risk_pct", "REAL"), ("tight_stop_warning", "TEXT")]:
+        try:
+            conn.execute(f"ALTER TABLE fibonacci_retracement_candidates ADD COLUMN {col_name} {col_type}")
+        except sqlite3.OperationalError as e:
+            if "duplicate column" not in str(e):
+                raise
+
     conn.execute("DELETE FROM fibonacci_retracement_candidates WHERE date = ?", (today,))
     result_df.to_sql("fibonacci_retracement_candidates", conn, if_exists="append", index=False)
     conn.close()
@@ -206,6 +237,15 @@ def run():
 
     print(f"\n[+] {len(result_df)} stocks found at their 61.8% retracement level:")
     print(result_df.to_string(index=False))
+
+    tight_stops = result_df[result_df["tight_stop_warning"].notna()]
+
+    if not tight_stops.empty:
+        print(f"\n[!] {len(tight_stops)} stock(s) have a suspiciously tight stop - "
+              f"their R:R numbers above are likely inflated, not real edge:")
+        for _, row in tight_stops.iterrows():
+            print(f"    {row['ticker']}: {row['tight_stop_warning']}")
+
     print(f"\n[+] Written to fibonacci_retracement_candidates and {excel_path}")
     print("=" * 70)
 
