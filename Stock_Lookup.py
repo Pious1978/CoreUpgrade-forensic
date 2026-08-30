@@ -215,6 +215,76 @@ def get_size_factor(atr_pct):
         return 1.0
 
 
+def fetch_quick_fundamentals(ticker):
+    """
+    Fast, single-call fundamentals context for a spiking stock - NOT the
+    deep Compounder_Scanner.py quality gate. This is informational
+    context alongside the existing technical read, never a pass/fail
+    gate - a spiking stock can be a legitimate momentum trade even
+    without "compounder" quality. Returns None on any failure so a
+    fundamentals hiccup never blocks the rest of the lookup.
+    """
+
+    try:
+        import yfinance as yf
+    except ImportError:
+        return None
+
+    try:
+        info = yf.Ticker(f"{ticker.upper()}.NS").info
+
+        if not info:
+            return None
+
+        return {
+            "trailing_pe": info.get("trailingPE"),
+            "forward_pe": info.get("forwardPE"),
+            "price_to_book": info.get("priceToBook"),
+            "debt_to_equity": info.get("debtToEquity"),
+            "profit_margin": info.get("profitMargins"),
+            "roe": info.get("returnOnEquity"),
+        }
+
+    except Exception:
+        return None
+
+
+def assess_fundamentals(fundamentals):
+    """
+    Lightweight, informational notes only - never blocks or rejects.
+    Deliberately more lenient than Compounder_Scanner.py's strict
+    quality gate (12% ROE / 150% debt / 5% margin), since the point
+    here is quick context on a fast-moving stock, not a full
+    quality-investing screen.
+    """
+
+    if not fundamentals:
+        return ["Fundamentals unavailable"]
+
+    notes = []
+
+    margin = fundamentals.get("profit_margin")
+    if margin is not None and margin < 0:
+        notes.append("LOSING MONEY - exercise extra caution chasing this move")
+
+    debt = fundamentals.get("debt_to_equity")
+    if debt is not None and debt > 300:
+        notes.append(f"HIGH DEBT (D/E {debt}) - balance sheet risk, verify before sizing up")
+
+    trailing_pe = fundamentals.get("trailing_pe")
+    forward_pe = fundamentals.get("forward_pe")
+    if trailing_pe and forward_pe and trailing_pe > 0:
+        if forward_pe < trailing_pe * 0.8:
+            notes.append(f"Forward PE ({forward_pe}) well below trailing ({trailing_pe}) - earnings expected to grow")
+        elif forward_pe > trailing_pe * 1.2:
+            notes.append(f"Forward PE ({forward_pe}) well above trailing ({trailing_pe}) - earnings expected to decline")
+
+    if not notes:
+        notes.append("No red flags from quick fundamentals check")
+
+    return notes
+
+
 def lookup(ticker, capital=None, risk_pct=None):
 
     ticker = ticker.upper().strip().replace(".NS", "")
@@ -327,6 +397,19 @@ def lookup(ticker, capital=None, risk_pct=None):
     pullback_note = classify_pullback(price, tech.get("ema20"), ema50)
     if pullback_note:
         print(f"  Also             : {pullback_note}")
+
+    print("-" * 68)
+    fundamentals = fetch_quick_fundamentals(ticker)
+    fund_notes = assess_fundamentals(fundamentals)
+
+    if fundamentals:
+        pe_str = f"{fundamentals.get('trailing_pe')}" if fundamentals.get("trailing_pe") else "N/A"
+        pb_str = f"{fundamentals.get('price_to_book')}" if fundamentals.get("price_to_book") else "N/A"
+        roe_str = f"{round(fundamentals.get('roe')*100, 1)}%" if fundamentals.get("roe") else "N/A"
+        print(f"  Quick Fundamentals: PE {pe_str}  |  PB {pb_str}  |  ROE {roe_str}")
+
+    for note in fund_notes:
+        print(f"    -> {note}")
 
     print(f"  Market Regime    : {regime}  (exposure {int(multiplier*100)}%)")
 
