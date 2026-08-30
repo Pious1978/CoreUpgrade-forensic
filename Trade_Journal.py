@@ -14,6 +14,8 @@ including trades you decided to skip.
 """
 
 import sqlite3
+import os
+import pandas as pd
 from datetime import datetime
 
 from core.config import DB_PATH
@@ -244,6 +246,141 @@ def log_manual_entry():
     print(f"[+] Logged manual entry for {ticker}: {entry_shares} shares at Rs{entry_price} on {entry_date}.")
 
 
+def load_portfolio_csv(file_path):
+    """
+    Reads a broker-exported holdings CSV - adapted from Alpha1's real,
+    working portfolio_loader.py. Doesn't assume one fixed broker's
+    export format; searches for keyword patterns in column names
+    instead (STOCK/SYMBOL/INSTRUMENT/SECURITY/TRADING for the ticker,
+    QTY/QUANTITY for quantity, PRICE/AVG/COST for average price), so it
+    should work across different brokers' exports, not just one.
+    """
+
+    if not os.path.exists(file_path):
+        print(f"[-] File not found: {file_path}")
+        return pd.DataFrame(columns=["Stock", "Qty", "AvgPrice"])
+
+    try:
+        df = pd.read_csv(file_path)
+
+        # Some broker exports have a title row before the real header
+        if df.shape[1] == 1:
+            df = pd.read_csv(file_path, skiprows=1)
+
+        print(f"[*] Detected columns: {list(df.columns)}")
+
+        stock_col = qty_col = price_col = None
+
+        for col in df.columns:
+            col_upper = str(col).upper()
+
+            if stock_col is None and any(x in col_upper for x in ["STOCK", "SYMBOL", "INSTRUMENT", "SECURITY", "TRADING"]):
+                stock_col = col
+
+            if qty_col is None and any(x in col_upper for x in ["QTY", "QUANTITY"]):
+                qty_col = col
+
+            if price_col is None and any(x in col_upper for x in ["PRICE", "AVG", "COST"]):
+                price_col = col
+
+        if stock_col is None:
+            print("[-] Could not detect a stock/symbol column automatically.")
+            return pd.DataFrame(columns=["Stock", "Qty", "AvgPrice"])
+
+        print(f"[+] Using columns - Stock: {stock_col}, Qty: {qty_col or 'not found, defaulting to 0'}, "
+              f"Price: {price_col or 'not found, defaulting to 0'}")
+
+        df_out = pd.DataFrame()
+        df_out["Stock"] = df[stock_col].astype(str).str.upper().str.strip()
+        df_out["Qty"] = pd.to_numeric(df[qty_col], errors="coerce").fillna(0) if qty_col else 0
+        df_out["AvgPrice"] = pd.to_numeric(df[price_col], errors="coerce").fillna(0) if price_col else 0
+
+        df_out = df_out[(df_out["Stock"] != "NAN") & (df_out["Stock"] != "")]
+        df_out = df_out.drop_duplicates(subset=["Stock"], keep="last")
+        df_out = df_out.reset_index(drop=True)
+
+        return df_out
+
+    except Exception as e:
+        print(f"[-] Error loading portfolio CSV: {e}")
+        return pd.DataFrame(columns=["Stock", "Qty", "AvgPrice"])
+
+
+def log_bulk_import():
+    """
+    Bulk-imports your entire current portfolio from a broker-exported
+    holdings CSV in one shot - complements log_manual_entry()'s
+    one-at-a-time entry. Real, honest limitation: broker exports
+    typically don't include the original entry date, so it defaults to
+    today - correct manually afterward if you know the real date and it
+    matters to you (e.g. for hold-period tracking).
+    """
+
+    file_path = input("Path to your broker holdings CSV: ").strip()
+
+    portfolio = load_portfolio_csv(file_path)
+
+    if portfolio.empty:
+        print("[-] No holdings found to import.")
+        return
+
+    print(f"\n[*] Found {len(portfolio)} holdings in the file:")
+    for _, row in portfolio.iterrows():
+        print(f"  {row['Stock']}: {row['Qty']} shares @ Rs{row['AvgPrice']}")
+
+    confirm = input(f"\nImport all {len(portfolio)} positions? (y/n): ").strip().lower()
+
+    if confirm != "y":
+        print("Cancelled - nothing imported.")
+        return
+
+    conn = sqlite3.connect(DB_PATH)
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    imported = 0
+    skipped = 0
+
+    for _, row in portfolio.iterrows():
+
+        ticker = row["Stock"]
+        qty = int(row["Qty"])
+        avg_price = float(row["AvgPrice"])
+
+        if qty <= 0 or avg_price <= 0:
+            print(f"  [-] Skipping {ticker} - invalid quantity or price in the file.")
+            skipped += 1
+            continue
+
+        existing = conn.execute(
+            "SELECT COUNT(*) FROM trade_journal WHERE UPPER(ticker)=? AND status='EXECUTED'",
+            (ticker,)
+        ).fetchone()[0]
+
+        if existing:
+            print(f"  [-] Skipping {ticker} - already logged as an open position.")
+            skipped += 1
+            continue
+
+        conn.execute("""
+            INSERT INTO trade_journal
+            (ticker, pattern, alert_date, planned_pivot, planned_stop,
+             planned_target_1, planned_target_2, planned_shares, status,
+             entry_price, entry_date, entry_shares)
+            VALUES (?, 'BROKER_IMPORT', ?, ?, 0, 0, 0, ?, 'EXECUTED', ?, ?, ?)
+        """, (ticker, today, avg_price, qty, avg_price, today, qty))
+
+        imported += 1
+
+    conn.commit()
+    conn.close()
+
+    print(f"\n[+] Imported {imported} positions, skipped {skipped}.")
+
+    if imported > 0:
+        print("[*] Entry date defaulted to today since broker exports don't include the "
+              "original entry date - correct manually if you know the real date.")
+
+
 def log_exit():
 
     conn = sqlite3.connect(DB_PATH)
@@ -436,7 +573,8 @@ def main_menu():
         print("4. Show open positions")
         print("5. Show statistics")
         print("6. Log a manual/past entry (not from an alert)")
-        print("7. Exit")
+        print("7. Bulk-import your portfolio from a broker CSV")
+        print("8. Exit")
 
         choice = input("\nChoice: ").strip()
 
@@ -453,6 +591,8 @@ def main_menu():
         elif choice == "6":
             log_manual_entry()
         elif choice == "7":
+            log_bulk_import()
+        elif choice == "8":
             break
         else:
             print("Invalid choice.")
