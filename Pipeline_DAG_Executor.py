@@ -415,6 +415,56 @@ Attempt {attempt}/{MAX_RETRIES}
                 ) from e
 
 
+def run_stage_isolated(script):
+    """
+    Real, discovered vulnerability: run_stage() raises after exhausting
+    retries, and that exception propagates all the way up - meaning a
+    single crashed scanner would previously halt the ENTIRE remaining
+    pipeline (the other 4 scanners, Master_Terminal.py, Risk_
+    Positioning_Engine.py, everything), even though the other scanners
+    are genuinely independent of each other and would have worked fine.
+
+    Used only for the discovery-engine scanners specifically - NOT for
+    pre-regime or post-discovery stages, which have real sequential
+    dependencies where halting on failure is actually correct (a broken
+    Master_Terminal.py genuinely should stop Risk_Positioning_Engine.py
+    from running on bad input).
+
+    Adapted from the real EngineResult/registry pattern found in Alpha1
+    (Standard_Engine_Types.py + Engine_Registry.py) - a uniform result
+    shape with per-engine error isolation, applied here at the scanner-
+    stage level rather than the per-stock level, matching how our real
+    scanners are actually structured (each a standalone script writing
+    to its own table, not a per-stock evaluate() function).
+
+    Returns a uniform result dict rather than raising, so the caller
+    can continue to the next scanner and report a clear summary at the
+    end of the cycle.
+    """
+
+    start = time.time()
+
+    try:
+        run_stage(script)
+
+        return {
+            "scanner": script,
+            "verdict": "SUCCESS",
+            "execution_time_s": round(time.time() - start, 2),
+            "commentary": "Completed normally.",
+        }
+
+    except Exception as e:
+
+        logger.warning(f"[ISOLATED] {script} failed - continuing to the next scanner. Error: {e}")
+
+        return {
+            "scanner": script,
+            "verdict": "ERROR",
+            "execution_time_s": round(time.time() - start, 2),
+            "commentary": f"Crash: {e}",
+        }
+
 
 # ==============================================================
 # LIVE MONITOR MANAGEMENT
@@ -542,12 +592,22 @@ def execute_pipeline_dag():
             discovery_stages = BULLISH_DISCOVERY_STAGES
 
 
+        scanner_results = []
+
         for stage in discovery_stages:
 
-            run_stage(
-                stage
-            )
+            result = run_stage_isolated(stage)
+            scanner_results.append(result)
 
+        logger.info("SCANNER STAGE SUMMARY")
+        for r in scanner_results:
+            logger.info(f"  {r['verdict']:<8} {r['scanner']:<35} "
+                        f"{r['execution_time_s']}s  {r['commentary']}")
+
+        failed_scanners = [r for r in scanner_results if r["verdict"] == "ERROR"]
+        if failed_scanners:
+            logger.warning(f"{len(failed_scanners)} of {len(scanner_results)} scanners failed this cycle - "
+                            f"continuing with whatever candidates the rest produced.")
 
         for stage in POST_DISCOVERY_STAGES:
 
