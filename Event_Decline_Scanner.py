@@ -117,6 +117,25 @@ def analyze_decline(ticker, anchor_date):
         return None
 
 
+def parse_date_flexible(date_str):
+    """
+    Tries ISO format (YYYY-MM-DD) first, then falls back to day-first
+    parsing (DD-MM-YYYY or DD/MM/YYYY, the common Indian convention)
+    before giving up. Returns None on genuine failure rather than
+    raising, so the caller can retry cleanly.
+    """
+
+    try:
+        return pd.Timestamp(date_str)
+    except Exception:
+        pass
+
+    try:
+        return pd.to_datetime(date_str, dayfirst=True)
+    except Exception:
+        return None
+
+
 def run(anchor_date_str=None, drop_threshold=-12.0):
 
     print()
@@ -125,13 +144,22 @@ def run(anchor_date_str=None, drop_threshold=-12.0):
     print("=" * 70)
 
     if anchor_date_str is None:
-        anchor_date_str = input("Anchor date to measure decline from (YYYY-MM-DD): ").strip()
 
-    try:
-        anchor_date = pd.Timestamp(anchor_date_str)
-    except Exception:
-        print(f"[-] Invalid date: {anchor_date_str}")
-        return
+        anchor_date = None
+
+        while anchor_date is None:
+            anchor_date_str = input("Anchor date to measure decline from (YYYY-MM-DD or DD-MM-YYYY): ").strip()
+            anchor_date = parse_date_flexible(anchor_date_str)
+
+            if anchor_date is None:
+                print(f"[-] Could not understand '{anchor_date_str}' as a date - try again.")
+
+    else:
+        anchor_date = parse_date_flexible(anchor_date_str)
+
+        if anchor_date is None:
+            print(f"[-] Invalid date: {anchor_date_str}")
+            return
 
     if drop_threshold is None:
         threshold_input = input("Minimum decline % to flag (e.g. 12 for -12%, blank for default 12): ").strip()
