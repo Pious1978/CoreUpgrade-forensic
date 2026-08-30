@@ -53,6 +53,31 @@ from datetime import datetime
 from core.config import DB_PATH
 
 
+def get_current_regime():
+    """
+    Reads the real, current regime written by Market_Regime_Engine.py
+    (which runs as the first stage below, before this function is
+    called for the discovery-engine stages further down). Falls back to
+    NEUTRAL only if genuinely no regime data exists yet - matches the
+    same fallback convention already used in Risk_Positioning_Engine.py
+    and Live_Execution_Monitor.py.
+    """
+
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.execute("SELECT regime FROM market_regime ORDER BY date DESC LIMIT 1")
+        row = cur.fetchone()
+        conn.close()
+
+        if row is None:
+            return "NEUTRAL"
+
+        return row[0]
+
+    except Exception:
+        return "NEUTRAL"
+
+
 
 # ==============================================================
 # LOGGER
@@ -106,7 +131,7 @@ RETRY_DELAY = 5
 
 
 
-PIPELINE_STAGES = [
+PRE_REGIME_STAGES = [
 
     # Data Layer
     #
@@ -125,9 +150,14 @@ PIPELINE_STAGES = [
 
     "Market_Regime_Engine.py",
 
+]
 
 
-    # Discovery Engines
+# Bullish continuation setups (a stock about to break out of a tight
+# base) - genuinely suited to trending/neutral/recovering markets, but
+# these patterns are far less reliable when the broader market itself
+# is falling.
+BULLISH_DISCOVERY_STAGES = [
 
     "Consolidation_Scanner.py",
 
@@ -139,7 +169,24 @@ PIPELINE_STAGES = [
 
     "Cup_and_Handle.py",
 
+]
 
+
+# Deep-pullback value/mean-reversion setups - the fundamentally
+# different signal type genuinely suited to BEAR/DISTRIBUTION regimes,
+# where the bullish continuation scanners above are chasing a pattern
+# that doesn't hold up in a falling market. Kept separate rather than
+# run alongside the bullish scanners, matching Alpha1's own real,
+# working precedent (their Bear_Market_Scanner.py also produces its own
+# separate output, not merged into the same momentum pipeline).
+BEAR_REGIME_DISCOVERY_STAGES = [
+
+    "Bear_Market_Scanner.py",
+
+]
+
+
+POST_DISCOVERY_STAGES = [
 
     # Ranking Layer
 
@@ -465,8 +512,44 @@ def execute_pipeline_dag():
     try:
 
 
-        for stage in PIPELINE_STAGES:
+        for stage in PRE_REGIME_STAGES:
 
+            run_stage(
+                stage
+            )
+
+
+        # Market_Regime_Engine.py just ran above as part of
+        # PRE_REGIME_STAGES, so this reads today's genuinely fresh
+        # regime, not a stale value from a previous run.
+        current_regime = get_current_regime()
+
+        logger.info(
+            f"Current regime: {current_regime}"
+        )
+
+        if current_regime in ("BEAR", "DISTRIBUTION"):
+
+            logger.info(
+                "Regime is BEAR/DISTRIBUTION - running Bear_Market_Scanner.py "
+                "instead of the bullish continuation scanners this cycle."
+            )
+
+            discovery_stages = BEAR_REGIME_DISCOVERY_STAGES
+
+        else:
+
+            discovery_stages = BULLISH_DISCOVERY_STAGES
+
+
+        for stage in discovery_stages:
+
+            run_stage(
+                stage
+            )
+
+
+        for stage in POST_DISCOVERY_STAGES:
 
             run_stage(
                 stage
