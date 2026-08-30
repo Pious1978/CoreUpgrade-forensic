@@ -45,7 +45,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from core.config import DB_PATH, PARQUET_CACHE_DIR
 from core.Live_Price_Engine import LivePriceEngine
 from core.Execution_State_Machine import evaluate_trade
-from core.technical_indicators import get_technical_context, compute_weekly_rvol
+from core.technical_indicators import get_technical_context, compute_weekly_rvol, compute_atr
+import math
 
 
 INVALIDATED_STATES = ("STOP_BREACHED", "FAILED_BREAKOUT")
@@ -490,6 +491,37 @@ def calculate_conviction_score(
     )
 
     return conviction, opportunity, readiness
+
+
+def calculate_edp(distance_pct, atr_pct):
+    """
+    Expected Days to Pivot - how many trading days, at the stock's own
+    ATR-implied daily movement, it might take to close the gap to pivot.
+    Only meaningful for stocks that haven't triggered yet (APPROACHING,
+    BASE_BUILDING, TESTING) - a stock already at/past its pivot has
+    already closed this gap.
+
+    Formula verified against real output - exact match on real stocks
+    (FEDERALBNK: 3.82 expected days -> "4-6 Days", ANANDRATHI: 1.204
+    expected days -> "2 Trading Days"), and re-verified directly against
+    real APPROACHING and BASE_BUILDING stocks in this system's own
+    database (APPROACHING stocks structurally cluster at "1 Trading Day"
+    given the state's tight 0-3% definition combined with typical real
+    ATR of 2-3% - genuine differentiation shows up in BASE_BUILDING,
+    which has no upper bound on distance).
+    """
+
+    if atr_pct is None or atr_pct <= 0:
+        return None
+
+    expected_days = abs(distance_pct) / (atr_pct + 1e-8)
+
+    if expected_days <= 1.2:
+        return "1 Trading Day"
+    elif expected_days <= 3.0:
+        return f"{math.ceil(expected_days)} Trading Days"
+    else:
+        return f"{math.ceil(expected_days)}-{math.ceil(expected_days*1.5)} Days"
 
 
 def fetch_time_in_state(conn):
@@ -987,6 +1019,10 @@ def run_live_monitor(total_capital):
             tech = get_technical_context(clean_ticker)
             weekly_rvol = compute_weekly_rvol(clean_ticker)
 
+            _, atr_pct = compute_atr(clean_ticker)
+
+            edp = calculate_edp(distance, atr_pct)
+
             # Remaining R and target-distance percentages only make sense
             # while price is still above the stop - if the stop has been
             # breached, there is no "remaining" risk-reward left to show.
@@ -1146,6 +1182,8 @@ def run_live_monitor(total_capital):
 
                 "opportunity":opportunity,
 
+                "edp":edp,
+
                 "readiness":readiness
 
             })
@@ -1281,6 +1319,12 @@ def run_live_monitor(total_capital):
                 + (f"  (for {x['time_in_state']})" if x['time_in_state'] else "")
             )
 
+            if x['state'] in ("APPROACHING", "BASE_BUILDING", "TESTING") and x['edp']:
+
+                print(
+                    f"  Expected Days to Pivot : {x['edp']}"
+                )
+
             print(
                 f"  Price        : Rs{x['price']:.2f}  |  Pivot: Rs{x['pivot']:.2f}  |  Ext: {x['distance']:+.2f}%"
             )
@@ -1361,19 +1405,21 @@ def run_live_monitor(total_capital):
                     f"  Max Loss     : Rs{x['max_loss']:,.0f}"
                 )
 
-            print("-"*68)
+            if not x['sizing_rejected']:
 
-            if x['t1_hit']:
+                print("-"*68)
 
-                print(
-                    f"  Exit Strategy : T1 REACHED - stop now at breakeven Rs{x['pivot']:.2f} -> trail remaining {x['sell_at_t2']} shares to T2"
-                )
+                if x['t1_hit']:
 
-            else:
+                    print(
+                        f"  Exit Strategy : T1 REACHED - stop now at breakeven Rs{x['pivot']:.2f} -> trail remaining {x['sell_at_t2']} shares to T2"
+                    )
 
-                print(
-                    f"  Exit Strategy : Sell {x['sell_at_t1']} at T1 -> move stop to breakeven -> trail {x['sell_at_t2']} to T2"
-                )
+                else:
+
+                    print(
+                        f"  Exit Strategy : Sell {x['sell_at_t1']} at T1 -> move stop to breakeven -> trail {x['sell_at_t2']} to T2"
+                    )
 
             print("-"*68)
 
