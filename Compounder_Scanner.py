@@ -164,22 +164,79 @@ def fetch_fundamentals(ticker):
         return None
 
 
-def passes_quality_gate(fundamentals):
-    """Reject outright before scoring - don't even consider a company
-    that fails basic quality bars, regardless of price action."""
+def smooth_gate_score(value, threshold, direction, width):
+    """
+    Smooth, continuous Gaussian decay instead of a hard cutoff - avoids
+    the "cliff effect" where a stock at ROE=11.9% gets treated
+    identically to one at ROE=2% (both currently fail a hard 12%
+    threshold equally), while a stock just barely below the threshold
+    still gets a real, proportionate penalty rather than a free pass.
+    Adapted from a real, working pattern found in Alpha1's
+    Consolidation_Scanner.py (v2.5) - full marks up to the ideal
+    threshold, then a smooth exponential decay beyond it, not a step
+    function.
+
+    direction='above': full marks if value >= threshold (e.g. ROE).
+    direction='below': full marks if value <= threshold (e.g. Debt/Equity).
+    """
+
+    if direction == "above":
+        if value >= threshold:
+            return 100.0
+        return 100.0 * np.exp(-((threshold - value) / width) ** 2)
+    else:
+        if value <= threshold:
+            return 100.0
+        return 100.0 * np.exp(-((value - threshold) / width) ** 2)
+
+
+def quality_gate_score(fundamentals):
+    """
+    Combined smooth quality score (0-100) across all three metrics,
+    replacing the old binary passes_quality_gate() hard gate. A stock
+    that's genuinely bad on all three still gets crushed toward zero
+    naturally through the decay curves - this isn't "no gate at all,"
+    it's a smoother, more proportionate one. Widths are set so a
+    meaningfully bad value (roughly double the acceptable gap) decays
+    to a real, substantial penalty, not just a token one.
+    """
+
+    if not fundamentals:
+        return 0.0
+
+    roe = fundamentals.get("roe")
+    debt = fundamentals.get("debt_to_equity")
+    margin = fundamentals.get("profit_margin")
+
+    if roe is None or margin is None:
+        return 0.0
+
+    roe_score = smooth_gate_score(roe, MIN_ROE, "above", width=0.06)
+    debt_score = smooth_gate_score(debt if debt is not None else 0, MAX_DEBT_TO_EQUITY, "below", width=80)
+    margin_score = smooth_gate_score(margin, MIN_PROFIT_MARGIN, "above", width=0.04)
+
+    return (roe_score + debt_score + margin_score) / 3.0
+
+
+def passes_hard_floor(fundamentals):
+    """
+    A much more lenient hard exclusion than the old quality gate -
+    rejects only genuinely missing data or catastrophic values, not
+    borderline ones. The smooth quality_gate_score() above handles the
+    real, proportionate weighting; this just avoids wasting compute on
+    companies with no real chance at all (deeply negative ROE, or debt
+    at more than 3x the ceiling).
+    """
 
     if not fundamentals:
         return False
 
     roe = fundamentals.get("roe")
     debt = fundamentals.get("debt_to_equity")
-    margin = fundamentals.get("profit_margin")
 
-    if roe is None or roe < MIN_ROE:
+    if roe is None or roe < -0.10:
         return False
-    if debt is not None and debt > MAX_DEBT_TO_EQUITY:
-        return False
-    if margin is None or margin < MIN_PROFIT_MARGIN:
+    if debt is not None and debt > MAX_DEBT_TO_EQUITY * 3:
         return False
 
     return True
@@ -222,10 +279,10 @@ def run():
             continue
 
         fundamentals = fetch_fundamentals(symbol)
-        if not passes_quality_gate(fundamentals):
+        if not passes_hard_floor(fundamentals):
             continue
 
-        raw_data[symbol] = {**tech, **fundamentals}
+        raw_data[symbol] = {**tech, **fundamentals, "quality_gate_score": quality_gate_score(fundamentals)}
 
     if not raw_data:
         print("[+] No stocks cleared both the technical history requirement and the quality gate.")
@@ -242,12 +299,14 @@ def run():
     df["volatility_z"] = zscore(df["volatility"])
     df["roe_z"] = zscore(df["roe"])
     df["revenue_z"] = zscore(df["revenue_growth"].fillna(0))
+    df["quality_gate_z"] = zscore(df["quality_gate_score"])
 
     df["score"] = (
         df["cagr_z"] * 2.0 +
         df["momentum_z"] * 1.8 +
         df["roe_z"] * 1.5 +
-        df["revenue_z"] * 1.5 -
+        df["revenue_z"] * 1.5 +
+        df["quality_gate_z"] * 1.5 -
         df["volatility_z"] * 1.2
     )
 
@@ -279,6 +338,7 @@ def run():
             "roe_pct": round(row["roe"] * 100, 2),
             "revenue_growth_pct": round((row["revenue_growth"] or 0) * 100, 2),
             "volatility_pct": round(row["volatility"] * 100, 2),
+            "quality_gate_score": round(row["quality_gate_score"], 1),
             "sector": sector,
             "sector_warning": sector_warning,
         })
@@ -308,6 +368,16 @@ def run():
         )
     """)
 
+    # Idempotent, safe migration - CREATE TABLE IF NOT EXISTS only helps
+    # for a brand-new table; if compounder_candidates already exists
+    # from an earlier run tonight (before this column existed), this
+    # adds it without disturbing existing rows.
+    try:
+        conn.execute("ALTER TABLE compounder_candidates ADD COLUMN quality_gate_score REAL")
+    except sqlite3.OperationalError as e:
+        if "duplicate column" not in str(e):
+            raise
+
     conn.execute("DELETE FROM compounder_candidates WHERE date = ?", (today,))
     result.to_sql("compounder_candidates", conn, if_exists="append", index=False)
     conn.close()
@@ -317,7 +387,7 @@ def run():
 
     print()
     print(f"[+] {len(result)} quality-investing candidates selected")
-    print(result[["ticker", "score", "cagr_pct", "roe_pct", "sector"]].to_string(index=False))
+    print(result[["ticker", "score", "cagr_pct", "roe_pct", "quality_gate_score", "sector"]].to_string(index=False))
     print(f"[+] Written to compounder_candidates and {excel_path}")
     print("=" * 70)
 
