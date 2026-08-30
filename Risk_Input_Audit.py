@@ -78,7 +78,7 @@ def run():
     rw.Ticker,
     rw.Readiness,
     ep.ticker,
-    ep.pivot_price
+    ep.pivot
 
     FROM research_watchlist rw
 
@@ -111,7 +111,7 @@ def run():
     print("\nMatched pivots:")
 
     print(
-        join_test["pivot_price"]
+        join_test["pivot"]
         .notna()
         .sum()
     )

@@ -327,7 +327,14 @@ def run_trigger_input_audit():
 
     # Layer status resolutions
     research_status = "PASS" if research_layer_ok else "WARN"
-    risk_status = "PASS" if risk_structure_ok and risk_ok_count > 0 else "FAIL"
+    # target_structure_ok is a real risk/reward validation (Issue 9:
+    # pivot < t1 < t2, minimum 2:1 reward:risk) - folded into risk_status
+    # here since it's fundamentally a risk concern, not a new category.
+    # Previously computed and displayed (Target Structure) but never
+    # actually factored into the weighted health score at all - a
+    # real gap where Target Structure could show FAIL while Overall
+    # Health still showed 100%.
+    risk_status = "PASS" if risk_structure_ok and risk_ok_count > 0 and target_structure_ok else "FAIL"
     exec_status = "PASS" if execution_layer_ok and position_sizing_ok else "FAIL"
     price_struct_status = "PASS" if price_structure_ok else "FAIL"
     risk_struct_status = "PASS" if risk_structure_ok else "FAIL"

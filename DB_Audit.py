@@ -34,7 +34,7 @@ def run():
     try:
 
         df = pd.read_sql(
-            "SELECT * FROM research_watchlist",
+            "SELECT * FROM research_watchlist WHERE Date = (SELECT MAX(Date) FROM research_watchlist)",
             conn
         )
 
