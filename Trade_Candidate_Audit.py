@@ -55,6 +55,23 @@ def safe_count(series):
     return int(series.sum())
 
 
+def safe_numeric_column(df, col_name):
+    """
+    Returns col_name as a real numeric Series, defaulting every row to 0
+    if the column is genuinely missing entirely - rather than
+    df.get(col)'s fragile behavior (returns a bare None when a column
+    doesn't exist, which breaks any pd.to_numeric()/.fillna() chain
+    built assuming a Series). This audit tool's whole purpose is
+    catching data-quality problems, so it should report a missing
+    column clearly, not crash ungracefully on one.
+    """
+
+    if col_name in df.columns:
+        return pd.to_numeric(df[col_name], errors="coerce").fillna(0)
+
+    return pd.Series([0] * len(df), index=df.index)
+
+
 def audit():
 
     print("\n")
@@ -84,13 +101,12 @@ def audit():
     # Structural Checks
     # -------------------------------
 
-    pivot_ok = (
-        pd.to_numeric(df.get("pivot"), errors="coerce")
-        .fillna(0) > 0
-    )
+    pivot_ok = safe_numeric_column(df, "pivot") > 0
+
+    pattern_series = df["pattern"] if "pattern" in df.columns else pd.Series([""] * len(df), index=df.index)
 
     pattern_ok = (
-        df.get("pattern", "")
+        pattern_series
         .astype(str)
         .str.upper()
         .isin([
@@ -102,68 +118,22 @@ def audit():
     )
 
 
-    confidence_ok = (
-        pd.to_numeric(
-            df.get("confidence"),
-            errors="coerce"
-        )
-        .fillna(0)
-        >= 0.5
-    )
+    confidence_ok = safe_numeric_column(df, "confidence") >= 0.5
 
-
-    composite_ok = (
-        pd.to_numeric(
-            df.get("composite_score"),
-            errors="coerce"
-        )
-        .fillna(0)
-        >= 0.5
-    )
+    composite_ok = safe_numeric_column(df, "composite_score") >= 0.5
 
 
     # -------------------------------
     # Risk Checks
     # -------------------------------
 
-    atr_ok = (
-        pd.to_numeric(
-            df.get("atr14"),
-            errors="coerce"
-        )
-        .fillna(0)
-        > 0
-    )
+    atr_ok = safe_numeric_column(df, "atr14") > 0
 
+    stop_ok = safe_numeric_column(df, "stop_loss") > 0
 
-    stop_ok = (
-        pd.to_numeric(
-            df.get("stop_loss"),
-            errors="coerce"
-        )
-        .fillna(0)
-        > 0
-    )
+    target_ok = safe_numeric_column(df, "target_1") > 0
 
-
-    target_ok = (
-        pd.to_numeric(
-            df.get("target_1"),
-            errors="coerce"
-        )
-        .fillna(0)
-        > 0
-    )
-
-
-    risk_ok = (
-        pd.to_numeric(
-            df.get("risk_per_share"),
-            errors="coerce"
-        )
-        .fillna(0)
-        > 0
-    )
+    risk_ok = safe_numeric_column(df, "risk_per_share") > 0
 
 
     # -------------------------------

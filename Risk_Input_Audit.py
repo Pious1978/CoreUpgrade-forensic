@@ -4,115 +4,121 @@ import pandas as pd
 from core.config import DB_PATH
 
 
-conn = sqlite3.connect(DB_PATH)
+def run():
+
+    conn = sqlite3.connect(DB_PATH)
 
 
-print("\n==============================================")
-print("RISK ENGINE INPUT AUDIT")
-print("==============================================\n")
+    print("\n==============================================")
+    print("RISK ENGINE INPUT AUDIT")
+    print("==============================================\n")
 
 
-# Research Watchlist
+    # Research Watchlist
 
-rw = pd.read_sql(
-    "SELECT * FROM research_watchlist",
-    conn
-)
+    rw = pd.read_sql(
+        "SELECT * FROM research_watchlist",
+        conn
+    )
 
-print("research_watchlist rows :", len(rw))
+    print("research_watchlist rows :", len(rw))
 
-print("\nColumns:")
-print(list(rw.columns))
+    print("\nColumns:")
+    print(list(rw.columns))
 
 
-print("\nReadiness Distribution")
+    print("\nReadiness Distribution")
 
-if "Readiness" in rw.columns:
+    if "Readiness" in rw.columns:
+        print(
+            rw["Readiness"]
+            .value_counts()
+        )
+
+
+    print("\nSample")
+
     print(
-        rw["Readiness"]
-        .value_counts()
+        rw.head(5)
     )
 
 
-print("\nSample")
+    # Execution Plan
 
-print(
-    rw.head(5)
-)
+    print("\n==============================================")
 
+    ep = pd.read_sql(
+        "SELECT * FROM execution_plan",
+        conn
+    )
 
-# Execution Plan
+    print("execution_plan rows :", len(ep))
 
-print("\n==============================================")
-
-ep = pd.read_sql(
-    "SELECT * FROM execution_plan",
-    conn
-)
-
-print("execution_plan rows :", len(ep))
-
-print("\nColumns:")
-print(list(ep.columns))
+    print("\nColumns:")
+    print(list(ep.columns))
 
 
-print("\nSample")
+    print("\nSample")
 
-print(
-    ep.head(5)
-)
-
-
-# Test Join
-
-print("\n==============================================")
-print("JOIN TEST")
-print("==============================================")
-
-query = """
-
-SELECT
-
-rw.Ticker,
-rw.Readiness,
-ep.ticker,
-ep.pivot_price
-
-FROM research_watchlist rw
-
-LEFT JOIN execution_plan ep
-
-ON REPLACE(
-UPPER(rw.Ticker),
-'.NS',
-'')
-
-=
-
-REPLACE(
-UPPER(ep.ticker),
-'.NS',
-'')
+    print(
+        ep.head(5)
+    )
 
 
-LIMIT 20
+    # Test Join
 
-"""
+    print("\n==============================================")
+    print("JOIN TEST")
+    print("==============================================")
+
+    query = """
+
+    SELECT
+
+    rw.Ticker,
+    rw.Readiness,
+    ep.ticker,
+    ep.pivot_price
+
+    FROM research_watchlist rw
+
+    LEFT JOIN execution_plan ep
+
+    ON REPLACE(
+    UPPER(rw.Ticker),
+    '.NS',
+    '')
+
+    =
+
+    REPLACE(
+    UPPER(ep.ticker),
+    '.NS',
+    '')
 
 
-join_test = pd.read_sql(query, conn)
+    LIMIT 20
+
+    """
 
 
-print(join_test)
+    join_test = pd.read_sql(query, conn)
 
 
-print("\nMatched pivots:")
-
-print(
-    join_test["pivot_price"]
-    .notna()
-    .sum()
-)
+    print(join_test)
 
 
-conn.close()
+    print("\nMatched pivots:")
+
+    print(
+        join_test["pivot_price"]
+        .notna()
+        .sum()
+    )
+
+
+    conn.close()
+
+
+if __name__ == "__main__":
+    run()
