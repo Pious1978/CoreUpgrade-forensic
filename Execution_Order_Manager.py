@@ -19,6 +19,7 @@ import sqlite3
 from datetime import datetime
 
 from core.config import DB_PATH
+from Portfolio_Risk_Controller import check_portfolio_limits, MAX_POSITIONS
 
 
 
@@ -118,10 +119,20 @@ def execute_entries():
 
     cursor = conn.cursor()
 
-
     created = 0
 
+    # Real enforcement of Portfolio_Risk_Controller.py's MAX_POSITIONS
+    # ceiling - previously computed but never actually acted on. Checked
+    # once at the start and tracked locally as positions get created
+    # this run, since the real count changes as we go.
+    limits = check_portfolio_limits()
+    open_count = limits["positions"]
 
+    if open_count >= MAX_POSITIONS:
+        print(f"[!] Already at the portfolio position ceiling ({open_count}/{MAX_POSITIONS}) - "
+              f"no new paper positions will be created this run.")
+        conn.close()
+        return 0
 
     for row in candidates:
 
@@ -163,6 +174,11 @@ def execute_entries():
         if existing:
 
             continue
+
+        if open_count + created >= MAX_POSITIONS:
+            print(f"[!] Portfolio position ceiling ({MAX_POSITIONS}) reached - "
+                  f"stopping before {ticker} and any remaining candidates.")
+            break
 
 
 
