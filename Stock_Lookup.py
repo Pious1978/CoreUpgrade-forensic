@@ -142,6 +142,45 @@ def compute_fallback_pivot_and_stop(ticker, current_price, atr_abs):
         return None, None
 
 
+def compute_vcr(ticker):
+    """
+    Volatility Contraction Ratio - adapted from a real, working idea in
+    Alpha1's Swing.py. Simple, directly interpretable, unlike our
+    base_compression factor (an opaque percentile-rank score): recent
+    10-day average daily range as a fraction of the 60-day average.
+    Below 1.0 means volatility is genuinely tightening relative to its
+    own recent history - a real, real-time VCP/compression signal.
+    """
+
+    import os
+    from core.config import PARQUET_CACHE_DIR
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+
+    if not os.path.exists(path):
+        return None
+
+    try:
+        df = pd.read_parquet(path)
+        df.columns = [str(c).lower() for c in df.columns]
+        df = df.dropna(subset=["close", "high", "low"])
+
+        if len(df) < 60:
+            return None
+
+        df["daily_range_pct"] = ((df["high"] - df["low"]) / df["close"]) * 100
+        recent_vol = df["daily_range_pct"].tail(10).mean()
+        historic_vol = df["daily_range_pct"].tail(60).mean()
+
+        if historic_vol == 0 or pd.isna(historic_vol):
+            return None
+
+        return round(recent_vol / historic_vol, 2)
+
+    except Exception:
+        return None
+
+
 def compute_ema50(ticker):
     """
     Local, small calculation - EMA20 already comes from
@@ -397,6 +436,18 @@ def lookup(ticker, capital=None, risk_pct=None):
     pullback_note = classify_pullback(price, tech.get("ema20"), ema50)
     if pullback_note:
         print(f"  Also             : {pullback_note}")
+
+    vcr = compute_vcr(ticker)
+    if vcr is not None:
+        if vcr < 0.6:
+            vcr_note = "genuinely tightening - real, current VCP-style compression"
+        elif vcr < 1.0:
+            vcr_note = "mildly contracting"
+        elif vcr < 1.5:
+            vcr_note = "normal / mixed"
+        else:
+            vcr_note = "expanding - not a tight setup right now"
+        print(f"  VCR              : {vcr}  ({vcr_note})")
 
     print("-" * 68)
     fundamentals = fetch_quick_fundamentals(ticker)
