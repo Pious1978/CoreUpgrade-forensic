@@ -50,10 +50,17 @@ def run_relative_strength_engine():
 
     nifty_path = os.path.join(PARQUET_CACHE_DIR, f"{NIFTY_BENCHMARK_SYMBOL}.parquet")
     nifty_return = 0.0
+    nifty_return_22d_ago = 0.0
+    ACCEL_LOOKBACK_DAYS = 22
+
     if os.path.exists(nifty_path):
         ndf = pd.read_parquet(nifty_path)
         if len(ndf) >= 250:
             nifty_return = (float(ndf['close'].iloc[-1]) - float(ndf['close'].iloc[-250])) / float(ndf['close'].iloc[-250])
+        if len(ndf) >= 250 + ACCEL_LOOKBACK_DAYS:
+            price_22d_ago = float(ndf['close'].iloc[-1 - ACCEL_LOOKBACK_DAYS])
+            price_272d_ago = float(ndf['close'].iloc[-1 - ACCEL_LOOKBACK_DAYS - 250])
+            nifty_return_22d_ago = (price_22d_ago - price_272d_ago) / price_272d_ago if price_272d_ago > 0 else 0.0
 
     snapshot_records = []
     run_date = datetime.now().strftime("%Y-%m-%d")
@@ -79,6 +86,22 @@ def run_relative_strength_engine():
             start_close = float(df['close'].iloc[-250])
             rs_raw = (close_val - start_close) / start_close if start_close > 0 else 0.0
 
+            # Real, working RS acceleration formula, confirmed in
+            # Alpha1's hybrid_alpha_scanner1.py - the delta between
+            # today's cross-sectional z-score of alpha and the same
+            # z-score from 22 trading days ago, measuring whether a
+            # stock's relative strength is genuinely accelerating or
+            # decelerating, not just where it stands today. Directly
+            # fills a field previously hardcoded to None - confirmed
+            # empty across the board earlier tonight.
+            excess_22d_ago = None
+            if len(df) >= MIN_TRADING_DAYS_RS + ACCEL_LOOKBACK_DAYS:
+                price_22d_ago = float(df['close'].iloc[-1 - ACCEL_LOOKBACK_DAYS])
+                price_272d_ago = float(df['close'].iloc[-1 - ACCEL_LOOKBACK_DAYS - 250])
+                rs_raw_22d_ago = (price_22d_ago - price_272d_ago) / price_272d_ago if price_272d_ago > 0 else None
+                if rs_raw_22d_ago is not None:
+                    excess_22d_ago = rs_raw_22d_ago - nifty_return_22d_ago
+
             snapshot_records.append({
                 'symbol': symbol,
                 'date': run_date,
@@ -89,6 +112,7 @@ def run_relative_strength_engine():
                 'delivery_pct': deliv_pct,
                 'rs_raw_return': rs_raw,
                 'nifty_excess_return': rs_raw - nifty_return,
+                'nifty_excess_return_22d_ago': excess_22d_ago,
                 'industry_relative_return': None
             })
         except Exception:
@@ -100,7 +124,24 @@ def run_relative_strength_engine():
 
     res_df = pd.DataFrame(snapshot_records)
     res_df['rs_percentile'] = res_df['rs_raw_return'].rank(method='average', pct=True) * 100.0
-    res_df['rs_acceleration'] = None  
+
+    # Real acceleration: z-score today's alpha and 22-days-ago's alpha
+    # cross-sectionally (against this same universe snapshot), then take
+    # the delta. Stocks missing a valid 22-days-ago value (genuinely
+    # insufficient history) correctly get None rather than a fabricated
+    # number - the z-score itself is computed only over stocks that do
+    # have both values, so a handful of missing ones don't distort the
+    # distribution for everyone else.
+    valid_accel = res_df['nifty_excess_return_22d_ago'].notna()
+
+    if valid_accel.sum() >= 30:
+        z_today = (res_df.loc[valid_accel, 'nifty_excess_return'] - res_df.loc[valid_accel, 'nifty_excess_return'].mean()) / res_df.loc[valid_accel, 'nifty_excess_return'].std()
+        z_22d_ago = (res_df.loc[valid_accel, 'nifty_excess_return_22d_ago'] - res_df.loc[valid_accel, 'nifty_excess_return_22d_ago'].mean()) / res_df.loc[valid_accel, 'nifty_excess_return_22d_ago'].std()
+        res_df.loc[valid_accel, 'rs_acceleration'] = z_today - z_22d_ago
+
+    if 'rs_acceleration' not in res_df.columns:
+        res_df['rs_acceleration'] = None
+
     res_df['delivery_score'] = res_df['delivery_pct'].rank(method='average', pct=True) * 100.0
 
     output_cols = [
