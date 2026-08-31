@@ -358,11 +358,23 @@ def lookup(ticker, capital=None, risk_pct=None):
     weekly_rvol = compute_weekly_rvol(ticker)
     tech = get_technical_context(ticker)
 
-    if watchlist_row is not None:
+    if watchlist_row is not None and pd.notna(watchlist_row.get("pivot_price")):
         pivot = float(watchlist_row["pivot_price"])
         pattern = watchlist_row.get("pattern", "N/A")
         tier = watchlist_row.get("Tier", "N/A")
         source = "from tonight's overnight scan"
+    elif watchlist_row is not None:
+        # Real, confirmed case (MAHLIFE) - a stock can genuinely have a
+        # watchlist row (it cleared the tier/composite score cut) while
+        # still having a NULL pivot_price specifically, if the overnight
+        # scan couldn't compute a valid pivot for it. Previously crashed
+        # here; now falls back to the same computed pivot used for
+        # stocks with no watchlist row at all, while still showing the
+        # real pattern/tier info we do have.
+        pivot, stop_fallback = compute_fallback_pivot_and_stop(ticker, price, atr_abs)
+        pattern = watchlist_row.get("pattern", "N/A")
+        tier = watchlist_row.get("Tier", "N/A")
+        source = "estimated (20-day high) - flagged by the overnight scan, but no pivot was computed for it"
     else:
         pivot, stop_fallback = compute_fallback_pivot_and_stop(ticker, price, atr_abs)
         pattern = "N/A - not flagged by overnight scan"

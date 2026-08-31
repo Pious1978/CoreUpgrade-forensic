@@ -148,6 +148,31 @@ def get_market_state():
 
 
 
+def is_market_open():
+    """
+    Real NSE market hours check - 9:15 AM to 3:30 PM IST, weekdays only.
+    Previously the monitor had zero awareness of this at all, and would
+    keep refreshing indefinitely even hours after close, showing stale
+    prices and meaningless intraday RVOL (confirmed directly - a real
+    session kept running at 16:44, well past the 3:30 PM close).
+
+    Does not account for NSE holidays (Diwali, Republic Day, etc.) -
+    that would need an external holiday calendar, out of scope here.
+    A weekday + time-window check covers the most common real case
+    (nights and weekends) without needing that extra dependency.
+    """
+
+    now = datetime.now()
+
+    if now.weekday() >= 5:  # Saturday=5, Sunday=6
+        return False
+
+    market_open = now.replace(hour=9, minute=15, second=0, microsecond=0)
+    market_close = now.replace(hour=15, minute=30, second=0, microsecond=0)
+
+    return market_open <= now <= market_close
+
+
 # ================================================================
 # EXECUTION HISTORY
 # ================================================================
@@ -760,6 +785,14 @@ def run_live_monitor(total_capital):
 
         timestamp=datetime.now().strftime("%H:%M:%S")
 
+        if not is_market_open():
+            print()
+            print("="*75)
+            print(f"MARKET CLOSED as of {timestamp} - stopping live monitoring.")
+            print("Prices and RVOL become stale/meaningless once trading ends for the day;")
+            print("re-run this tool tomorrow during market hours (9:15 AM - 3:30 PM IST).")
+            print("="*75)
+            break
 
         market=get_market_state()
 
