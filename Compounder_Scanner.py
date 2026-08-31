@@ -180,8 +180,10 @@ def fetch_fundamentals(ticker):
     if not YFINANCE_AVAILABLE:
         return None
 
+    from core.symbol_utils import fetch_yfinance_info
+
     def _fetch():
-        return yf.Ticker(f"{ticker}.NS").info
+        return fetch_yfinance_info(ticker)
 
     # Real, important bug caught during testing: using ThreadPoolExecutor
     # as a context manager (`with ... as executor:`) still blocks on

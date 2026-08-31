@@ -501,8 +501,10 @@ def fetch_quick_fundamentals(ticker):
     except ImportError:
         return None
 
+    from core.symbol_utils import fetch_yfinance_info
+
     try:
-        info = yf.Ticker(f"{ticker.upper()}.NS").info
+        info = fetch_yfinance_info(ticker)
 
         if not info:
             return None
