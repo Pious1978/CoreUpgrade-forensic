@@ -388,6 +388,7 @@ def save_results(closed_trades, still_open, metrics):
     conn.execute("""
         CREATE TABLE IF NOT EXISTS backtest_trades (
             ticker TEXT, sector TEXT, entry_date TEXT, entry_price REAL, shares INTEGER,
+            stop REAL, target_1 REAL, target_2 REAL,
             exit_reason TEXT, exit_date TEXT, exit_price REAL, pnl REAL, ambiguous_bars INTEGER
         )
     """)
@@ -395,6 +396,7 @@ def save_results(closed_trades, still_open, metrics):
     if closed_trades:
         pd.DataFrame(closed_trades)[[
             "ticker", "sector", "entry_date", "entry_price", "shares",
+            "stop", "target_1", "target_2",
             "exit_reason", "exit_date", "exit_price", "pnl", "ambiguous_bars"
         ]].to_sql("backtest_trades", conn, if_exists="replace", index=False)
 

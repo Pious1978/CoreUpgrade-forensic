@@ -19,7 +19,7 @@
   "max_positions": 10,
   "max_per_sector": 3,
   "concentration_cap_pct": 0.2,
-  "run_timestamp": "2026-09-01T03:18:57.003370",
+  "run_timestamp": "2026-09-01T03:27:09.395939",
   "metrics": {
     "total_trades": 331,
     "total_pnl": -37555.9,

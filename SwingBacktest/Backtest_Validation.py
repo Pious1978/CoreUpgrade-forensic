@@ -108,6 +108,7 @@ def independent_reverify_sample(trades_df, sample_size=10):
 
     data = PointInTimeMarketData()
     mismatches = 0
+    skipped = 0
 
     for _, trade in sample.iterrows():
 
@@ -119,9 +120,25 @@ def independent_reverify_sample(trades_df, sample_size=10):
             continue
 
         entry_date = pd.Timestamp(trade["entry_date"])
-        stop = trade["stop"] if "stop" in trade else None
+
+        # Real bug found against the actual, full run: the previous
+        # "'stop' in trade" check didn't reliably guard against a
+        # missing or NaN value here, crashing the whole validation on
+        # one bad row. .get() is the safe, unambiguous pandas method,
+        # and any trade missing a needed value is now skipped
+        # individually with a clear message, rather than taking down
+        # the entire run.
+        stop = trade.get("stop")
+        target_1 = trade.get("target_1")
+        target_2 = trade.get("target_2")
         recorded_exit_price = trade["exit_price"]
         recorded_exit_reason = trade["exit_reason"]
+
+        if pd.isna(stop) or pd.isna(target_1) or pd.isna(target_2):
+            print(f"[!] {ticker}: missing stop/target values in the database - skipping "
+                  f"this trade's re-verification (the leakage audit above already covers it).")
+            skipped += 1
+            continue
 
         # Independent day-by-day walk - deliberately NOT using
         # simulate_trade(), reimplemented directly here.
@@ -131,12 +148,12 @@ def independent_reverify_sample(trades_df, sample_size=10):
         independent_exit_reason = None
 
         for date, bar in window.iterrows():
-            if recorded_exit_reason == "TARGET_1" and bar["high"] >= trade["target_1"]:
-                independent_exit_price = trade["target_1"]
+            if recorded_exit_reason == "TARGET_1" and bar["high"] >= target_1:
+                independent_exit_price = target_1
                 independent_exit_reason = "TARGET_1"
                 break
-            if recorded_exit_reason == "TARGET_2" and bar["high"] >= trade["target_2"]:
-                independent_exit_price = trade["target_2"]
+            if recorded_exit_reason == "TARGET_2" and bar["high"] >= target_2:
+                independent_exit_price = target_2
                 independent_exit_reason = "TARGET_2"
                 break
             if recorded_exit_reason == "STOP_LOSS" and bar["low"] <= stop:
@@ -154,7 +171,9 @@ def independent_reverify_sample(trades_df, sample_size=10):
         print(f"  {ticker} ({recorded_exit_reason}): recorded={recorded_exit_price}, "
               f"independently re-derived={independent_exit_price}  [{status}]")
 
-    print(f"\n[+] {len(sample) - mismatches} of {len(sample)} sampled trades independently confirmed.")
+    checked = len(sample) - skipped
+    print(f"\n[+] {checked - mismatches} of {checked} actually-checked trades independently confirmed "
+          f"({skipped} skipped due to missing data, {mismatches} genuine mismatches).")
 
     if mismatches > 0:
         print(f"[!] {mismatches} mismatch(es) found - worth investigating directly before trusting the full results.")
