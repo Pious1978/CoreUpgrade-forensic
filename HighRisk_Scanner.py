@@ -62,6 +62,14 @@ def passes_highrisk_gate(fundamentals):
     (deeply negative margins), not merely mediocre fundamentals. A
     momentum name doesn't need to be a "quality" company to belong in
     this speculative sleeve.
+
+    Real, consistency fix: previously rejected on a missing margin
+    entirely, the same class of gap confirmed for ROE in
+    Compounder_Scanner.py's real Reliance test. Since this sleeve's
+    scoring never touches fundamentals at all (technical-only), a
+    missing margin shouldn't silently exclude an otherwise strong
+    momentum name - only reject if margin is explicitly present AND
+    genuinely bad, matching this sleeve's own lenient philosophy.
     """
 
     if not fundamentals:
@@ -69,7 +77,7 @@ def passes_highrisk_gate(fundamentals):
 
     margin = fundamentals.get("profit_margin")
 
-    if margin is None or margin < MIN_PROFIT_MARGIN_HIGHRISK:
+    if margin is not None and margin < MIN_PROFIT_MARGIN_HIGHRISK:
         return False
 
     return True
