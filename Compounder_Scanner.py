@@ -43,6 +43,7 @@ import pandas as pd
 import numpy as np
 import sqlite3
 import os
+import time
 from datetime import datetime
 
 try:
@@ -294,17 +295,42 @@ def run():
 
     raw_data = {}
 
-    for symbol in symbols:
+    fetch_failures = 0
+
+    for i, symbol in enumerate(symbols):
+
+        if i > 0 and i % 100 == 0:
+            print(f"[*] Progress: {i}/{len(symbols)} screened, "
+                  f"{len(raw_data)} candidates so far, {fetch_failures} fetch failures...")
 
         tech = compute_technical_features(symbol)
         if tech is None:
             continue
 
         fundamentals = fetch_fundamentals(symbol)
+
+        # Small, deliberate delay between live fetches - reduces the
+        # real risk of Yahoo Finance rate-limiting a ~2,000-stock burst
+        # of back-to-back requests. Without this, a rate-limited run
+        # would silently make most stocks look like "no fundamentals
+        # available" (via fetch_fundamentals()'s own try/except),
+        # which would be genuinely misleading on exactly the kind of
+        # full-scale run we most want to trust.
+        time.sleep(0.3)
+
+        if fundamentals is None:
+            fetch_failures += 1
+
         if not passes_hard_floor(fundamentals):
             continue
 
         raw_data[symbol] = {**tech, **fundamentals, "quality_gate_score": quality_gate_score(fundamentals)}
+
+    fetch_failure_pct = round((fetch_failures / len(symbols)) * 100, 1) if symbols else 0
+    print(f"[*] Fundamentals fetch: {fetch_failures} failures out of {len(symbols)} stocks screened ({fetch_failure_pct}%)")
+    if fetch_failure_pct > 30:
+        print("[!] High fetch failure rate - could genuinely be missing data, but also worth "
+              "checking whether this run got rate-limited partway through before trusting the results.")
 
     if not raw_data:
         print("[+] No stocks cleared both the technical history requirement and the quality gate.")
