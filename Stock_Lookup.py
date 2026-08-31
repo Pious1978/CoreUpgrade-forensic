@@ -143,6 +143,56 @@ def compute_fallback_pivot_and_stop(ticker, current_price, atr_abs):
         return None, None
 
 
+def compute_ema_slope_persistence(ticker):
+    """
+    Real, simple addition adapted from Alpha1's Pullback_Analyzer.py -
+    checks whether the EMA20/EMA50 lines themselves are actively rising
+    over the past 5 days, not just whether price sits above them.
+    Genuinely different information from classify_pullback()'s static
+    price-vs-EMA comparison: an EMA that's flattening or rolling over
+    signals weakening trend quality even if price still happens to sit
+    above it today.
+    """
+
+    import os
+    from core.config import PARQUET_CACHE_DIR
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+
+    if not os.path.exists(path):
+        return None
+
+    try:
+        df = pd.read_parquet(path).sort_values("date")
+
+        if len(df) < 55:
+            return None
+
+        ema20 = df["close"].ewm(span=20, adjust=False).mean()
+        ema50 = df["close"].ewm(span=50, adjust=False).mean()
+
+        ema20_rising = bool(ema20.iloc[-1] > ema20.iloc[-5])
+        ema50_rising = bool(ema50.iloc[-1] > ema50.iloc[-5])
+
+        if ema20_rising and ema50_rising:
+            note = "both EMA20 and EMA50 actively rising - real trend persistence"
+        elif ema20_rising:
+            note = "EMA20 rising but EMA50 flat/falling - shorter-term strength only"
+        elif ema50_rising:
+            note = "EMA50 rising but EMA20 flat/falling - longer trend intact, near-term stalling"
+        else:
+            note = "neither EMA rising - trend quality weakening, even if price is above them"
+
+        return {
+            "ema20_rising": ema20_rising,
+            "ema50_rising": ema50_rising,
+            "note": note,
+        }
+
+    except Exception:
+        return None
+
+
 def check_already_holding(ticker):
     """
     Real "am I already holding this?" check against our own trade_journal
@@ -508,6 +558,10 @@ def lookup(ticker, capital=None, risk_pct=None):
     pullback_note = classify_pullback(price, tech.get("ema20"), ema50)
     if pullback_note:
         print(f"  Also             : {pullback_note}")
+
+    slope = compute_ema_slope_persistence(ticker)
+    if slope:
+        print(f"  EMA Slope        : {slope['note']}")
 
     vcr = compute_vcr(ticker)
     if vcr is not None:
