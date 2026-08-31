@@ -43,7 +43,9 @@ import pandas as pd
 import numpy as np
 import sqlite3
 import os
+import time
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
 
 try:
     import yfinance as yf
@@ -156,13 +158,36 @@ def fetch_fundamentals(ticker):
     Live yfinance .info fetch - the one piece that genuinely can't come
     from our own backfilled data. Returns None on any failure so a
     single bad fetch never breaks the whole scan.
+
+    Real, important fix: previously had no timeout at all - a single
+    ticker whose fetch genuinely hangs (a stuck network request, a
+    malformed response) would freeze the entire ~2,500-stock scan
+    indefinitely with no way to recover or even know which ticker
+    caused it. Uses concurrent.futures for the timeout rather than
+    signal-based approaches, since signal.alarm() isn't available on
+    Windows at all.
     """
 
     if not YFINANCE_AVAILABLE:
         return None
 
+    def _fetch():
+        return yf.Ticker(f"{ticker}.NS").info
+
+    # Real, important bug caught during testing: using ThreadPoolExecutor
+    # as a context manager (`with ... as executor:`) still blocks on
+    # exit waiting for the hung thread to actually finish, even after
+    # future.result(timeout=N) has already correctly raised - completely
+    # defeating the timeout's purpose. Confirmed directly: a 3s timeout
+    # against a 60s-hanging function took the full 60s anyway with the
+    # context-manager version. Avoiding the `with` block and calling
+    # shutdown(wait=False) explicitly fixes this - the hung worker
+    # thread keeps running in the background (a small, acceptable
+    # resource cost for the rare case), but no longer blocks progress.
+    executor = ThreadPoolExecutor(max_workers=1)
     try:
-        info = yf.Ticker(f"{ticker}.NS").info
+        future = executor.submit(_fetch)
+        info = future.result(timeout=15)
 
         if not info:
             return None
@@ -174,8 +199,14 @@ def fetch_fundamentals(ticker):
             "revenue_growth": info.get("revenueGrowth"),
         }
 
+    except FuturesTimeoutError:
+        return None
+
     except Exception:
         return None
+
+    finally:
+        executor.shutdown(wait=False)
 
 
 def smooth_gate_score(value, threshold, direction, width):
@@ -307,18 +338,41 @@ def run():
     print("[*] This fetches live fundamentals per stock and may take a while.")
 
     raw_data = {}
+    fetch_failures = 0
 
-    for symbol in symbols:
+    for i, symbol in enumerate(symbols):
+
+        if i > 0 and i % 100 == 0:
+            print(f"[*] Progress: {i}/{len(symbols)} screened, "
+                  f"{len(raw_data)} candidates so far, {fetch_failures} fetch failures...")
 
         tech = compute_technical_features(symbol)
         if tech is None:
             continue
 
         fundamentals = fetch_fundamentals(symbol)
+
+        # Small, deliberate delay between live fetches - reduces the
+        # real risk of Yahoo Finance rate-limiting a ~2,500-stock burst
+        # of back-to-back requests. Works alongside the 15s timeout
+        # inside fetch_fundamentals() itself - this reduces the chance
+        # of a stall happening at all; the timeout recovers if one
+        # happens anyway.
+        time.sleep(0.3)
+
+        if fundamentals is None:
+            fetch_failures += 1
+
         if not passes_hard_floor(fundamentals):
             continue
 
         raw_data[symbol] = {**tech, **fundamentals, "quality_gate_score": quality_gate_score(fundamentals)}
+
+    fetch_failure_pct = round((fetch_failures / len(symbols)) * 100, 1) if symbols else 0
+    print(f"[*] Fundamentals fetch: {fetch_failures} failures out of {len(symbols)} stocks screened ({fetch_failure_pct}%)")
+    if fetch_failure_pct > 30:
+        print("[!] High fetch failure rate - could genuinely be missing data, but also worth "
+              "checking whether this run got rate-limited partway through before trusting the results.")
 
     if not raw_data:
         print("[+] No stocks cleared both the technical history requirement and the quality gate.")
