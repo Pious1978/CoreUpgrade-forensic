@@ -143,6 +143,60 @@ def compute_fallback_pivot_and_stop(ticker, current_price, atr_abs):
         return None, None
 
 
+def compute_measured_move_target(ticker, pivot, lookback=60):
+    """
+    Real "measured move" technical analysis concept, confirmed in
+    Trade_Execution_Engine.py's own docstring as a real, historical
+    change made to that script's target-setting methodology - target
+    = pivot + base height, where base height is the pivot's distance
+    above the low of the recent consolidation range it's breaking out
+    of. A classic idea: the size of the base a stock built often
+    projects roughly how far the breakout can travel.
+
+    Genuinely an alternative reference point alongside our existing
+    dynamic R:R targets, not a replacement - the two methods can
+    legitimately disagree, and seeing both is more informative than
+    either alone. Uses a defensible, simple approximation for "where
+    is the base's low point" (the lowest low over a trailing 60-day
+    window) rather than genuine pattern-recognition of exactly where
+    a specific base started and ended.
+    """
+
+    import os
+    from core.config import PARQUET_CACHE_DIR
+
+    if pivot is None:
+        return None
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+
+    if not os.path.exists(path):
+        return None
+
+    try:
+        df = pd.read_parquet(path).sort_values("date")
+
+        if len(df) < lookback:
+            return None
+
+        base_low = float(df["low"].tail(lookback).min())
+        base_height = pivot - base_low
+
+        if base_height <= 0:
+            return None
+
+        target = round(pivot + base_height, 2)
+
+        return {
+            "target": target,
+            "base_height": round(base_height, 2),
+            "base_low": round(base_low, 2),
+        }
+
+    except Exception:
+        return None
+
+
 def compute_ema_slope_persistence(ticker):
     """
     Real, simple addition adapted from Alpha1's Pullback_Analyzer.py -
@@ -536,6 +590,12 @@ def lookup(ticker, capital=None, risk_pct=None):
     print(f"  Stop Loss    : Rs{stop_loss:.2f}")
     print(f"  Target 1     : Rs{target_1:.2f}  (dynamic R:R, regime-adjusted)")
     print(f"  Target 2     : Rs{target_2:.2f}")
+
+    measured_move = compute_measured_move_target(ticker, pivot)
+    if measured_move:
+        print(f"  Measured Move: Rs{measured_move['target']:.2f}  "
+              f"(alternative - pivot + base height, base low Rs{measured_move['base_low']:.2f})")
+
     print("-" * 68)
     print(f"  Conviction Score : {score}/100  (Opportunity {opportunity} / Readiness {readiness})")
     print(f"  Tier             : {tier}")
