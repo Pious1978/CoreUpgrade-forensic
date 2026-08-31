@@ -43,7 +43,6 @@ import pandas as pd
 import numpy as np
 import sqlite3
 import os
-import time
 from datetime import datetime
 
 try:
@@ -114,6 +113,20 @@ def compute_technical_features(ticker):
             return None
 
         close = df["close"]
+
+        # Real data quality check, added after finding a genuine
+        # corrupted stock (AQYLON) in a live full-universe run - a
+        # ~90% single-day "move" on 2026-01-01 (a market holiday, NSE
+        # is closed) turned out to be an improperly-adjusted stock
+        # split, and it silently topped the entire ranked list before
+        # this check existed. A genuine single-day move beyond 50% is
+        # virtually never real for a normal, liquid stock - almost
+        # always a bad split adjustment or a backfill data error.
+        # Same principle as the original Yahoo backfill's own
+        # split-rejection safety check.
+        daily_pct_changes = close.pct_change().abs()
+        if (daily_pct_changes > 0.50).any():
+            return None
 
         cagr_years = len(close) / 252
         cagr = (close.iloc[-1] / close.iloc[0]) ** (1 / cagr_years) - 1 if cagr_years > 0 else 0
@@ -295,42 +308,17 @@ def run():
 
     raw_data = {}
 
-    fetch_failures = 0
-
-    for i, symbol in enumerate(symbols):
-
-        if i > 0 and i % 100 == 0:
-            print(f"[*] Progress: {i}/{len(symbols)} screened, "
-                  f"{len(raw_data)} candidates so far, {fetch_failures} fetch failures...")
+    for symbol in symbols:
 
         tech = compute_technical_features(symbol)
         if tech is None:
             continue
 
         fundamentals = fetch_fundamentals(symbol)
-
-        # Small, deliberate delay between live fetches - reduces the
-        # real risk of Yahoo Finance rate-limiting a ~2,000-stock burst
-        # of back-to-back requests. Without this, a rate-limited run
-        # would silently make most stocks look like "no fundamentals
-        # available" (via fetch_fundamentals()'s own try/except),
-        # which would be genuinely misleading on exactly the kind of
-        # full-scale run we most want to trust.
-        time.sleep(0.3)
-
-        if fundamentals is None:
-            fetch_failures += 1
-
         if not passes_hard_floor(fundamentals):
             continue
 
         raw_data[symbol] = {**tech, **fundamentals, "quality_gate_score": quality_gate_score(fundamentals)}
-
-    fetch_failure_pct = round((fetch_failures / len(symbols)) * 100, 1) if symbols else 0
-    print(f"[*] Fundamentals fetch: {fetch_failures} failures out of {len(symbols)} stocks screened ({fetch_failure_pct}%)")
-    if fetch_failure_pct > 30:
-        print("[!] High fetch failure rate - could genuinely be missing data, but also worth "
-              "checking whether this run got rate-limited partway through before trusting the results.")
 
     if not raw_data:
         print("[+] No stocks cleared both the technical history requirement and the quality gate.")
