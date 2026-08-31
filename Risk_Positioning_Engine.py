@@ -20,6 +20,7 @@ from datetime import datetime
 import pandas as pd
 
 from core.config import DB_PATH
+from core.kill_switch import check_kill_switch
 from core.technical_indicators import compute_atr
 from core.sector_map import get_sector
 
@@ -200,6 +201,16 @@ class RiskPositioningEngine:
             print(
                 "[!] No candidates received"
             )
+            conn.close()
+            return
+
+        kill_switch_result = check_kill_switch(self.total_capital)
+
+        if kill_switch_result["blocked"]:
+            print()
+            print(f"🛑 KILL SWITCH ACTIVE [{kill_switch_result['severity']}]")
+            print(f"   {kill_switch_result['reason']}")
+            print("   No new positions will be sized this run.")
             conn.close()
             return
 
