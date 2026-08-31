@@ -18,6 +18,17 @@ Reuses the exact real formulas from the forensic mapping:
 - Sizing: risk_budget = capital x regime_multiplier x 0.5%, capped at
   20% concentration, MAX_POSITIONS=10, MAX_PER_SECTOR=3
 
+CRITICAL, REAL BUG FOUND AND FIXED (this version, v1.1): a stock
+flagged by Consolidation_Scanner.py is still INSIDE its base on the
+discovery date - by definition, it hasn't broken out yet. The real,
+live system watches a candidate every subsequent day via
+Live_Execution_Monitor.py, not just once. Checking only the discovery
+date produced ZERO entries across 48,331 real candidate-date
+combinations in a real, full run - not a threshold problem, a
+structural one. Fixed by watching each candidate forward for a real
+window (WATCH_WINDOW_DAYS) using a fresh, genuinely point-in-time-
+correct check at every day considered.
+
 HONEST SCOPE, carried forward from #54B: candidates only come from
 Consolidation_Scanner.py (1 of 5 real discovery scanners), sampled
 every 5 trading days by default. This is a real, if partial, first
@@ -50,8 +61,11 @@ from core.sector_map import get_sector
 
 BACKTEST_DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "backtest_results.db")
 
+WATCH_WINDOW_DAYS = 5  # matches the #54B/#54C sampling granularity - a
+                        # fresh candidate list arrives every 5 days anyway
+
 DEFAULT_ASSUMPTIONS = {
-    "backtest_version": "1.0",
+    "backtest_version": "1.1",
     "data": "Daily OHLCV, point-in-time truncated (#54A)",
     "signal_source": "Consolidation_Scanner.py only (1 of 5 real discovery scanners) - #54B first pass, honest partial scope",
     "candidate_sampling": "every 5 trading days",
@@ -60,7 +74,8 @@ DEFAULT_ASSUMPTIONS = {
     "composite_score_proxy": "candidate confidence score (Consolidation_Scanner.py's own 0-1 structural confidence) - not the full multi-factor Master_Terminal.py Composite_Score, which needs all 5 scanners",
     "look_ahead": "prohibited - enforced by #54A's PointInTimeMarketData",
     "survivorship": "universe reflects currently-listed stocks only; delisted names are invisible",
-    "entry": "price >= pivot x 1.005 AND daily_volume_ratio >= 1.5, evaluated on the candidate's own discovery date",
+    "entry": "price >= pivot x 1.005 AND daily_volume_ratio >= 1.5, watched forward up to WATCH_WINDOW_DAYS trading days from the candidate's discovery date (v1.1 fix - v1.0 only checked the discovery date itself, producing zero entries)",
+    "watch_window_days": WATCH_WINDOW_DAYS,
     "stop": "pivot - (1.5 x ATR14)",
     "target": "Risk_Positioning_Engine.py's real dynamic R:R multipliers",
     "same_bar_policy": "STOP_FIRST (conservative default)",
@@ -113,6 +128,63 @@ def load_historical_regime():
     return df.set_index("date")
 
 
+def find_entry_trigger(data, ticker, discovery_date, pivot, watch_window_days=WATCH_WINDOW_DAYS,
+                        require_volume_confirmation=True):
+    """
+    Scans forward from the discovery date (inclusive, in case a genuine
+    same-day breakout occurs) for up to watch_window_days trading days,
+    using a fresh point-in-time view at EACH day checked - never
+    reusing the discovery date's own truncated data for a later day's
+    check, which would silently leak look-ahead information.
+
+    Returns (entry_date, price_history_at_entry) or (None, None) if the
+    candidate never triggers within the window - a genuine, honest
+    "watched but never entered" outcome, not an error.
+    """
+
+    full_history = data.series_map.get(ticker)
+
+    if full_history is None:
+        return None, None
+
+    try:
+        start_idx = full_history.index.get_indexer([discovery_date], method="bfill")[0]
+    except Exception:
+        return None, None
+
+    if start_idx == -1:
+        return None, None
+
+    for offset in range(watch_window_days + 1):
+
+        check_idx = start_idx + offset
+
+        if check_idx >= len(full_history):
+            break
+
+        check_date = full_history.index[check_idx]
+        view = data.as_of(check_date)
+        price_history = view.get_price_history(ticker)
+
+        if price_history is None or len(price_history) < 15:
+            continue
+
+        price_now = float(price_history["close"].iloc[-1])
+        trigger = pivot * 1.005
+
+        if price_now < trigger:
+            continue
+
+        if require_volume_confirmation:
+            vol_ratio = compute_daily_volume_ratio(price_history)
+            if vol_ratio is None or vol_ratio < 1.5:
+                continue
+
+        return check_date, price_history
+
+    return None, None
+
+
 def run_full_backtest(total_capital=1000000, risk_per_trade_pct=0.005,
                        max_positions=10, max_per_sector=3,
                        concentration_cap_pct=0.20, same_bar_policy="STOP_FIRST",
@@ -123,6 +195,7 @@ def run_full_backtest(total_capital=1000000, risk_per_trade_pct=0.005,
     print("FULL SWING-TRADING BACKTEST")
     print("=" * 70)
     print("Honest scope: Consolidation_Scanner.py only, sampled every 5 days.")
+    print(f"Each candidate is watched forward up to {WATCH_WINDOW_DAYS} trading days for entry.")
     print("Slippage and brokerage are NOT modeled in this first pass.")
     print()
 
@@ -184,23 +257,17 @@ def run_full_backtest(total_capital=1000000, risk_per_trade_pct=0.005,
             if sector != "UNKNOWN" and sector_counts_by_open.get(sector, 0) >= max_per_sector:
                 continue  # sector concentration cap
 
-            view = data.as_of(as_of_date)
-            price_history = view.get_price_history(ticker)
+            pivot = float(cand["pivot"])
 
-            if price_history is None or len(price_history) < 15:
-                continue
+            entry_date, price_history = find_entry_trigger(
+                data, ticker, as_of_date, pivot,
+                require_volume_confirmation=require_volume_confirmation
+            )
+
+            if entry_date is None:
+                continue  # watched, never triggered within the window
 
             price_now = float(price_history["close"].iloc[-1])
-            pivot = float(cand["pivot"])
-            trigger = pivot * 1.005
-
-            if price_now < trigger:
-                continue  # hasn't actually broken out yet
-
-            if require_volume_confirmation:
-                vol_ratio = compute_daily_volume_ratio(price_history)
-                if vol_ratio is None or vol_ratio < 1.5:
-                    continue  # honest RVOL proxy - no volume confirmation
 
             atr14 = compute_atr14_point_in_time(price_history)
             if atr14 is None or atr14 <= 0:
@@ -227,12 +294,11 @@ def run_full_backtest(total_capital=1000000, risk_per_trade_pct=0.005,
             target_1 = pivot + t1_mult * risk
             target_2 = pivot + t2_mult * risk
 
-            future_history = price_history  # will be re-fetched at the true final date below
-            full_ticker_history = view._market_data.series_map.get(ticker)
+            full_ticker_history = data.series_map.get(ticker)
             if full_ticker_history is None:
                 continue
 
-            price_history_after_entry = full_ticker_history[full_ticker_history.index >= as_of_date]
+            price_history_after_entry = full_ticker_history[full_ticker_history.index >= entry_date]
 
             result = simulate_trade(
                 price_history_after_entry, entry_price=price_now, initial_stop=stop,
@@ -243,7 +309,7 @@ def run_full_backtest(total_capital=1000000, risk_per_trade_pct=0.005,
             available_capital -= capital_needed
 
             open_positions[ticker] = {
-                "ticker": ticker, "sector": sector, "entry_date": date_str,
+                "ticker": ticker, "sector": sector, "entry_date": entry_date.strftime("%Y-%m-%d"),
                 "entry_price": price_now, "shares": shares, "capital_used": capital_needed,
                 "stop": stop, "target_1": target_1, "target_2": target_2,
                 "exit_reason": result["exit_reason"],
@@ -256,14 +322,14 @@ def run_full_backtest(total_capital=1000000, risk_per_trade_pct=0.005,
             if sector != "UNKNOWN":
                 sector_counts_by_open[sector] = sector_counts_by_open.get(sector, 0) + 1
 
-    # Real bug found during testing: the release-closed-positions check
-    # above only runs when processing a NEW candidate date - meaning a
-    # position whose real exit_date falls after the LAST candidate date
-    # in the whole dataset would never get moved into closed_trades,
-    # even though simulate_trade() already determined its actual,
-    # definite outcome. A final pass here catches every position that
-    # genuinely has a known exit_date, regardless of whether the loop
-    # ever reached a later date to check it.
+    # Real bug found during earlier testing: the release-closed-positions
+    # check above only runs when processing a NEW candidate date - meaning
+    # a position whose real exit_date falls after the LAST candidate date
+    # in the whole dataset would never get moved into closed_trades, even
+    # though simulate_trade() already determined its actual, definite
+    # outcome. A final pass here catches every position that genuinely
+    # has a known exit_date, regardless of whether the loop ever reached
+    # a later date to check it.
     for ticker in list(open_positions.keys()):
         pos = open_positions[ticker]
         if pos["exit_date"] is not None:
