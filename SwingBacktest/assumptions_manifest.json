@@ -1,5 +1,5 @@
 {
-  "backtest_version": "1.0",
+  "backtest_version": "1.1",
   "data": "Daily OHLCV, point-in-time truncated (#54A)",
   "signal_source": "Consolidation_Scanner.py only (1 of 5 real discovery scanners) - #54B first pass, honest partial scope",
   "candidate_sampling": "every 5 trading days",
@@ -8,7 +8,8 @@
   "composite_score_proxy": "candidate confidence score (Consolidation_Scanner.py's own 0-1 structural confidence) - not the full multi-factor Master_Terminal.py Composite_Score, which needs all 5 scanners",
   "look_ahead": "prohibited - enforced by #54A's PointInTimeMarketData",
   "survivorship": "universe reflects currently-listed stocks only; delisted names are invisible",
-  "entry": "price >= pivot x 1.005 AND daily_volume_ratio >= 1.5, evaluated on the candidate's own discovery date",
+  "entry": "price >= pivot x 1.005 AND daily_volume_ratio >= 1.5, watched forward up to WATCH_WINDOW_DAYS trading days from the candidate's discovery date (v1.1 fix - v1.0 only checked the discovery date itself, producing zero entries)",
+  "watch_window_days": 5,
   "stop": "pivot - (1.5 x ATR14)",
   "target": "Risk_Positioning_Engine.py's real dynamic R:R multipliers",
   "same_bar_policy": "STOP_FIRST (conservative default)",
@@ -18,10 +19,17 @@
   "max_positions": 10,
   "max_per_sector": 3,
   "concentration_cap_pct": 0.2,
-  "run_timestamp": "2026-08-31T23:36:26.726872",
+  "run_timestamp": "2026-09-01T03:18:57.003370",
   "metrics": {
-    "total_trades": 0,
-    "note": "No closed trades to analyze."
+    "total_trades": 331,
+    "total_pnl": -37555.9,
+    "return_pct": -3.76,
+    "win_rate_pct": 51.96,
+    "avg_win": 2316.13,
+    "avg_loss": -2741.7,
+    "profit_factor": 0.91,
+    "ambiguous_bars_total": 2,
+    "trades_with_ambiguity": 2
   },
-  "still_open_count": 0
+  "still_open_count": 8
 }
