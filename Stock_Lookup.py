@@ -34,6 +34,7 @@ from core.Live_Price_Engine import LivePriceEngine
 from Live_Execution_Monitor import calculate_conviction_score, calculate_edp, get_read
 from Risk_Positioning_Engine import calculate_dynamic_rr_multipliers
 from core.Execution_State_Machine import evaluate_trade
+from Trade_Journal import get_remaining_shares
 
 
 def get_current_regime(conn):
@@ -140,6 +141,58 @@ def compute_fallback_pivot_and_stop(ticker, current_price, atr_abs):
 
     except Exception:
         return None, None
+
+
+def check_already_holding(ticker):
+    """
+    Real "am I already holding this?" check against our own trade_journal
+    - genuinely simpler than the fuzzy company-name matching Alpha1's
+    original version needed, since our system already tracks holdings
+    by ticker directly, not company names from a manually-maintained
+    Excel statement. Aggregates across multiple tranches (bought on
+    different dates) into one summary rather than only showing the
+    first match, since a real position can genuinely be built up over
+    several separate entries.
+    """
+
+    try:
+        conn = sqlite3.connect(DB_PATH)
+
+        rows = conn.execute("""
+            SELECT id, entry_price, entry_shares, entry_date
+            FROM trade_journal
+            WHERE UPPER(ticker) = ? AND status = 'EXECUTED'
+            ORDER BY entry_date ASC
+        """, (ticker.upper(),)).fetchall()
+
+        tranches = []
+        total_remaining = 0
+        total_cost = 0.0
+
+        for journal_id, entry_price, entry_shares, entry_date in rows:
+            remaining = get_remaining_shares(conn, journal_id, entry_shares)
+
+            if remaining > 0:
+                tranches.append((entry_date, entry_price, remaining))
+                total_remaining += remaining
+                total_cost += entry_price * remaining
+
+        conn.close()
+
+        if total_remaining <= 0:
+            return None
+
+        avg_price = round(total_cost / total_remaining, 2)
+
+        return {
+            "total_shares": total_remaining,
+            "avg_price": avg_price,
+            "tranche_count": len(tranches),
+            "tranches": tranches,
+        }
+
+    except Exception:
+        return None
 
 
 def compute_vcr(ticker):
@@ -347,6 +400,13 @@ def lookup(ticker, capital=None, risk_pct=None):
 
     print(f"  Live Price   : Rs{price:.2f}")
     print(f"  Intraday RVOL: {rvol}x")
+
+    holding = check_already_holding(ticker)
+    if holding:
+        unrealized_pct = round((price - holding["avg_price"]) / holding["avg_price"] * 100, 2)
+        tranche_note = f" across {holding['tranche_count']} tranches" if holding["tranche_count"] > 1 else ""
+        print(f"  [!] Already holding: {holding['total_shares']} shares @ avg Rs{holding['avg_price']}{tranche_note}  "
+              f"({unrealized_pct:+.2f}% unrealized)")
 
     watchlist_row = get_existing_watchlist_row(conn, ticker)
 
