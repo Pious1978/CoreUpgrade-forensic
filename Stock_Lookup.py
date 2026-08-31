@@ -143,6 +143,81 @@ def compute_fallback_pivot_and_stop(ticker, current_price, atr_abs):
         return None, None
 
 
+def compute_rs_line_drawdown(ticker, lookback=252):
+    """
+    Real "consistency of leadership" metric, adapted from Alpha1's
+    Emerging_Leader_Scanner.py - the RS line (stock price divided by
+    the NIFTYBEES benchmark) is a classic technical analysis concept.
+    Its max drawdown over the past year tells you something a
+    point-in-time RS percentile can't: has this stock's relative
+    outperformance ever suffered a real setback, or has its leadership
+    been genuinely persistent? Two stocks can share today's RS
+    percentile while having very different consistency underneath it.
+    """
+
+    import os
+    from core.config import PARQUET_CACHE_DIR
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+    bench_path = os.path.join(PARQUET_CACHE_DIR, "NIFTYBEES.parquet")
+
+    if not os.path.exists(path) or not os.path.exists(bench_path):
+        return None
+
+    try:
+        stock_df = pd.read_parquet(path).sort_values("date").set_index("date")
+        bench_df = pd.read_parquet(bench_path).sort_values("date").set_index("date")
+
+        aligned = pd.DataFrame({
+            "stock": stock_df["close"],
+            "benchmark": bench_df["close"],
+        }).dropna()
+
+        if len(aligned) < lookback:
+            return None
+
+        rs_line = (aligned["stock"] / aligned["benchmark"]).tail(lookback)
+        drawdown = (rs_line / rs_line.cummax() - 1).min()
+
+        return round(float(drawdown) * 100, 2)
+
+    except Exception:
+        return None
+
+
+def count_gap_shocks(ticker, threshold_pct=12.0, window=20):
+    """
+    Real "erratic, news-driven risk" check, adapted from Alpha1's
+    Emerging_Leader_Scanner.py - counts genuine overnight gaps (open
+    vs previous close) exceeding threshold_pct within the last window
+    trading days. Distinct from regular intraday volatility (ATR):
+    this specifically measures gap/news risk, not normal price
+    movement during the trading session itself.
+    """
+
+    import os
+    from core.config import PARQUET_CACHE_DIR
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+
+    if not os.path.exists(path):
+        return None
+
+    try:
+        df = pd.read_parquet(path).sort_values("date")
+
+        if len(df) < window + 1:
+            return None
+
+        prev_close = df["close"].shift(1)
+        gaps_pct = ((df["open"] - prev_close) / prev_close).abs() * 100
+
+        return int((gaps_pct.tail(window) > threshold_pct).sum())
+
+    except Exception:
+        return None
+
+
 def compute_measured_move_target(ticker, pivot, lookback=60):
     """
     Real "measured move" technical analysis concept, confirmed in
@@ -634,6 +709,21 @@ def lookup(ticker, capital=None, risk_pct=None):
         else:
             vcr_note = "expanding - not a tight setup right now"
         print(f"  VCR              : {vcr}  ({vcr_note})")
+
+    rs_drawdown = compute_rs_line_drawdown(ticker)
+    if rs_drawdown is not None:
+        if rs_drawdown > -10:
+            drawdown_note = "very persistent relative leadership"
+        elif rs_drawdown > -20:
+            drawdown_note = "reasonably consistent leadership"
+        else:
+            drawdown_note = "choppy - relative outperformance has had real setbacks"
+        print(f"  RS Line Drawdown : {rs_drawdown}%  ({drawdown_note})")
+
+    gap_shocks = count_gap_shocks(ticker)
+    if gap_shocks is not None and gap_shocks > 0:
+        print(f"  [!] Gap Shocks   : {gap_shocks} overnight gap(s) >12% in the last 20 days - "
+              f"erratic, news-driven risk, distinct from normal volatility")
 
     print("-" * 68)
     fundamentals = fetch_quick_fundamentals(ticker)
