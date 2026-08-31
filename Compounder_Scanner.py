@@ -141,12 +141,21 @@ def compute_technical_features(ticker):
 
         drawdown = (close / close.cummax() - 1).min()
 
+        # Real average daily turnover (volume x price, in Rupees) - the
+        # basis for the regime-adaptive liquidity gate. Uses volume
+        # only where it's genuinely present; a blanket dropna() earlier
+        # already handles the backfilled-history NULL case, so any
+        # remaining missing volume here just falls back to NaN
+        # cleanly rather than crashing.
+        avg_turnover = float((df["volume"] * close).tail(20).mean()) if "volume" in df.columns else None
+
         return {
             "cagr": cagr,
             "volatility": volatility,
             "momentum": momentum,
             "trend": trend,
             "drawdown": drawdown,
+            "avg_turnover": avg_turnover,
         }
 
     except Exception:
@@ -275,6 +284,36 @@ def quality_gate_score(fundamentals):
     return sum(scores) / len(scores)
 
 
+LIQUIDITY_GATE_BY_REGIME = {
+    # Real regime values confirmed directly from Market_Regime_Engine.py.
+    # Stricter (higher) minimum liquidity percentile required in weak
+    # regimes - if the market turns, you want to be able to actually
+    # exit a position, not stuck holding something illiquid. Looser in
+    # strong regimes, since a broader opportunity set is more useful
+    # when conditions are genuinely favorable. Adapted from a real,
+    # working idea in Alpha1's hybrid_alpha_scanner1.py.
+    "BEAR": 70,
+    "DISTRIBUTION": 70,
+    "CHOPPY_ACCUMULATION": 50,
+    "CONFIRMED_UPTREND": 30,
+    "NEUTRAL": 50,  # fallback default, matches the moderate-caution regime
+}
+
+
+def get_current_regime():
+    """Reuses the same real regime read pattern already established in
+    SIP_Allocator.py and Pipeline_DAG_Executor.py."""
+
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.execute("SELECT regime FROM market_regime ORDER BY date DESC LIMIT 1")
+        row = cur.fetchone()
+        conn.close()
+        return row[0] if row else "NEUTRAL"
+    except Exception:
+        return "NEUTRAL"
+
+
 def passes_hard_floor(fundamentals):
     """
     A much more lenient hard exclusion than the old quality gate -
@@ -379,6 +418,25 @@ def run():
         return
 
     df = pd.DataFrame(raw_data).T
+
+    # Regime-adaptive liquidity gate - a percentile cutoff computed
+    # against this specific scored universe's own turnover distribution
+    # (not a fixed rupee threshold, which would go stale as the market
+    # changes over time), with the minimum percentile itself varying by
+    # current regime.
+    regime = get_current_regime()
+    min_liquidity_percentile = LIQUIDITY_GATE_BY_REGIME.get(regime, 50)
+
+    df["turnover_percentile"] = df["avg_turnover"].rank(pct=True) * 100.0
+    before_liquidity_gate = len(df)
+    df = df[df["turnover_percentile"] >= min_liquidity_percentile]
+
+    print(f"[*] Regime: {regime} - liquidity gate requires >= {min_liquidity_percentile}th percentile turnover "
+          f"({before_liquidity_gate - len(df)} of {before_liquidity_gate} candidates filtered out for illiquidity)")
+
+    if df.empty:
+        print("[+] No stocks cleared the liquidity gate for the current regime.")
+        return
 
     # Z-score normalization - the real "critical upgrade" found in
     # Alpha1's own v9 iteration. Combining raw factor values directly
