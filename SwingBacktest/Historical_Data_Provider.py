@@ -42,7 +42,20 @@ class PointInTimeMarketData:
     date, no matter what's asked of it.
     """
 
-    def __init__(self, parquet_cache_dir=PARQUET_CACHE_DIR):
+    def __init__(self, parquet_cache_dir=None):
+
+        # Real bug found during testing: PARQUET_CACHE_DIR from
+        # core.config is a relative path ("parquet_cache"), which
+        # resolves relative to whatever directory the script happens to
+        # be RUN from - not necessarily the repo root. Running this from
+        # inside SwingBacktest/ (a realistic usage pattern) genuinely
+        # failed to find the folder. Resolving it as an absolute path
+        # anchored to the repo root (the same directory added to
+        # sys.path above) makes this robust regardless of the working
+        # directory the script is launched from.
+        if parquet_cache_dir is None:
+            repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            parquet_cache_dir = os.path.join(repo_root, PARQUET_CACHE_DIR)
 
         self.series_map = {}
         self._load_all_series(parquet_cache_dir)

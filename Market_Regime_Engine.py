@@ -324,40 +324,56 @@ class MarketRegimeEngine:
 # a genuine, months-old gap in the pipeline.
 
 
-def compute_breadth_and_returns(cache_dir, benchmark_symbol):
+def compute_breadth_and_returns(cache_dir, benchmark_symbol, point_in_time_view=None):
     """
     Computes real market breadth (% of the universe trading above their
     own 20/50/200-day moving average) and each stock's latest 1-day
     return, across every stock in parquet_cache with sufficient history.
+
+    Real, careful extension for #54C (historical regime reconstruction):
+    accepts an OPTIONAL point_in_time_view parameter (a SwingBacktest
+    AsOfView) - when provided, reads price data through that view
+    instead of the live parquet_cache directly, letting this EXACT same
+    logic run against historical, point-in-time-correct data rather
+    than duplicating it in a second implementation. Default behavior
+    (point_in_time_view=None) is completely unchanged from before - the
+    live, nightly nightly pipeline's call site never passes this
+    argument, so it's entirely unaffected by this change.
     """
 
-    files = glob.glob(os.path.join(cache_dir, "*.parquet"))
+    if point_in_time_view is not None:
+        tickers = [t for t in point_in_time_view.get_available_tickers() if t != benchmark_symbol]
+    else:
+        files = glob.glob(os.path.join(cache_dir, "*.parquet"))
+        tickers = [os.path.basename(p).replace(".parquet", "") for p in files]
+        tickers = [t for t in tickers if t != benchmark_symbol]
 
     above_20 = above_50 = above_200 = total_valid = 0
     returns = []
 
-    for path in files:
-
-        ticker = os.path.basename(path).replace(".parquet", "")
-
-        if ticker == benchmark_symbol:
-            continue
+    for ticker in tickers:
 
         try:
-            df = pd.read_parquet(path)
-            df.columns = [str(c).lower() for c in df.columns]
-            df["date"] = pd.to_datetime(df["date"])
-            df = df.set_index("date").sort_index()
-            # Only drop rows missing the price data this calculation
-            # actually needs - a blanket df.dropna() would also drop
-            # every backfilled row missing delivery_qty/delivery_pct
-            # (intentionally NULL for all Yahoo-backfilled history,
-            # since Yahoo has no delivery data), collapsing every
-            # stock's usable history back down to the ~38-40 raw
-            # bhav-copy days and causing every stock to fail the 200-day
-            # threshold below - confirmed as the real cause of a genuine
-            # 0% breadth reading across all three timeframes.
-            df = df.dropna(subset=["close", "high", "low"])
+            if point_in_time_view is not None:
+                df = point_in_time_view.get_price_history(ticker)
+                if df is None:
+                    continue
+            else:
+                path = os.path.join(cache_dir, f"{ticker}.parquet")
+                df = pd.read_parquet(path)
+                df.columns = [str(c).lower() for c in df.columns]
+                df["date"] = pd.to_datetime(df["date"])
+                df = df.set_index("date").sort_index()
+                # Only drop rows missing the price data this calculation
+                # actually needs - a blanket df.dropna() would also drop
+                # every backfilled row missing delivery_qty/delivery_pct
+                # (intentionally NULL for all Yahoo-backfilled history,
+                # since Yahoo has no delivery data), collapsing every
+                # stock's usable history back down to the ~38-40 raw
+                # bhav-copy days and causing every stock to fail the 200-day
+                # threshold below - confirmed as the real cause of a genuine
+                # 0% breadth reading across all three timeframes.
+                df = df.dropna(subset=["close", "high", "low"])
 
             if len(df) < 200:
                 continue
