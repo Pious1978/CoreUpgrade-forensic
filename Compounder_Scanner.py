@@ -431,8 +431,20 @@ def run():
         if sector != "UNKNOWN":
             sector_counts[sector] = sector_counts.get(sector, 0) + 1
 
+        if row["cagr"] > 0:
+            candidate_type = "COMPOUNDER"
+            candidate_type_note = None
+        elif row["momentum"] > 0:
+            candidate_type = "TURNAROUND"
+            candidate_type_note = "negative long-term CAGR, positive recent momentum - investigate the real story before trusting the fundamentals alone"
+        else:
+            candidate_type = "CAUTION"
+            candidate_type_note = "negative CAGR AND negative recent momentum, cleared the gate on fundamentals alone - investigate closely"
+
         selected.append({
             "ticker": ticker,
+            "candidate_type": candidate_type,
+            "candidate_type_note": candidate_type_note,
             "score": round(row["score"], 2),
             "cagr_pct": round(row["cagr"] * 100, 2),
             "roe_pct": round(row["roe"] * 100, 2) if pd.notna(row["roe"]) else None,
@@ -478,6 +490,18 @@ def run():
         if "duplicate column" not in str(e):
             raise
 
+    try:
+        conn.execute("ALTER TABLE compounder_candidates ADD COLUMN candidate_type TEXT")
+    except sqlite3.OperationalError as e:
+        if "duplicate column" not in str(e):
+            raise
+
+    try:
+        conn.execute("ALTER TABLE compounder_candidates ADD COLUMN candidate_type_note TEXT")
+    except sqlite3.OperationalError as e:
+        if "duplicate column" not in str(e):
+            raise
+
     conn.execute("DELETE FROM compounder_candidates WHERE date = ?", (today,))
     result.to_sql("compounder_candidates", conn, if_exists="append", index=False)
     conn.close()
@@ -487,7 +511,13 @@ def run():
 
     print()
     print(f"[+] {len(result)} quality-investing candidates selected")
-    print(result[["ticker", "score", "cagr_pct", "roe_pct", "quality_gate_score", "sector"]].to_string(index=False))
+    print(result[["ticker", "candidate_type", "score", "cagr_pct", "roe_pct", "quality_gate_score", "sector"]].to_string(index=False))
+
+    flagged = result[result["candidate_type"] != "COMPOUNDER"]
+    if not flagged.empty:
+        print(f"\n[!] {len(flagged)} candidate(s) flagged for extra scrutiny before trusting:")
+        for _, row in flagged.iterrows():
+            print(f"    {row['ticker']} [{row['candidate_type']}]: {row['candidate_type_note']}")
     print(f"[+] Written to compounder_candidates and {excel_path}")
     print("=" * 70)
 
