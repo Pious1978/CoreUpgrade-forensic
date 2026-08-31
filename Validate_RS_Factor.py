@@ -1,22 +1,29 @@
 """
 Validate_RS_Factor.py
 
-Real, rigorous validation of our actual RS percentile factor - adapted
-from Alpha1's real Factor_Validation.py methodology (Information
-Coefficient + decile returns, the standard "does this factor predict
-anything" quant research test).
+Real, rigorous validation of RS-style factors - adapted from Alpha1's
+real Factor_Validation.py methodology (Information Coefficient +
+decile returns, the standard "does this factor predict anything" quant
+research test).
 
-Our live daily_snapshot table only has 3 real dates so far - nowhere
-near enough to pair against forward returns. Rather than wait weeks/
-months for that to accumulate, this retroactively reconstructs
-rs_percentile at many past dates using our own already-backfilled 1.5-2
+Our live daily_snapshot table only has a handful of real dates so far -
+nowhere near enough to pair against forward returns. Rather than wait
+weeks/months for that to accumulate, this retroactively reconstructs
+factor values at many past dates using our own already-backfilled 1.5-2
 years of real price history in parquet_cache - the same technique
 Alpha1's own backfill_historical_snapshots.py used.
 
-Critically, this reconstructs our EXACT, real, current formula
-(RelativeStrengthEngine.py's rs_raw_return = 250-trading-day return,
-then cross-sectionally ranked into a percentile) - not a hypothetical
-improved version. We're testing what we actually have.
+Now compares TWO real formulas through the exact same pipeline (same
+stocks, same as-of dates, same forward-return calculation), for a true
+apples-to-apples answer rather than two separately-run numbers that
+might not be comparable:
+
+- CURRENT: RelativeStrengthEngine.py's real, live formula - a single
+  250-trading-day return, cross-sectionally ranked into a percentile.
+- ONEIL: the real, established O'Neil/IBD multi-horizon weighted
+  formula found in Alpha1's backfill_historical_snapshots.py -
+  0.4x12-month + 0.2x6-month + 0.2x3-month + 0.2x1-month returns,
+  blending long-term strength with short-term momentum in one score.
 """
 
 import pandas as pd
@@ -26,13 +33,56 @@ from scipy.stats import spearmanr
 
 from core.config import PARQUET_CACHE_DIR, UNIVERSE_CSV_PATH, MIN_TRADING_DAYS_RS
 
-LOOKBACK_DAYS = 250   # matches RelativeStrengthEngine.py's real formula exactly
-STEP_DAYS = 10        # spacing between "as-of" test dates - avoids near-duplicate,
-                       # highly overlapping windows while still getting good coverage
+LOOKBACK_DAYS = 250   # the longest component either formula needs
+STEP_DAYS = 10
 HORIZONS = {
     "4-week (20 trading days)": 20,
     "12-week (60 trading days)": 60,
     "26-week (130 trading days)": 130,
+}
+
+
+def compute_current_rs_factor(close, idx):
+    """Our real, live formula - RelativeStrengthEngine.py's exact
+    single 250-trading-day return."""
+
+    price_now = float(close.iloc[idx])
+    price_250_ago = float(close.iloc[idx - 250])
+
+    if price_250_ago <= 0:
+        return None
+
+    return (price_now - price_250_ago) / price_250_ago
+
+
+def compute_oneil_rs_factor(close, idx):
+    """Real O'Neil/IBD multi-horizon weighted formula, confirmed in
+    Alpha1's own backfill_historical_snapshots.py - the actual,
+    established industry methodology (IBD's Relative Strength Rating),
+    not a hypothetical variant."""
+
+    price_now = float(close.iloc[idx])
+
+    def period_return(days_ago):
+        price_then = float(close.iloc[idx - days_ago])
+        if price_then <= 0:
+            return None
+        return (price_now - price_then) / price_then
+
+    r_12m = period_return(250)
+    r_6m = period_return(125)
+    r_3m = period_return(63)
+    r_1m = period_return(21)
+
+    if any(r is None for r in [r_12m, r_6m, r_3m, r_1m]):
+        return None
+
+    return 0.4 * r_12m + 0.2 * r_6m + 0.2 * r_3m + 0.2 * r_1m
+
+
+FACTORS = {
+    "CURRENT (single 250-day return)": compute_current_rs_factor,
+    "ONEIL (multi-horizon weighted)": compute_oneil_rs_factor,
 }
 
 
@@ -76,14 +126,13 @@ def load_all_price_series():
     return series_map
 
 
-def build_factor_forward_return_pairs(series_map):
+def build_factor_forward_return_pairs(series_map, factor_fn):
     """
     For each stock, walks through many real historical "as-of" dates,
-    reconstructing rs_raw_return exactly as RelativeStrengthEngine.py
-    computes it live, then pairs it with the REAL forward return at
-    each horizon. Cross-sectional ranking happens per as-of date,
-    matching the real, live methodology (ranked against whichever
-    stocks have valid data on that specific date).
+    computing the given factor_fn's value, then pairs it with the REAL
+    forward return at each horizon. Cross-sectional ranking happens per
+    as-of date, matching real, live methodology (ranked against
+    whichever stocks have valid data on that specific date).
 
     Real, important fix found during testing: spacing between as-of
     dates must scale with each horizon's own length, not stay fixed.
@@ -112,26 +161,22 @@ def build_factor_forward_return_pairs(series_map):
 
         for idx in usable_range:
 
-            raw_returns_this_date = {}
+            raw_factors_this_date = {}
 
             for symbol, close in series_map.items():
                 if idx >= len(close):
                     continue
 
-                price_now = float(close.iloc[idx])
-                price_250_ago = float(close.iloc[idx - LOOKBACK_DAYS])
+                value = factor_fn(close, idx)
+                if value is not None:
+                    raw_factors_this_date[symbol] = value
 
-                if price_250_ago <= 0:
-                    continue
-
-                raw_returns_this_date[symbol] = (price_now - price_250_ago) / price_250_ago
-
-            if len(raw_returns_this_date) < 30:
+            if len(raw_factors_this_date) < 30:
                 continue
 
             # Real, exact cross-sectional ranking - same as RelativeStrengthEngine.py
-            rs_series = pd.Series(raw_returns_this_date)
-            percentiles = rs_series.rank(method="average", pct=True) * 100.0
+            factor_series = pd.Series(raw_factors_this_date)
+            percentiles = factor_series.rank(method="average", pct=True) * 100.0
 
             for symbol, pct in percentiles.items():
                 close = series_map[symbol]
@@ -185,12 +230,11 @@ def run():
 
     print()
     print("=" * 70)
-    print("REAL FACTOR VALIDATION - RS PERCENTILE")
+    print("REAL FACTOR VALIDATION - CURRENT vs ONEIL/IBD MULTI-HORIZON RS")
     print("=" * 70)
-    print("Testing our own, actual, live rs_percentile formula against")
-    print("real historical forward returns - not a hypothetical or")
-    print("improved version, exactly what RelativeStrengthEngine.py")
-    print("computes today.")
+    print("Runs both formulas through the exact same pipeline (same stocks,")
+    print("same test dates, same forward-return calculation) for a true,")
+    print("apples-to-apples comparison - not two separately-run numbers.")
     print()
 
     series_map = load_all_price_series()
@@ -199,35 +243,66 @@ def run():
         print("[-] Not enough stocks with sufficient real history to run this validation yet.")
         return
 
-    pairs_by_horizon = build_factor_forward_return_pairs(series_map)
+    all_results = {}
 
-    for h_name, pair_df in pairs_by_horizon.items():
+    for factor_name, factor_fn in FACTORS.items():
 
-        print(f"\n{'='*60}")
-        print(f"HORIZON: {h_name}")
-        print(f"{'='*60}")
+        print(f"\n{'#'*70}")
+        print(f"FACTOR: {factor_name}")
+        print(f"{'#'*70}")
 
-        if pair_df.empty:
-            print("[-] Not enough real history for this horizon - skipping.")
-            continue
+        pairs_by_horizon = build_factor_forward_return_pairs(series_map, factor_fn)
+        all_results[factor_name] = {}
 
-        ic_result = information_coefficient(pair_df)
-        print(f"Information Coefficient: {ic_result}")
+        for h_name, pair_df in pairs_by_horizon.items():
 
-        if ic_result["ic"] is not None:
-            abs_ic = abs(ic_result["ic"])
-            if abs_ic < 0.02:
-                verdict = "No real signal - factor looks close to noise at this horizon."
-            elif abs_ic < 0.05:
-                verdict = "Weak signal - worth tracking, not yet worth trading on alone."
-            else:
-                verdict = "Real signal - meaningfully predictive at this horizon."
-            print(f"  -> {verdict}")
+            print(f"\n{'='*60}")
+            print(f"HORIZON: {h_name}")
+            print(f"{'='*60}")
 
-        print("\nDecile returns (Decile 10 = highest rs_percentile):")
-        print(decile_returns(pair_df).to_string())
+            if pair_df.empty:
+                print("[-] Not enough real history for this horizon - skipping.")
+                continue
 
-    print("\n" + "=" * 70)
+            ic_result = information_coefficient(pair_df)
+            print(f"Information Coefficient: {ic_result}")
+            all_results[factor_name][h_name] = ic_result
+
+            if ic_result["ic"] is not None:
+                abs_ic = abs(ic_result["ic"])
+                if abs_ic < 0.02:
+                    verdict = "No real signal - factor looks close to noise at this horizon."
+                elif abs_ic < 0.05:
+                    verdict = "Weak signal - worth tracking, not yet worth trading on alone."
+                else:
+                    verdict = "Real signal - meaningfully predictive at this horizon."
+                print(f"  -> {verdict}")
+
+            print("\nDecile returns (Decile 10 = highest factor value):")
+            print(decile_returns(pair_df).to_string())
+
+    print(f"\n\n{'#'*70}")
+    print("HEAD-TO-HEAD COMPARISON")
+    print("#" * 70)
+    print(f"{'Horizon':<30}{'CURRENT IC':<15}{'ONEIL IC':<15}{'Winner'}")
+    print("-" * 70)
+
+    for h_name in HORIZONS:
+        current_ic = all_results.get("CURRENT (single 250-day return)", {}).get(h_name, {}).get("ic")
+        oneil_ic = all_results.get("ONEIL (multi-horizon weighted)", {}).get(h_name, {}).get("ic")
+
+        if current_ic is None or oneil_ic is None:
+            winner = "N/A"
+        elif abs(oneil_ic) > abs(current_ic):
+            winner = "ONEIL"
+        elif abs(current_ic) > abs(oneil_ic):
+            winner = "CURRENT"
+        else:
+            winner = "TIE"
+
+        print(f"{h_name:<30}{str(current_ic):<15}{str(oneil_ic):<15}{winner}")
+
+    print("=" * 70)
 
 
 if __name__ == "__main__":
