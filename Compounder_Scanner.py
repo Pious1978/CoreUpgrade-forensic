@@ -192,13 +192,20 @@ def smooth_gate_score(value, threshold, direction, width):
 
 def quality_gate_score(fundamentals):
     """
-    Combined smooth quality score (0-100) across all three metrics,
-    replacing the old binary passes_quality_gate() hard gate. A stock
-    that's genuinely bad on all three still gets crushed toward zero
-    naturally through the decay curves - this isn't "no gate at all,"
-    it's a smoother, more proportionate one. Widths are set so a
-    meaningfully bad value (roughly double the acceptable gap) decays
-    to a real, substantial penalty, not just a token one.
+    Combined smooth quality score (0-100) across whichever of the three
+    metrics are actually available, replacing the old binary
+    passes_quality_gate() hard gate. A stock that's genuinely bad on
+    what IS available still gets crushed toward zero naturally through
+    the decay curves - this isn't "no gate at all," it's a smoother,
+    more proportionate one.
+
+    Real fix: previously returned a flat 0.0 if EITHER roe or margin
+    was missing - meaning a major, real company like Reliance (missing
+    ROE, but everything else present) would get treated identically to
+    a company with genuinely bad fundamentals across the board. Now
+    averages only over whichever metrics are actually available, so a
+    single missing field doesn't crush an otherwise strong company's
+    score to zero.
     """
 
     if not fundamentals:
@@ -208,24 +215,36 @@ def quality_gate_score(fundamentals):
     debt = fundamentals.get("debt_to_equity")
     margin = fundamentals.get("profit_margin")
 
-    if roe is None or margin is None:
+    if roe is None and margin is None:
         return 0.0
 
-    roe_score = smooth_gate_score(roe, MIN_ROE, "above", width=0.06)
-    debt_score = smooth_gate_score(debt if debt is not None else 0, MAX_DEBT_TO_EQUITY, "below", width=80)
-    margin_score = smooth_gate_score(margin, MIN_PROFIT_MARGIN, "above", width=0.04)
+    scores = []
 
-    return (roe_score + debt_score + margin_score) / 3.0
+    if roe is not None:
+        scores.append(smooth_gate_score(roe, MIN_ROE, "above", width=0.06))
+    if margin is not None:
+        scores.append(smooth_gate_score(margin, MIN_PROFIT_MARGIN, "above", width=0.04))
+
+    scores.append(smooth_gate_score(debt if debt is not None else 0, MAX_DEBT_TO_EQUITY, "below", width=80))
+
+    return sum(scores) / len(scores)
 
 
 def passes_hard_floor(fundamentals):
     """
     A much more lenient hard exclusion than the old quality gate -
     rejects only genuinely missing data or catastrophic values, not
-    borderline ones. The smooth quality_gate_score() above handles the
-    real, proportionate weighting; this just avoids wasting compute on
-    companies with no real chance at all (deeply negative ROE, or debt
-    at more than 3x the ceiling).
+    borderline ones.
+
+    Real, important fix: a major, well-covered company (Reliance,
+    confirmed directly via Fundamentals_Sanity_Check.py) can genuinely
+    have a missing ROE from yfinance despite being a completely normal,
+    scoreable company - this is not the same situation as a bank's
+    debt/equity being structurally absent, but it needs the same
+    graceful handling. Only reject on missing data if we have NO usable
+    profitability signal at all (both roe and margin missing) - a
+    single missing field shouldn't hard-exclude an otherwise real
+    company.
     """
 
     if not fundamentals:
@@ -233,8 +252,11 @@ def passes_hard_floor(fundamentals):
 
     roe = fundamentals.get("roe")
     debt = fundamentals.get("debt_to_equity")
+    margin = fundamentals.get("profit_margin")
 
-    if roe is None or roe < -0.10:
+    if roe is None and margin is None:
+        return False
+    if roe is not None and roe < -0.10:
         return False
     if debt is not None and debt > MAX_DEBT_TO_EQUITY * 3:
         return False
@@ -297,7 +319,17 @@ def run():
     df["cagr_z"] = zscore(df["cagr"])
     df["momentum_z"] = zscore(df["momentum"])
     df["volatility_z"] = zscore(df["volatility"])
-    df["roe_z"] = zscore(df["roe"])
+    # Real, important fix: a missing roe (confirmed directly - even
+    # Reliance, a major company, has this gap in yfinance) would
+    # otherwise turn this entire row's composite score into NaN once
+    # summed with the other z-scores below. Mean-imputation is the
+    # standard, principled approach here - substitute the cross-
+    # sectional average of whichever roe values ARE available, so a
+    # missing field contributes a neutral zero to this factor rather
+    # than corrupting the whole score or unfairly penalizing/boosting
+    # the stock.
+    df["roe_imputed"] = df["roe"].fillna(df["roe"].mean())
+    df["roe_z"] = zscore(df["roe_imputed"])
     df["revenue_z"] = zscore(df["revenue_growth"].fillna(0))
     df["quality_gate_z"] = zscore(df["quality_gate_score"])
 
@@ -335,7 +367,7 @@ def run():
             "ticker": ticker,
             "score": round(row["score"], 2),
             "cagr_pct": round(row["cagr"] * 100, 2),
-            "roe_pct": round(row["roe"] * 100, 2),
+            "roe_pct": round(row["roe"] * 100, 2) if pd.notna(row["roe"]) else None,
             "revenue_growth_pct": round((row["revenue_growth"] or 0) * 100, 2),
             "volatility_pct": round(row["volatility"] * 100, 2),
             "quality_gate_score": round(row["quality_gate_score"], 1),

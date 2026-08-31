@@ -64,6 +64,12 @@ STATE_PRIORITY = {
 
 PRIORITY_ALERT_STATES = ("VALID_BREAKOUT", "RETEST_SUCCESS")
 
+# How many rows to print in the "RECENTLY INVALIDATED" list before
+# collapsing the rest into a single summary line. Without a cap this
+# list prints every STOP_BREACHED/FAILED_BREAKOUT candidate (which can
+# be 500+ names in a choppy regime) on every 60-second cycle.
+INVALIDATED_DISPLAY_LIMIT = 15
+
 # Extension-based sizing rejection: a breakout that has already run too
 # far past its pivot, or whose remaining reward-to-risk has eroded too
 # much, isn't worth chasing even if it's technically a valid breakout.
@@ -1118,6 +1124,17 @@ def run_live_monitor(total_capital):
             max_loss = round(total_shares * (pivot - effective_stop), 2)
             max_loss_pct = round((max_loss / total_capital) * 100, 2) if total_capital > 0 else None
 
+            # sector_warning comes straight from a SQL/pandas column - if
+            # a ticker has no warning on file, pandas represents that as
+            # float('nan'), not None. bool(float('nan')) is True in
+            # Python, so downstream "if x.get('sector_warning')" checks
+            # were firing for every row and printing the literal string
+            # "nan". pd.notna() normalizes the missing case to a real
+            # None here, once, so nothing downstream has to special-case
+            # NaN again.
+            sector_warning_raw = row.get("sector_warning")
+            sector_warning = sector_warning_raw if pd.notna(sector_warning_raw) else None
+
             board.append({
 
                 "ticker":ticker,
@@ -1174,7 +1191,7 @@ def run_live_monitor(total_capital):
 
                 "sizing_rejected":sizing_rejected,
 
-                "sector_warning":row.get("sector_warning"),
+                "sector_warning":sector_warning,
 
                 "body_ratio":body_ratio,
 
@@ -1205,11 +1222,20 @@ def run_live_monitor(total_capital):
 
         invalidated_board = [x for x in board if x["state"] in INVALIDATED_STATES]
 
+        # Sort the top board purely by conviction score. This used to
+        # sort by (STATE_PRIORITY, -score), which meant every state tier
+        # was fully sorted internally but the tiers were then just
+        # stacked one after another - e.g. every LOW_VOLUME_BREAKOUT
+        # candidate (any score) outranked every TESTING candidate (any
+        # score), so the board wasn't actually one ranked list, it was
+        # several disconnected ones stitched together. Sorting on score
+        # alone gives a genuine "best 10 candidates" board regardless of
+        # which state they're currently in.
         active_board=sorted(
 
             active_board,
 
-            key=lambda x: (STATE_PRIORITY.get(x["state"], 99), -x["score"])
+            key=lambda x: -x["score"]
 
         )
 
@@ -1472,7 +1498,17 @@ def run_live_monitor(total_capital):
 
             print("-"*68)
 
-            for x in sorted(invalidated_board, key=lambda x: x.get("breach_pct") or 0, reverse=True):
+            sorted_invalidated = sorted(
+                invalidated_board,
+                key=lambda x: x.get("breach_pct") or 0,
+                reverse=True
+            )
+
+            # Print only the worst INVALIDATED_DISPLAY_LIMIT breaches in
+            # full, then collapse everything past that into one summary
+            # line. Previously this printed every invalidated candidate
+            # (546 in a choppy regime) on every 60-second cycle.
+            for x in sorted_invalidated[:INVALIDATED_DISPLAY_LIMIT]:
 
                 breach_str = f"{x['breach_pct']}% below stop" if x.get("breach_pct") is not None else "N/A"
 
@@ -1487,6 +1523,21 @@ def run_live_monitor(total_capital):
 
                 print(
                     f"  {x['ticker']:<12} {x['state']:<16} {breach_str}{volume_note}"
+                )
+
+            remaining = len(sorted_invalidated) - INVALIDATED_DISPLAY_LIMIT
+
+            if remaining > 0:
+
+                tail = sorted_invalidated[INVALIDATED_DISPLAY_LIMIT:]
+
+                avg_breach = round(
+                    sum((x.get("breach_pct") or 0) for x in tail) / remaining,
+                    1
+                )
+
+                print(
+                    f"  ... +{remaining} more invalidated (avg {avg_breach}% below stop)"
                 )
 
 
