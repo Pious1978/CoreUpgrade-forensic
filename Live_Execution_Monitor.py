@@ -45,6 +45,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from core.config import DB_PATH, PARQUET_CACHE_DIR
 from core.Live_Price_Engine import LivePriceEngine
 from core.Execution_State_Machine import evaluate_trade
+from core.notifications import send_alert
 from core.technical_indicators import get_technical_context, compute_weekly_rvol, compute_atr
 import math
 
@@ -1044,6 +1045,14 @@ def run_live_monitor(total_capital):
                     rvol
 
                 )
+
+                if new_state == "VALID_BREAKOUT":
+                    send_alert("VALID_BREAKOUT", ticker, "INFO",
+                               f"Confirmed breakout at Rs{price:.2f}, RVOL {rvol}x")
+
+                if new_state == "STOP_BREACHED":
+                    send_alert("STOP_BREACHED", ticker, "CRITICAL",
+                               f"Stop breached at Rs{price:.2f}")
 
 
 

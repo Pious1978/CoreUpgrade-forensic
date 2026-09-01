@@ -21,6 +21,7 @@ import pandas as pd
 
 from core.config import DB_PATH
 from core.kill_switch import check_kill_switch
+from core.notifications import send_alert
 from core.technical_indicators import compute_atr
 from core.sector_map import get_sector
 
@@ -211,6 +212,7 @@ class RiskPositioningEngine:
             print(f"🛑 KILL SWITCH ACTIVE [{kill_switch_result['severity']}]")
             print(f"   {kill_switch_result['reason']}")
             print("   No new positions will be sized this run.")
+            send_alert("KILL_SWITCH_ACTIVE", "PORTFOLIO", "CRITICAL", kill_switch_result["reason"])
             conn.close()
             return
 
