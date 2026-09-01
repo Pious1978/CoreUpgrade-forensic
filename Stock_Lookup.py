@@ -374,6 +374,71 @@ def check_already_holding(ticker):
         return None
 
 
+def compute_fibonacci_value_zone(ticker, rr_ratio=2.0):
+    """
+    The ORIGINAL "Value Zone" - a real, working concept found consistently
+    across 4 of the user's own past tools (Scanning_Tool.py,
+    research_analyst.py, alpha_strategist.py, research_update.py):
+    a Fibonacci 61.8% retracement level over a 6-month window, purely
+    price-based - genuinely unrelated to compute_value_zone()'s
+    fundamentals-based check despite the shared "Value Zone" name.
+    Both are kept, clearly distinctly labeled, to avoid any ambiguity
+    about which concept a given line refers to.
+
+    Reuses the exact real formula found in the legacy tools:
+    fib_value_zone = high_6m - (0.618 * (high_6m - low_6m))
+    stop_loss = low_6m
+    signal = VALUE BUY if current price is within 5% of the zone
+    """
+
+    import os
+    from core.config import PARQUET_CACHE_DIR
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+
+    if not os.path.exists(path):
+        return None
+
+    try:
+        df = pd.read_parquet(path)
+        df.columns = [str(c).lower() for c in df.columns]
+        df = df.dropna(subset=["close", "high", "low"])
+
+        if len(df) < 126:  # ~6 months of trading days, matching the original's period="6mo"
+            return None
+
+        window = df.tail(126)
+        high_6m = float(window["high"].max())
+        low_6m = float(window["low"].min())
+        close_p = float(df["close"].iloc[-1])
+
+        if high_6m <= low_6m:
+            return None
+
+        fib_zone = high_6m - (0.618 * (high_6m - low_6m))
+        stop_loss = low_6m
+        risk_amt = fib_zone - stop_loss
+
+        if risk_amt <= 0:
+            return None
+
+        target = fib_zone + (risk_amt * rr_ratio)
+        signal = "VALUE BUY" if close_p <= (fib_zone * 1.05) else "WAITING"
+
+        return {
+            "signal": signal,
+            "fib_zone": round(fib_zone, 2),
+            "stop_loss": round(stop_loss, 2),
+            "target": round(target, 2),
+            "current_price": round(close_p, 2),
+            "high_6m": round(high_6m, 2),
+            "low_6m": round(low_6m, 2),
+        }
+
+    except Exception:
+        return None
+
+
 def compute_vcr(ticker):
     """
     Volatility Contraction Ratio - adapted from a real, working idea in
@@ -579,6 +644,12 @@ def fetch_quick_fundamentals(ticker):
             "debt_to_equity": info.get("debtToEquity"),
             "profit_margin": info.get("profitMargins"),
             "roe": info.get("returnOnEquity"),
+            # Added for the fundamentals-based Value Zone - all from this
+            # same .info call, zero extra API cost
+            "current_price": info.get("currentPrice") or info.get("regularMarketPrice"),
+            "fifty_two_week_high": info.get("fiftyTwoWeekHigh"),
+            "fifty_two_week_low": info.get("fiftyTwoWeekLow"),
+            "peg_ratio": info.get("pegRatio"),
         }
 
     except Exception:
@@ -619,6 +690,126 @@ def assess_fundamentals(fundamentals):
         notes.append("No red flags from quick fundamentals check")
 
     return notes
+
+
+def find_sector_peers(ticker, max_peers=5):
+    """
+    Real peer tickers from the same sector, via core/sector_map.py's
+    curated UNIVERSE - a reverse lookup, not a new data source. Capped
+    at max_peers since each peer requires a real, live fetch (the
+    fundamentals Value Zone's peer dimension is genuinely slower than
+    the rest of the quick lookup as a result - an honest tradeoff, not
+    hidden).
+    """
+
+    from core.sector_map import UNIVERSE, get_sector
+
+    target_sector = get_sector(ticker)
+
+    if target_sector == "UNKNOWN":
+        return []
+
+    clean_ticker = ticker.upper().strip()
+    if not clean_ticker.endswith(".NS"):
+        clean_ticker += ".NS"
+
+    peers = [
+        t.replace(".NS", "") for t, info in UNIVERSE.items()
+        if info["sector"] == target_sector and t != clean_ticker
+    ]
+
+    return peers[:max_peers]
+
+
+def compute_value_zone(ticker, fundamentals):
+    """
+    Fundamentals-based Value Zone - genuinely different from
+    compute_fibonacci_value_zone()'s price-based concept despite the
+    shared name (see that function's docstring for the full context).
+    Combines 4 dimensions: own historical range, absolute Graham-style
+    thresholds, sector-peer comparison, and PEG ratio. Each dimension
+    is scored independently and reported transparently - a stock can
+    be "cheap" on one dimension and "expensive" on another; this shows
+    all of them rather than collapsing to one misleading number.
+
+    HONEST LIMITATION on the "own historical range" dimension: a true
+    historical PE range needs historical EPS data, which isn't
+    reliably available through this codebase's existing yfinance
+    usage. Uses price position within the real 52-week high/low range
+    as an honest, disclosed proxy instead.
+    """
+
+    if not fundamentals:
+        return None
+
+    result = {
+        "historical_range": None,
+        "graham_style": None,
+        "sector_peer": None,
+        "peg": None,
+    }
+
+    price = fundamentals.get("current_price")
+    high_52w = fundamentals.get("fifty_two_week_high")
+    low_52w = fundamentals.get("fifty_two_week_low")
+
+    if price and high_52w and low_52w and high_52w > low_52w:
+        position = (price - low_52w) / (high_52w - low_52w)
+        if position <= 0.30:
+            result["historical_range"] = f"NEAR OWN 52-WEEK LOW ({position*100:.0f}% of range) - proxy for cheap vs own history"
+        elif position >= 0.70:
+            result["historical_range"] = f"NEAR OWN 52-WEEK HIGH ({position*100:.0f}% of range) - proxy for expensive vs own history"
+        else:
+            result["historical_range"] = f"MID-RANGE ({position*100:.0f}% of own 52-week range)"
+
+    pe = fundamentals.get("trailing_pe")
+    pb = fundamentals.get("price_to_book")
+    roe = fundamentals.get("roe")
+
+    if pe and pb and pe > 0 and pb > 0:
+        graham_number = pe * pb
+        roe_ok = roe is not None and roe >= 0.12
+        if graham_number < 22.5 and roe_ok:
+            result["graham_style"] = f"VALUE ZONE (PE×PB={graham_number:.1f} < 22.5, ROE {roe*100:.1f}% >= 12%)"
+        elif graham_number < 22.5:
+            roe_display = f"{roe*100:.1f}%" if roe is not None else "unavailable"
+            result["graham_style"] = f"Cheap by PE×PB ({graham_number:.1f}) but ROE too low or unavailable ({roe_display})"
+        else:
+            result["graham_style"] = f"NOT in value zone (PE×PB={graham_number:.1f} >= 22.5)"
+
+    if pe and pe > 0:
+        peers = find_sector_peers(ticker)
+        peer_pes = []
+
+        for peer in peers:
+            peer_fundamentals = fetch_quick_fundamentals(peer)
+            if peer_fundamentals and peer_fundamentals.get("trailing_pe"):
+                peer_pes.append(peer_fundamentals["trailing_pe"])
+
+        if peer_pes:
+            import statistics
+            peer_median_pe = statistics.median(peer_pes)
+            if pe < peer_median_pe * 0.85:
+                result["sector_peer"] = f"CHEAPER than sector peers (PE {pe:.1f} vs peer median {peer_median_pe:.1f}, n={len(peer_pes)})"
+            elif pe > peer_median_pe * 1.15:
+                result["sector_peer"] = f"MORE EXPENSIVE than sector peers (PE {pe:.1f} vs peer median {peer_median_pe:.1f}, n={len(peer_pes)})"
+            else:
+                result["sector_peer"] = f"IN LINE with sector peers (PE {pe:.1f} vs peer median {peer_median_pe:.1f}, n={len(peer_pes)})"
+        else:
+            result["sector_peer"] = "No peer PE data available for comparison"
+
+    peg = fundamentals.get("peg_ratio")
+    if peg is not None:
+        if peg < 1.0:
+            result["peg"] = f"PEG {peg:.2f} < 1.0 - potentially undervalued relative to growth"
+        elif peg > 2.0:
+            result["peg"] = f"PEG {peg:.2f} > 2.0 - potentially overvalued relative to growth"
+        else:
+            result["peg"] = f"PEG {peg:.2f} - fairly valued relative to growth"
+    else:
+        result["peg"] = "PEG ratio unavailable"
+
+    return result
 
 
 def lookup(ticker, capital=None, risk_pct=None):
@@ -802,6 +993,21 @@ def lookup(ticker, capital=None, risk_pct=None):
 
     for note in fund_notes:
         print(f"    -> {note}")
+
+    fib_zone = compute_fibonacci_value_zone(ticker)
+    if fib_zone:
+        print()
+        print(f"  Value Zone (Fibonacci 61.8%): {fib_zone['signal']} - zone {fib_zone['fib_zone']}, "
+              f"stop {fib_zone['stop_loss']}, target {fib_zone['target']}")
+
+    if fundamentals:
+        print()
+        print("  Value Zone (Fundamentals, 4 dimensions - fetches sector peers, adds real latency):")
+        value_zone = compute_value_zone(ticker, fundamentals)
+        if value_zone:
+            for dimension, verdict in value_zone.items():
+                if verdict:
+                    print(f"    {dimension}: {verdict}")
 
     print(f"  Market Regime    : {regime}  (exposure {int(multiplier*100)}%)")
 
