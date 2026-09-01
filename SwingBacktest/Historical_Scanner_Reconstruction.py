@@ -7,18 +7,25 @@ HONEST SCOPING: the live system's canonical signal source is an
 ensemble of 5 discovery scanners. Of these, only 3 produce a real,
 usable pivot (entry trigger) - Consolidation_Scanner.py,
 Hybrid_Alpha_Scanner.py, and Cup_and_Handle.py - all 3 are now
-reconstructed here. The other 2 (Emerging_Leader_Scanner.py,
-Earnings_Gap_Scanner.py) are cross-sectional ranking factors with no
-pivot of their own, meant to adjust pivot-scanner candidates
-downstream via Pivot_Consensus_Engine.py - reconstructing them
-meaningfully is a genuinely different, separate task, not covered
-here.
+reconstructed here. Emerging_Leader_Scanner.py is a cross-sectional
+ranking factor with no pivot of its own - but its accumulation_ratio
+has a real, defined 8% weight in core/factor_registry.py's live
+Composite_Score formula (confirmed directly - unlike
+Earnings_Gap_Scanner.py's earnings_gap_strength, which has NO entry in
+FACTOR_DEFINITIONS at all and is genuinely dead code in the live
+system). accumulation_ratio is therefore blended into each pivot
+candidate's confidence at that same real weight, rather than treated
+as an independent candidate source it structurally can't be.
+Earnings_Gap_Scanner.py is correctly excluded - adapting a signal the
+live system doesn't actually use would test nothing meaningful.
 
 Reuses each scanner's exact, real evaluation functions and exact real
 thresholds - "same logic, different data provider," not a second
-implementation. All 3 scanners' core functions take only a DataFrame
-and return a dict; zero file I/O, zero date dependency, confirmed
-genuinely reusable as-is with no modification needed to any live file.
+implementation. All core functions take only a DataFrame and return a
+dict/value; zero file I/O, zero date dependency, confirmed genuinely
+reusable as-is with no modification needed to any live file's
+behavior (Emerging_Leader_Scanner.py's extraction into
+_evaluate_accumulation() was tested to produce identical results).
 """
 
 import sys
@@ -33,9 +40,37 @@ from Historical_Data_Provider import PointInTimeMarketData
 from Consolidation_Scanner import _evaluate_consolidation, MIN_CONFIDENCE
 from Cup_and_Handle import _evaluate_cup, _evaluate_handle, _evaluate_volume_in_handle
 from Hybrid_Alpha_Scanner import _evaluate_vcp, VCP_MAX_DAYS
+from Emerging_Leader_Scanner import _evaluate_accumulation
 from core.config import MIN_PRICE, MIN_DAILY_TURNOVER
 
 BACKTEST_DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "backtest_results.db")
+
+ACCUMULATION_RATIO_WEIGHT = 0.08  # matches core/factor_registry.py's real, live weight exactly
+
+
+def blend_accumulation_ratio(pattern_confidence, df):
+    """
+    Blends the real accumulation_ratio into a pivot candidate's
+    confidence at its actual, defined live weight (8%) - honest
+    approximation, not a full Composite_Score replica (which would
+    need rs_percentile, delivery_score, and other factors this
+    backtest doesn't compute). Treats the existing pattern confidence
+    as "everything else" and accumulation_ratio as its real,
+    documented additional contribution.
+
+    Requires >= 50 rows (Emerging_Leader_Scanner.py's own real minimum)
+    - returns the original confidence unchanged if there isn't enough
+    history, rather than fabricating a value.
+    """
+
+    if df is None or len(df) < 50:
+        return pattern_confidence, None
+
+    accum_ratio = _evaluate_accumulation(df)
+
+    blended = pattern_confidence * (1 - ACCUMULATION_RATIO_WEIGHT) + accum_ratio * ACCUMULATION_RATIO_WEIGHT
+
+    return blended, accum_ratio
 
 
 def init_historical_candidates_table():
@@ -52,6 +87,16 @@ def init_historical_candidates_table():
             PRIMARY KEY (date, ticker, source_scanner)
         )
     """)
+
+    # Real lesson from earlier tonight: CREATE TABLE IF NOT EXISTS does
+    # NOT add a new column to a table that already exists from a prior
+    # run. ALTER TABLE with a try/except is the safe way to add this
+    # column regardless of whether the table is new or already present.
+    try:
+        conn.execute("ALTER TABLE historical_candidates ADD COLUMN accumulation_ratio REAL")
+    except sqlite3.OperationalError:
+        pass  # column already exists from a previous run
+
     conn.commit()
     conn.close()
 
@@ -88,11 +133,14 @@ def reconstruct_candidates_at_date(data, as_of_date):
 
             pattern_name = "Tight_Flag" if base["depth"] <= 0.10 and base["length"] <= 21 else "Consolidation"
 
+            blended_confidence, accum_ratio = blend_accumulation_ratio(base["confidence"], df)
+
             candidates.append({
                 "ticker": ticker,
                 "pivot": base["pivot"],
                 "pattern": pattern_name,
-                "confidence": base["confidence"],
+                "confidence": blended_confidence,
+                "accumulation_ratio": accum_ratio,
             })
 
         except Exception:
@@ -152,11 +200,14 @@ def reconstruct_cup_and_handle_at_date(data, as_of_date):
                 pattern_name = "COMPLETE"
                 confidence = raw_confidence
 
+            blended_confidence, accum_ratio = blend_accumulation_ratio(confidence, df)
+
             candidates.append({
                 "ticker": ticker,
                 "pivot": pivot,
                 "pattern": pattern_name,
-                "confidence": confidence,
+                "confidence": blended_confidence,
+                "accumulation_ratio": accum_ratio,
             })
 
         except Exception:
@@ -196,11 +247,14 @@ def reconstruct_hybrid_alpha_at_date(data, as_of_date):
             if vcp is None:
                 continue
 
+            blended_confidence, accum_ratio = blend_accumulation_ratio(vcp["confidence"], df)
+
             candidates.append({
                 "ticker": ticker,
                 "pivot": vcp["pivot"],
                 "pattern": "VCP",
-                "confidence": vcp["confidence"],
+                "confidence": blended_confidence,
+                "accumulation_ratio": accum_ratio,
             })
 
         except Exception:
@@ -256,23 +310,26 @@ def run(sample_every_n_days=5):
         for c in consolidation_candidates:
             conn.execute("""
                 INSERT OR REPLACE INTO historical_candidates
-                (date, ticker, pivot, pattern, confidence, source_scanner)
-                VALUES (?, ?, ?, ?, ?, ?)
-            """, (date_str, c["ticker"], c["pivot"], c["pattern"], c["confidence"], "Consolidation_Scanner"))
+                (date, ticker, pivot, pattern, confidence, source_scanner, accumulation_ratio)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (date_str, c["ticker"], c["pivot"], c["pattern"], c["confidence"],
+                  "Consolidation_Scanner", c.get("accumulation_ratio")))
 
         for c in cup_handle_candidates:
             conn.execute("""
                 INSERT OR REPLACE INTO historical_candidates
-                (date, ticker, pivot, pattern, confidence, source_scanner)
-                VALUES (?, ?, ?, ?, ?, ?)
-            """, (date_str, c["ticker"], c["pivot"], c["pattern"], c["confidence"], "Cup_and_Handle"))
+                (date, ticker, pivot, pattern, confidence, source_scanner, accumulation_ratio)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (date_str, c["ticker"], c["pivot"], c["pattern"], c["confidence"],
+                  "Cup_and_Handle", c.get("accumulation_ratio")))
 
         for c in hybrid_alpha_candidates:
             conn.execute("""
                 INSERT OR REPLACE INTO historical_candidates
-                (date, ticker, pivot, pattern, confidence, source_scanner)
-                VALUES (?, ?, ?, ?, ?, ?)
-            """, (date_str, c["ticker"], c["pivot"], c["pattern"], c["confidence"], "Hybrid_Alpha"))
+                (date, ticker, pivot, pattern, confidence, source_scanner, accumulation_ratio)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (date_str, c["ticker"], c["pivot"], c["pattern"], c["confidence"],
+                  "Hybrid_Alpha", c.get("accumulation_ratio")))
 
         total_by_scanner["Consolidation_Scanner"] += len(consolidation_candidates)
         total_by_scanner["Cup_and_Handle"] += len(cup_handle_candidates)

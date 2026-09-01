@@ -12,6 +12,22 @@ from datetime import datetime
 
 from core.config import PARQUET_CACHE_DIR, DB_PATH, MIN_PRICE, MIN_DAILY_TURNOVER
 
+
+def _evaluate_accumulation(df: pd.DataFrame) -> float:
+    """
+    Pure, real accumulation-ratio calculation, extracted from
+    run_emerging_leader_scanner()'s own inline logic - "same logic,
+    reusable form," not a second implementation. Takes only a
+    DataFrame, returns the raw ratio (0.0-1.0). The live function below
+    now calls this directly; behavior is identical to before.
+    """
+
+    recent = df.tail(20)
+    up_days = recent[recent["close"] > recent["close"].shift(1)]["volume"].sum()
+    total_vol = recent["volume"].sum()
+    return up_days / total_vol if total_vol > 0 else 0.5
+
+
 def run_emerging_leader_scanner():
     print("=" * 60)
     print("🌱 FACTOR GENERATOR: EMERGING LEADER SCANNER (Corrected)")
@@ -37,11 +53,7 @@ def run_emerging_leader_scanner():
             if latest_close < MIN_PRICE or (latest_close * float(df['volume'].iloc[-1])) < MIN_DAILY_TURNOVER:
                 continue
 
-            # Bug Fix: Use only the recent 20-session window, not the entire Parquet history
-            recent = df.tail(20)
-            up_days = recent[recent['close'] > recent['close'].shift(1)]['volume'].sum()
-            total_vol = recent['volume'].sum()
-            accum_ratio = up_days / total_vol if total_vol > 0 else 0.5
+            accum_ratio = _evaluate_accumulation(df)
 
             factor_records.append({'ticker': ticker, 'factor_name': 'accumulation_ratio', 'raw_val': accum_ratio, 'date': run_date})
         except Exception:
