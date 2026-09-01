@@ -413,6 +413,69 @@ def compute_vcr(ticker):
         return None
 
 
+def compute_vcp_signal(ticker):
+    """
+    #61 - Combined binary VCP signal, adapted from a real, working idea
+    found in Alpha1/Obsolete/smallcap_volatility_scanner.py: a single,
+    direct "VCP_DETECTED" flag combining tightness + trend + proximity
+    to highs, rather than checking several separate factors
+    individually. Reuses compute_vcr() and compute_ema_slope_persistence()
+    exactly as-is - "same logic, combined differently," not a
+    duplicated calculation.
+
+    Conditions, all three required:
+    - Tightness: VCR < 1.0 (volatility genuinely contracting)
+    - Trend: both EMA20 and EMA50 actively rising
+    - Proximity: within 8% of the 52-week high
+    """
+
+    import os
+    from core.config import PARQUET_CACHE_DIR
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+
+    if not os.path.exists(path):
+        return None
+
+    try:
+        df = pd.read_parquet(path)
+        df.columns = [str(c).lower() for c in df.columns]
+        df = df.dropna(subset=["close", "high", "low"])
+
+        if len(df) < 252:
+            return None
+
+        vcr = compute_vcr(ticker)
+        slope = compute_ema_slope_persistence(ticker)
+
+        if vcr is None or slope is None:
+            return None
+
+        current_close = float(df["close"].iloc[-1])
+        high_52w = float(df["high"].tail(252).max())
+
+        if high_52w <= 0:
+            return None
+
+        pct_below_high = ((high_52w - current_close) / high_52w) * 100
+
+        tightness_ok = vcr < 1.0
+        trend_ok = slope["ema20_rising"] and slope["ema50_rising"]
+        proximity_ok = pct_below_high <= 8.0
+
+        vcp_detected = tightness_ok and trend_ok and proximity_ok
+
+        return {
+            "vcp_detected": vcp_detected,
+            "vcr": vcr,
+            "trend_ok": trend_ok,
+            "pct_below_52w_high": round(pct_below_high, 2),
+        }
+
+    except Exception:
+        return None
+
+
 def compute_ema50(ticker):
     """
     Local, small calculation - EMA20 already comes from
