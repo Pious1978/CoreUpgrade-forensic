@@ -37,9 +37,9 @@ from Historical_Data_Provider import PointInTimeMarketData
 from Full_Backtest import run_full_backtest, BACKTEST_DB_PATH, WATCH_WINDOW_DAYS
 
 
-def load_backtest_trades():
+def load_backtest_trades(table_name="backtest_trades"):
     conn = sqlite3.connect(BACKTEST_DB_PATH)
-    df = pd.read_sql("SELECT * FROM backtest_trades", conn)
+    df = pd.read_sql(f"SELECT * FROM {table_name}", conn)
     conn.close()
     return df
 
@@ -201,14 +201,14 @@ def sensitivity_analysis():
     run_full_backtest(require_volume_confirmation=False)
 
 
-def run():
+def run(table_name="backtest_trades"):
 
     print()
     print("#" * 70)
-    print("BACKTEST VALIDATION (#54G)")
+    print(f"BACKTEST VALIDATION (#54G) - table: {table_name}")
     print("#" * 70)
 
-    trades_df = load_backtest_trades()
+    trades_df = load_backtest_trades(table_name)
 
     leakage_audit(trades_df)
     independent_reverify_sample(trades_df)
