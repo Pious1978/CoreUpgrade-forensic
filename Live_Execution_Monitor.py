@@ -36,7 +36,6 @@ Features:
 """
 
 import sqlite3
-import os
 import pandas as pd
 import time
 from datetime import datetime
@@ -1292,13 +1291,18 @@ def run_live_monitor(total_capital):
         )
 
 
-        # Real fix for a genuine, repeated complaint: each 60-second
-        # cycle was printing its full output on top of the previous
-        # one, with no screen clear at all - the terminal accumulated
-        # every past cycle forever. Clearing here means each refresh
-        # replaces the last one, matching how the legacy scanner tools
-        # actually behaved.
-        os.system("cls" if os.name == "nt" else "clear")
+        # Real correction to the earlier screen-clear fix: it went too
+        # far, wiping out the previous cycle's results entirely with no
+        # way to scroll back and see them. A clear visual separator
+        # achieves the original goal (distinguishing one cycle from the
+        # next) without destroying history - especially since the
+        # content itself is now far more compact than before (full
+        # detail only for the genuinely few priority alerts, not all 10
+        # candidates), so the original "endless wall of text" concern
+        # is already substantially addressed by that alone.
+        print("\n\n" + "#" * 75)
+        print(f"# NEW CYCLE - {datetime.now().strftime('%H:%M:%S')}")
+        print("#" * 75)
 
         print("\n"+"="*75)
 
