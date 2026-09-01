@@ -1384,7 +1384,7 @@ def run_live_monitor(total_capital):
             )
 
 
-        print("\nTOP PICK - FULL DETAIL")
+        MAX_FULL_DETAIL = 5  # protects against an unusually busy day recreating the original verbosity problem
 
         # Real, direct reuse of Stock_Lookup.py's own, already-tested
         # rich display - "same logic, one caller," not a duplicated
@@ -1392,18 +1392,31 @@ def run_live_monitor(total_capital):
         # Stock_Lookup.py imports FROM this file at module level
         # already, so a top-level import here would create a genuine
         # circular import - confirmed and tested before applying this.
-        top_pick = priority_alerts[0] if priority_alerts else (active_board[0] if active_board else None)
+        from Stock_Lookup import lookup
 
-        if top_pick:
-            from Stock_Lookup import lookup
-            lookup(top_pick["ticker"], total_capital)
+        if priority_alerts:
+            # All priority alerts are genuinely, equally time-sensitive
+            # (same VALID_BREAKOUT/RETEST_SUCCESS states) - showing full
+            # detail for only one and burying the rest in a one-line
+            # mention was a real, honest gap. They're typically few
+            # (today: 4 of 707 candidates), so full detail for all of
+            # them doesn't recreate the original verbosity problem.
+            print(f"\nPRIORITY ALERTS - FULL DETAIL ({len(priority_alerts)})")
 
-            other_alerts = [a for a in priority_alerts if a["ticker"] != top_pick["ticker"]]
-            if other_alerts:
-                print(f"\n  Also flagged ({len(other_alerts)} more, run Stock_Lookup.py individually): "
-                      + ", ".join(a["ticker"] for a in other_alerts[:5]))
+            for alert in priority_alerts[:MAX_FULL_DETAIL]:
+                lookup(alert["ticker"], total_capital)
+
+            overflow = priority_alerts[MAX_FULL_DETAIL:]
+            if overflow:
+                print(f"\n  {len(overflow)} more priority alert(s), run Stock_Lookup.py individually: "
+                      + ", ".join(a["ticker"] for a in overflow))
+
+        elif active_board:
+            print("\nTOP PICK - FULL DETAIL (no priority alerts right now)")
+            lookup(active_board[0]["ticker"], total_capital)
+
         else:
-            print("  No candidates to show.")
+            print("\n  No candidates to show.")
 
 
         if invalidated_board:
