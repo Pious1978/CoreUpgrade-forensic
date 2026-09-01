@@ -36,6 +36,7 @@ Features:
 """
 
 import sqlite3
+import os
 import pandas as pd
 import time
 from datetime import datetime
@@ -1291,6 +1292,14 @@ def run_live_monitor(total_capital):
         )
 
 
+        # Real fix for a genuine, repeated complaint: each 60-second
+        # cycle was printing its full output on top of the previous
+        # one, with no screen clear at all - the terminal accumulated
+        # every past cycle forever. Clearing here means each refresh
+        # replaces the last one, matching how the legacy scanner tools
+        # actually behaved.
+        os.system("cls" if os.name == "nt" else "clear")
+
         print("\n"+"="*75)
 
         print(
@@ -1371,146 +1380,28 @@ def run_live_monitor(total_capital):
             )
 
 
-        print("\nTOP EXECUTION BOARD")
-
+        print("\nTOP EXECUTION BOARD  (compact - run Stock_Lookup.py on a ticker for full detail)")
+        print("-"*95)
+        print(f"  {'TICKER':<12} {'STATE':<16} {'PRICE (EXT%)':<18} {'STOP':<10} {'T1':<10} {'QTY':<6} FLAGS")
+        print("-"*95)
 
         for x in active_board[:10]:
 
-            print("\n" + "-"*68)
-
-            print(
-                f"  {x['ticker']}  |  Score: {x['score']}  (Opportunity {x['opportunity']} / Readiness {x['readiness']})"
-            )
-
-            print("-"*68)
-
-            print(
-                f"  Status       : {x['state']}"
-                + (f"  (for {x['time_in_state']})" if x['time_in_state'] else "")
-            )
-
-            if x['state'] in ("APPROACHING", "BASE_BUILDING", "TESTING") and x['edp']:
-
-                print(
-                    f"  Expected Days to Pivot : {x['edp']}"
-                )
-
-            print(
-                f"  Price        : Rs{x['price']:.2f}  |  Pivot: Rs{x['pivot']:.2f}  |  Ext: {x['distance']:+.2f}%"
-            )
-
-            weekly_rvol_str = f"{x['weekly_rvol']}x" if x['weekly_rvol'] is not None else "N/A (insufficient history)"
-
-            print(
-                f"  RVOL         : {x['rvol']}x intraday  |  {weekly_rvol_str} weekly"
-            )
-
-            print("-"*68)
-
-            print(
-                f"  Entry        : Rs{x['price']:.2f}"
-            )
-
-            print(
-                f"  Stop Loss    : Rs{x['stop_loss']:.2f}"
-            )
-
-            if x['t1_pct_away'] is not None:
-
-                print(
-                    f"  Target 1     : Rs{x['target_1']:.2f}  (+{x['t1_pct_away']}% away)"
-                )
-
-                print(
-                    f"  Target 2     : Rs{x['target_2']:.2f}  (+{x['t2_pct_away']}% away)"
-                )
-
-                print(
-                    f"  Remaining R  : {x['remaining_r']}x"
-                )
-
-            else:
-
-                print(
-                    f"  Target 1     : Rs{x['target_1']:.2f}"
-                )
-
-                print(
-                    f"  Target 2     : Rs{x['target_2']:.2f}"
-                )
-
-                print(
-                    f"  Remaining R  : N/A - stop already breached"
-                )
-
-            print("-"*68)
-
-            print(
-                f"  Units        : {x['qty']} shares"
-            )
-
+            flags = []
             if x['sizing_rejected']:
-
-                print(
-                    f"  ⚠ SIZING REJECTED - too extended or remaining R too low, wait for a pullback"
-                )
-
+                flags.append("⚠REJECTED")
             if x.get('sector_warning'):
+                flags.append("⚠SECTOR")
+            if x['t1_hit']:
+                flags.append("T1✓")
+            flags_str = " ".join(flags)
 
-                print(
-                    f"  ⚠ {x['sector_warning']} - still worth considering, just be aware of the concentration"
-                )
-
-            if x['capital_pct'] is not None:
-
-                print(
-                    f"  Capital Used : Rs{x['capital_used']:,.0f}  ({x['capital_pct']}% of portfolio)"
-                )
-
-                print(
-                    f"  Max Loss     : Rs{x['max_loss']:,.0f}  ({x['max_loss_pct']}% of capital)"
-                )
-
-            else:
-
-                print(
-                    f"  Capital Used : Rs{x['capital_used']:,.0f}"
-                )
-
-                print(
-                    f"  Max Loss     : Rs{x['max_loss']:,.0f}"
-                )
-
-            if not x['sizing_rejected']:
-
-                print("-"*68)
-
-                if x['t1_hit']:
-
-                    print(
-                        f"  Exit Strategy : T1 REACHED - stop now at breakeven Rs{x['pivot']:.2f} -> trail remaining {x['sell_at_t2']} shares to T2"
-                    )
-
-                else:
-
-                    print(
-                        f"  Exit Strategy : Sell {x['sell_at_t1']} at T1 -> move stop to breakeven -> trail {x['sell_at_t2']} to T2"
-                    )
-
-            print("-"*68)
+            price_field = f"Rs{x['price']:.2f} ({x['distance']:+.1f}%)"
+            stop_field = f"Rs{x['stop_loss']:.2f}"
+            t1_field = f"Rs{x['target_1']:.2f}"
 
             print(
-                f"  Tier         : {x['tier']}"
-            )
-
-            print(
-                f"  Hold Period   : {x['hold_period']}"
-            )
-
-            read_text = get_read(x['state'], x['discount_pct'], x['vdry_ratio'], x['rvol'], x['body_ratio'])
-
-            print(
-                f"  Read         : {read_text}"
+                f"  {x['ticker']:<12} {x['state']:<16} {price_field:<18} {stop_field:<10} {t1_field:<10} {x['qty']:<6} {flags_str}"
             )
 
 
