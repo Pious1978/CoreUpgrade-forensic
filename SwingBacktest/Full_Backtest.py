@@ -188,7 +188,7 @@ def find_entry_trigger(data, ticker, discovery_date, pivot, watch_window_days=WA
 def run_full_backtest(total_capital=1000000, risk_per_trade_pct=0.005,
                        max_positions=10, max_per_sector=3,
                        concentration_cap_pct=0.20, same_bar_policy="STOP_FIRST",
-                       require_volume_confirmation=True):
+                       require_volume_confirmation=True, table_name="backtest_trades"):
 
     print()
     print("=" * 70)
@@ -343,7 +343,7 @@ def run_full_backtest(total_capital=1000000, risk_per_trade_pct=0.005,
           f"{len(still_open)} still open at end of data.")
 
     metrics = compute_backtest_metrics(closed_trades, total_capital)
-    save_results(closed_trades, still_open, metrics)
+    save_results(closed_trades, still_open, metrics, table_name=table_name)
 
     print_summary(metrics)
 
@@ -381,12 +381,12 @@ def compute_backtest_metrics(closed_trades, starting_capital):
     }
 
 
-def save_results(closed_trades, still_open, metrics):
+def save_results(closed_trades, still_open, metrics, table_name="backtest_trades"):
 
     conn = sqlite3.connect(BACKTEST_DB_PATH)
 
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS backtest_trades (
+    conn.execute(f"""
+        CREATE TABLE IF NOT EXISTS {table_name} (
             ticker TEXT, sector TEXT, entry_date TEXT, entry_price REAL, shares INTEGER,
             stop REAL, target_1 REAL, target_2 REAL,
             exit_reason TEXT, exit_date TEXT, exit_price REAL, pnl REAL, ambiguous_bars INTEGER
@@ -398,7 +398,7 @@ def save_results(closed_trades, still_open, metrics):
             "ticker", "sector", "entry_date", "entry_price", "shares",
             "stop", "target_1", "target_2",
             "exit_reason", "exit_date", "exit_price", "pnl", "ambiguous_bars"
-        ]].to_sql("backtest_trades", conn, if_exists="replace", index=False)
+        ]].to_sql(table_name, conn, if_exists="replace", index=False)
 
     conn.close()
 
@@ -406,12 +406,14 @@ def save_results(closed_trades, still_open, metrics):
     manifest["run_timestamp"] = datetime.now().isoformat()
     manifest["metrics"] = metrics
     manifest["still_open_count"] = len(still_open)
+    manifest["table_name"] = table_name
 
-    manifest_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assumptions_manifest.json")
+    manifest_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                  f"assumptions_manifest_{table_name}.json")
     with open(manifest_path, "w") as f:
         json.dump(manifest, f, indent=2, default=str)
 
-    print(f"[+] Trades written to backtest_trades, manifest written to {manifest_path}")
+    print(f"[+] Trades written to {table_name}, manifest written to {manifest_path}")
 
 
 def print_summary(metrics):
