@@ -1015,11 +1015,29 @@ def lookup(ticker, capital=None, risk_pct=None):
 
         risk_amt = capital * (risk_pct / 100)
         size_factor = get_size_factor(atr_pct)
-        qty = int((risk_amt * size_factor) / risk)
+        qty_by_risk = int((risk_amt * size_factor) / risk)
+
+        # Real, serious gap found and fixed: this had NO concentration
+        # cap at all. When the stop is tight (small risk per share),
+        # the risk-budget formula alone can suggest a position size that
+        # consumes a huge, unsafe share of total capital - confirmed
+        # directly: it suggested 48% of capital on one trade with a
+        # genuinely tight stop. Applying the same 20% cap already
+        # established and used in Risk_Positioning_Engine.py.
+        CONCENTRATION_CAP_PCT = 0.20
+        max_shares_by_concentration = int((capital * CONCENTRATION_CAP_PCT) / price) if price > 0 else 0
+
+        qty = min(qty_by_risk, max_shares_by_concentration)
         capital_used = round(qty * price, 2)
+        capital_pct = round((capital_used / capital) * 100, 1) if capital > 0 else 0
 
         print("-" * 68)
-        print(f"  Suggested Qty    : {qty} shares  (Rs{capital_used:,.0f} used)")
+        print(f"  Suggested Qty    : {qty} shares  (Rs{capital_used:,.0f} used, {capital_pct}% of capital)")
+
+        if qty_by_risk > max_shares_by_concentration:
+            print(f"    -> Capped at {int(CONCENTRATION_CAP_PCT*100)}% concentration limit "
+                  f"(risk-based sizing alone would have suggested {qty_by_risk} shares - "
+                  f"the stop is tight enough that the risk budget alone doesn't limit position size)")
 
         if size_factor != 1.0:
             note = "reduced - high volatility (ATR)" if size_factor < 1.0 else "increased - low volatility (ATR)"
