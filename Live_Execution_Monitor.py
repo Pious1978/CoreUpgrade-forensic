@@ -764,7 +764,7 @@ def get_hold_period(score):
 # ================================================================
 
 
-def run_live_monitor(total_capital):
+def run_live_monitor(total_capital, risk_pct=0.5):
 
 
     init_execution_db()
@@ -1404,7 +1404,7 @@ def run_live_monitor(total_capital):
             print(f"\nPRIORITY ALERTS - FULL DETAIL ({len(priority_alerts)})")
 
             for alert in priority_alerts[:MAX_FULL_DETAIL]:
-                lookup(alert["ticker"], total_capital)
+                lookup(alert["ticker"], total_capital, risk_pct)
 
             overflow = priority_alerts[MAX_FULL_DETAIL:]
             if overflow:
@@ -1413,7 +1413,7 @@ def run_live_monitor(total_capital):
 
         elif active_board:
             print("\nTOP PICK - FULL DETAIL (no priority alerts right now)")
-            lookup(active_board[0]["ticker"], total_capital)
+            lookup(active_board[0]["ticker"], total_capital, risk_pct)
 
         else:
             print("\n  No candidates to show.")
@@ -1528,5 +1528,25 @@ if __name__=="__main__":
         except ValueError:
             print("Please enter a valid number (e.g. 500000).")
 
+    # Real, genuine input - not a hardcoded default. Matches
+    # Stock_Lookup.py's exact same prompt for consistency.
+    while True:
 
-    run_live_monitor(total_capital=capital_value)
+        risk_input = input(
+            "Risk per trade as a % (e.g. 1 for 1%): "
+        ).strip()
+
+        try:
+
+            risk_pct_value = float(risk_input)
+
+            if risk_pct_value <= 0:
+                print("Risk % must be a positive number. Please try again.")
+                continue
+
+            break
+
+        except ValueError:
+            print("Please enter a valid number (e.g. 1 or 0.5).")
+
+    run_live_monitor(total_capital=capital_value, risk_pct=risk_pct_value)
