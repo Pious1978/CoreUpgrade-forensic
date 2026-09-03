@@ -596,6 +596,80 @@ def compute_breakout_checklist(ticker, price, pivot, rvol, real_state, distance)
     }
 
 
+def compute_rs_vs_sector(ticker, lookback=252):
+    """
+    #67 - RS relative to the stock's own sector, not just NIFTY. Real,
+    direct feedback: "a stock can outperform the market while
+    underperforming its own sector" - RBLBANK-style setups need both
+    views, since they answer genuinely different questions.
+
+    Builds a synthetic, equal-weighted sector benchmark from real peer
+    price data (via find_sector_peers(), already built for #66) rather
+    than assuming a real sector index file exists in parquet_cache,
+    which couldn't be confirmed. Same real "consistency of leadership"
+    drawdown methodology as compute_rs_line_drawdown(), just measured
+    against sector peers instead of NIFTYBEES.
+    """
+
+    import os
+    from core.config import PARQUET_CACHE_DIR
+
+    peers = find_sector_peers(ticker, max_peers=5)
+
+    if not peers:
+        return None
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+
+    if not os.path.exists(path):
+        return None
+
+    try:
+        stock_df = pd.read_parquet(path).sort_values("date").set_index("date")
+        stock_close = stock_df["close"]
+
+        peer_returns = []
+
+        for peer in peers:
+            peer_path = os.path.join(PARQUET_CACHE_DIR, f"{peer.upper()}.parquet")
+            if not os.path.exists(peer_path):
+                continue
+            try:
+                peer_df = pd.read_parquet(peer_path).sort_values("date").set_index("date")
+                # Normalize to a common starting value so each peer
+                # contributes an equal-weighted RETURN, not raw price
+                # (peers can have vastly different absolute prices)
+                normalized = peer_df["close"] / peer_df["close"].iloc[0]
+                peer_returns.append(normalized)
+            except Exception:
+                continue
+
+        if len(peer_returns) < 2:
+            return None  # too few real peers for a meaningful synthetic benchmark
+
+        sector_index = pd.concat(peer_returns, axis=1).mean(axis=1).dropna()
+
+        aligned = pd.DataFrame({
+            "stock": stock_close,
+            "sector": sector_index,
+        }).dropna()
+
+        if len(aligned) < lookback:
+            return None
+
+        rs_line = (aligned["stock"] / aligned["stock"].iloc[0]) / (aligned["sector"] / aligned["sector"].iloc[0])
+        rs_line = rs_line.tail(lookback)
+        drawdown = (rs_line / rs_line.cummax() - 1).min()
+
+        return {
+            "drawdown_pct": round(float(drawdown) * 100, 2),
+            "peer_count": len(peer_returns),
+        }
+
+    except Exception:
+        return None
+
+
 def compute_ema50(ticker):
     """
     Local, small calculation - EMA20 already comes from
@@ -1069,7 +1143,25 @@ def lookup(ticker, capital=None, risk_pct=None):
             drawdown_note = "reasonably consistent leadership"
         else:
             drawdown_note = "choppy - relative outperformance has had real setbacks"
-        print(f"  RS Line Drawdown : {rs_drawdown}%  ({drawdown_note})")
+        print(f"  RS Line Drawdown : {rs_drawdown}%  ({drawdown_note})  [vs NIFTY]")
+
+    rs_sector = compute_rs_vs_sector(ticker)
+    if rs_sector:
+        sector_dd = rs_sector["drawdown_pct"]
+        if sector_dd > -10:
+            sector_note = "very persistent leadership WITHIN its own sector"
+        elif sector_dd > -20:
+            sector_note = "reasonably consistent leadership within its sector"
+        else:
+            sector_note = "choppy - underperforming its own sector peers at times"
+        print(f"  RS Line Drawdown : {sector_dd}%  ({sector_note})  [vs {rs_sector['peer_count']} sector peers]")
+
+        # #67 - the specific case the real feedback called out: a stock
+        # can outperform the market while underperforming its own
+        # sector, and that distinction matters, not just two numbers
+        # sitting next to each other unremarked.
+        if rs_drawdown is not None and rs_drawdown > -15 and sector_dd <= -20:
+            print("    -> Outperforming the broader market but genuinely struggling within its own sector - worth noting")
 
     # #62 - VCR directional interpretation, combining VCR with what's
     # already computed (distance to pivot, RS trend, current state) -
