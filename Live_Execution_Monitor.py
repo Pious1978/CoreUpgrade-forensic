@@ -1010,6 +1010,23 @@ def run_live_monitor(total_capital, risk_pct=0.5):
             # Monitor, still an open item).
             t1_hit_now = bool(t1_hit_prev) or (target_1_check > 0 and price >= target_1_check)
 
+            # #78 - real extension, built now rather than deferred, so
+            # outcome data starts accumulating immediately rather than
+            # losing every day between now and whenever this gets
+            # revisited. alerts.log previously only captured entry-side
+            # events (VALID_BREAKOUT, STOP_BREACHED) - without this, the
+            # log could never answer "which alerted setups actually won"
+            # no matter how long it accumulated. Reuses the exact same
+            # send_alert() mechanism and deduplication from #56.
+            if t1_hit_now and not bool(t1_hit_prev):
+                send_alert("TARGET_1_HIT", ticker, "INFO",
+                           f"Reached Target 1 (Rs{target_1_check:.2f}) at Rs{price:.2f}")
+
+            target_2_check = float(row.get("target_2", 0))
+            if target_2_check > 0 and price >= target_2_check:
+                send_alert("TARGET_2_HIT", ticker, "INFO",
+                           f"Reached Target 2 (Rs{target_2_check:.2f}) at Rs{price:.2f}")
+
 
             counters[new_state]=counters.get(
                 new_state,
