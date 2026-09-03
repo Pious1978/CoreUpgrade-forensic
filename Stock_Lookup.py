@@ -1006,6 +1006,8 @@ def lookup(ticker, capital=None, risk_pct=None):
               f"(alternative - pivot + base height, base low Rs{measured_move['base_low']:.2f})")
 
     print("-" * 68)
+    print()
+    print("  === TRADING OPPORTUNITY ===")
     print(f"  Conviction Score : {score}/100  (Opportunity {opportunity} / Readiness {readiness})")
     print(f"  Tier             : {tier}")
 
@@ -1102,12 +1104,14 @@ def lookup(ticker, capital=None, risk_pct=None):
     for note in fund_notes:
         print(f"    -> {note}")
 
+    print()
+    print("  === VALUE OPPORTUNITY ===")
     fib_zone = compute_fibonacci_value_zone(ticker)
     if fib_zone:
-        print()
         print(f"  Value Zone (Fibonacci 61.8%): {fib_zone['signal']} - zone {fib_zone['fib_zone']}, "
               f"stop {fib_zone['stop_loss']}, target {fib_zone['target']}")
 
+    value_zone = None
     if fundamentals:
         print()
         print("  Value Zone (Fundamentals, 4 dimensions - fetches sector peers, adds real latency):")
@@ -1118,6 +1122,31 @@ def lookup(ticker, capital=None, risk_pct=None):
                     print(f"    {dimension}: {verdict}")
 
     print(f"  Market Regime    : {regime}  (exposure {int(multiplier*100)}%)")
+
+    # #66 - explicit, unmistakable summary distinguishing trading vs
+    # value opportunity. Per real, direct feedback: a stock can score
+    # highly on one and poorly on the other, and a momentum strategy
+    # doesn't need value alignment - the UI should make this obvious,
+    # not implied by section ordering alone.
+    trading_label = "HIGH" if score >= 70 else ("MODERATE" if score >= 50 else "LOW")
+
+    if value_zone:
+        cheap_keywords = ["VALUE ZONE", "CHEAPER", "NEAR OWN 52-WEEK LOW", "undervalued"]
+        expensive_keywords = ["NOT in value zone", "MORE EXPENSIVE", "NEAR OWN 52-WEEK HIGH", "overvalued"]
+        cheap_count = sum(1 for v in value_zone.values() if v and any(k in v for k in cheap_keywords))
+        expensive_count = sum(1 for v in value_zone.values() if v and any(k in v for k in expensive_keywords))
+        value_label = "HIGH" if cheap_count > expensive_count else ("LOW" if expensive_count > cheap_count else "MIXED")
+        value_detail = f"{cheap_count} of 4 dimensions cheap, {expensive_count} of 4 expensive"
+    else:
+        value_label = "UNKNOWN"
+        value_detail = "fundamentals unavailable"
+
+    print()
+    print(f"  SUMMARY: {trading_label} Trading Opportunity (score {score}/100)  +  "
+          f"{value_label} Value Opportunity ({value_detail})")
+    if trading_label == "HIGH" and value_label == "LOW":
+        print("    -> This is a momentum play, not a value play - that's not a contradiction, "
+              "just know which one you're taking")
 
     if capital is not None and risk_pct is not None and risk > 0:
 
