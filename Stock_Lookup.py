@@ -541,6 +541,61 @@ def compute_vcp_signal(ticker):
         return None
 
 
+def compute_breakout_checklist(ticker, price, pivot, rvol, real_state, distance):
+    """
+    #65 - Explicit breakout-volume requirement checklist. Combines
+    already-computed values (price/pivot/rvol/state/distance) with two
+    new, small calculations from real parquet_cache data: volume vs the
+    20-day average (a genuinely different baseline than intraday RVOL,
+    which compares to typical pace at this time of day, not the recent
+    daily average), and how many consecutive recent days price has
+    closed at or above the pivot. Retest success reuses
+    Execution_State_Machine.py's real RETEST_SUCCESS state directly,
+    not a new, separate definition.
+    """
+
+    import os
+    import pandas as pd
+    from core.config import PARQUET_CACHE_DIR
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+
+    volume_vs_20d_avg = None
+    days_above_pivot = 0
+
+    if os.path.exists(path):
+        try:
+            df = pd.read_parquet(path)
+            df.columns = [str(c).lower() for c in df.columns]
+            df = df.dropna(subset=["close", "volume"]).sort_values("date")
+
+            if len(df) >= 21:
+                today_volume = float(df["volume"].iloc[-1])
+                prior_20d_avg = float(df["volume"].iloc[-21:-1].mean())
+                if prior_20d_avg > 0:
+                    volume_vs_20d_avg = round(today_volume / prior_20d_avg, 2)
+
+            recent_closes = df["close"].tail(10).tolist()
+            for close_val in reversed(recent_closes):
+                if close_val >= pivot:
+                    days_above_pivot += 1
+                else:
+                    break
+
+        except Exception:
+            pass
+
+    return {
+        "pivot_crossed": price >= pivot,
+        "breakout_rvol": rvol,
+        "volume_vs_20d_avg": volume_vs_20d_avg,
+        "close_above_pivot": price >= pivot,
+        "pct_above_pivot": distance,
+        "days_above_pivot": days_above_pivot,
+        "retest_successful": real_state == "RETEST_SUCCESS",
+    }
+
+
 def compute_ema50(ticker):
     """
     Local, small calculation - EMA20 already comes from
@@ -967,6 +1022,21 @@ def lookup(ticker, capital=None, risk_pct=None):
     read_text = get_read(real_state, tech["discount_pct"], tech["vdry_ratio"], rvol)
     print(f"  Status           : {real_state}")
     print(f"  Read             : {read_text}")
+
+    # #65 - explicit breakout-volume requirement checklist, the real
+    # criteria responsible for turning APPROACHING into VALID_BREAKOUT,
+    # made visible rather than implied.
+    checklist = compute_breakout_checklist(ticker, price, pivot, rvol, real_state, distance)
+    print("  Breakout Checklist:")
+    print(f"    Pivot crossed?          {'YES' if checklist['pivot_crossed'] else 'NO'}")
+    print(f"    Breakout volume RVOL    {checklist['breakout_rvol']}x")
+    vol_20d = checklist['volume_vs_20d_avg']
+    print(f"    Volume vs 20d avg       {vol_20d}x" if vol_20d is not None else "    Volume vs 20d avg       N/A (insufficient history)")
+    print(f"    Close above pivot?      {'YES' if checklist['close_above_pivot'] else 'NO'}")
+    print(f"    % above pivot           {checklist['pct_above_pivot']:+.2f}%")
+    print(f"    Days above pivot        {checklist['days_above_pivot']}")
+    print(f"    Retest successful?      {'YES' if checklist['retest_successful'] else 'NO'}")
+
 
     ema50 = compute_ema50(ticker)
     pullback_note = classify_pullback(price, tech.get("ema20"), ema50)
