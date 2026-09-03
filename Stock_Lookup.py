@@ -31,7 +31,7 @@ from core.config import DB_PATH
 from core.technical_indicators import get_technical_context, compute_atr, compute_weekly_rvol
 from core.Live_Price_Engine import LivePriceEngine
 
-from Live_Execution_Monitor import calculate_conviction_score, calculate_edp, get_read
+from Live_Execution_Monitor import calculate_conviction_score, calculate_edp, get_read, EXTENSION_REJECT_PCT
 from Risk_Positioning_Engine import calculate_dynamic_rr_multipliers
 from core.Execution_State_Machine import evaluate_trade
 from Trade_Journal import get_remaining_shares
@@ -893,6 +893,16 @@ def lookup(ticker, capital=None, risk_pct=None):
 
     distance = round(((price - pivot) / pivot) * 100, 2)
 
+    # #64 - explicit extension warning, reusing Live_Execution_Monitor.py's
+    # real EXTENSION_REJECT_PCT threshold (already used there to reject
+    # sizing on an over-extended entry) rather than inventing a new,
+    # separate number here.
+    is_extended = distance > EXTENSION_REJECT_PCT
+
+    if is_extended:
+        print(f"  ⚠ EXTENDED   : {distance:+.1f}% from pivot, beyond the {EXTENSION_REJECT_PCT}% threshold - "
+              f"don't chase this without genuinely strong momentum justification")
+
     if price - stop_loss > 0 and risk > 0:
         target_1_tentative = pivot + 2 * risk
         remaining_r = round((target_1_tentative - price) / (price - stop_loss), 2)
@@ -917,10 +927,23 @@ def lookup(ticker, capital=None, risk_pct=None):
     target_1 = round(pivot + t1_mult * risk, 2)
     target_2 = round(pivot + t2_mult * risk, 2)
 
+    # #63 - measured from PIVOT, not current price: the realistic entry
+    # point is at/near the pivot (trigger = pivot * 1.005), not wherever
+    # price happens to be right now while still approaching. Reward
+    # assessed from an assumed entry price the trade doesn't actually
+    # have yet was misleading, per real, direct feedback.
+    stop_pct_from_pivot = round(((stop_loss - pivot) / pivot) * 100, 1) if pivot > 0 else None
+    t1_pct_from_pivot = round(((target_1 - pivot) / pivot) * 100, 1) if pivot > 0 else None
+    t2_pct_from_pivot = round(((target_2 - pivot) / pivot) * 100, 1) if pivot > 0 else None
+
+    stop_suffix = f"  ({stop_pct_from_pivot:+}% from pivot)" if stop_pct_from_pivot is not None else ""
+    t1_suffix = f"  ({t1_pct_from_pivot:+}% from pivot)" if t1_pct_from_pivot is not None else ""
+    t2_suffix = f"  ({t2_pct_from_pivot:+}% from pivot)" if t2_pct_from_pivot is not None else ""
+
     print("-" * 68)
-    print(f"  Stop Loss    : Rs{stop_loss:.2f}")
-    print(f"  Target 1     : Rs{target_1:.2f}  (dynamic R:R, regime-adjusted)")
-    print(f"  Target 2     : Rs{target_2:.2f}")
+    print(f"  Stop Loss    : Rs{stop_loss:.2f}{stop_suffix}")
+    print(f"  Target 1     : Rs{target_1:.2f}  (dynamic R:R, regime-adjusted){t1_suffix}")
+    print(f"  Target 2     : Rs{target_2:.2f}{t2_suffix}")
 
     measured_move = compute_measured_move_target(ticker, pivot)
     if measured_move:
@@ -975,6 +998,21 @@ def lookup(ticker, capital=None, risk_pct=None):
         else:
             drawdown_note = "choppy - relative outperformance has had real setbacks"
         print(f"  RS Line Drawdown : {rs_drawdown}%  ({drawdown_note})")
+
+    # #62 - VCR directional interpretation, combining VCR with what's
+    # already computed (distance to pivot, RS trend, current state) -
+    # a bare VCR number alone doesn't say whether tightening is
+    # constructive or a warning sign, per real, direct feedback.
+    if vcr is not None and vcr < 1.0:
+        if real_state == "STOP_BREACHED":
+            directional_note = "CONTRACTING AFTER A FAILED BREAKOUT - possibly bearish, the stop was already hit once"
+        elif rs_drawdown is not None and rs_drawdown <= -20:
+            directional_note = "CONTRACTING WHILE RELATIVE STRENGTH DETERIORATES - potentially dangerous, not a clean setup"
+        elif distance < 0:
+            directional_note = "CONTRACTING INTO RESISTANCE - constructive, genuinely tightening as it approaches the pivot"
+        else:
+            directional_note = "CONTRACTING ABOVE PIVOT - already through resistance, watch for continuation vs stalling"
+        print(f"  VCR Interpretation: {directional_note}")
 
     gap_shocks = count_gap_shocks(ticker)
     if gap_shocks is not None and gap_shocks > 0:
