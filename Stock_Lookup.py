@@ -596,6 +596,77 @@ def compute_breakout_checklist(ticker, price, pivot, rvol, real_state, distance)
     }
 
 
+def compute_relative_performance(ticker, benchmark_ticker="NIFTYBEES", horizons=(20, 63, 126, 252)):
+    """
+    Real, direct fix for the most important gap identified in the RS
+    critique: RS Line Drawdown measures deterioration from a recent
+    peak, not current leadership - a stock with +15% relative return
+    and -20% drawdown is a stronger leader than one with -5% relative
+    return and -2% drawdown, but drawdown alone can't tell them apart.
+    This computes actual relative TOTAL RETURN over multiple real
+    horizons, so leadership and deterioration are reported as two
+    genuinely separate things, not one number standing in for both.
+
+    Uses NIFTYBEES specifically for now (confirmed 498 real trading
+    days - enough for all four horizons including the full 252-day
+    one). A real Nifty Bank-equivalent sector benchmark is a separate,
+    deferred prerequisite (BANKBEES currently has only 43 real days,
+    nowhere near enough) - this function accepts a benchmark_ticker
+    parameter specifically so it can be reused for that once ready,
+    without a second implementation.
+    """
+
+    import os
+    from core.config import PARQUET_CACHE_DIR
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+    bench_path = os.path.join(PARQUET_CACHE_DIR, f"{benchmark_ticker}.parquet")
+
+    if not os.path.exists(path) or not os.path.exists(bench_path):
+        return None
+
+    try:
+        stock_df = pd.read_parquet(path)
+        stock_df.columns = [str(c).lower() for c in stock_df.columns]
+        stock_df = stock_df.sort_values("date").set_index("date")
+
+        bench_df = pd.read_parquet(bench_path)
+        bench_df.columns = [str(c).lower() for c in bench_df.columns]
+        bench_df = bench_df.sort_values("date").set_index("date")
+
+        aligned = pd.DataFrame({
+            "stock": stock_df["close"],
+            "benchmark": bench_df["close"],
+        }).dropna()
+
+        results = {}
+
+        for h in horizons:
+            if len(aligned) < h + 1:
+                results[h] = None
+                continue
+
+            stock_now = float(aligned["stock"].iloc[-1])
+            stock_then = float(aligned["stock"].iloc[-(h + 1)])
+            bench_now = float(aligned["benchmark"].iloc[-1])
+            bench_then = float(aligned["benchmark"].iloc[-(h + 1)])
+
+            if stock_then <= 0 or bench_then <= 0:
+                results[h] = None
+                continue
+
+            stock_return = (stock_now - stock_then) / stock_then
+            bench_return = (bench_now - bench_then) / bench_then
+            relative_return = (stock_return - bench_return) * 100
+
+            results[h] = round(relative_return, 2)
+
+        return results
+
+    except Exception:
+        return None
+
+
 def compute_rs_vs_sector(ticker, lookback=252):
     """
     #67 - RS relative to the stock's own sector, not just NIFTY. Real,
@@ -1136,6 +1207,18 @@ def lookup(ticker, capital=None, risk_pct=None):
         print(f"  VCR              : {vcr}  ({vcr_note})")
 
     rs_drawdown = compute_rs_line_drawdown(ticker)
+    # Real, direct fix: relative RETURN and RS drawdown answer genuinely
+    # different questions (current leadership vs deterioration from a
+    # peak) - shown together now, neither one carrying the whole
+    # assessment alone.
+    rel_perf = compute_relative_performance(ticker)
+    if rel_perf:
+        print("  Relative Performance vs NIFTY:")
+        for h, label in [(20, "20D"), (63, "63D"), (126, "126D"), (252, "252D")]:
+            val = rel_perf.get(h)
+            if val is not None:
+                print(f"    {label:<6} {val:+.1f}%")
+
     if rs_drawdown is not None:
         if rs_drawdown > -10:
             drawdown_note = "very persistent relative leadership"
