@@ -541,6 +541,86 @@ def compute_vcp_signal(ticker):
         return None
 
 
+def compute_breakout_phase_volume(ticker, real_state, days_above_pivot, rvol, weekly_rvol):
+    """
+    #68 - Real, direct feedback: showing "Weekly RVOL: 0.22x" without
+    phase context can misread a genuinely normal pre-breakout coil as
+    a concerning weak-volume signal. Low weekly volume is EXPECTED
+    before a breakout (contracting volatility, quiet accumulation) -
+    what actually matters is intraday RVOL at the moment of breakout,
+    and whether volume stays elevated afterward, not before it.
+
+    Reuses real_state (Execution_State_Machine.py's actual states) and
+    days_above_pivot (#65's checklist) rather than inventing a new
+    phase classification.
+    """
+
+    PRE_BREAKOUT_STATES = ("APPROACHING", "BASE_BUILDING", "TESTING")
+    AT_BREAKOUT_STATES = ("VALID_BREAKOUT", "RETEST_SUCCESS")
+
+    if real_state in PRE_BREAKOUT_STATES:
+        return {
+            "phase": "PRE-BREAKOUT",
+            "metric_label": "Weekly RVOL",
+            "metric_value": weekly_rvol,
+            "note": "Low/contracting volume is NORMAL here - this is what a real pre-breakout coil looks like",
+        }
+
+    if real_state in AT_BREAKOUT_STATES:
+        meets_threshold = rvol is not None and rvol >= 1.5
+        return {
+            "phase": "AT BREAKOUT",
+            "metric_label": "Breakout RVOL",
+            "metric_value": rvol,
+            "note": "Meets the real >=1.5x confirmation threshold" if meets_threshold
+                    else "Below the real >=1.5x confirmation threshold - a genuinely weaker breakout",
+        }
+
+    if days_above_pivot >= 2:
+        # Post-breakout, holding - check whether volume has genuinely
+        # STAYED elevated recently, not just whether the whole
+        # post-breakout window's average looks elevated (which a
+        # single initial spike could dominate, masking a real fade
+        # afterward - caught directly in testing before this reached
+        # you).
+        import os
+        import pandas as pd
+        from core.config import PARQUET_CACHE_DIR
+
+        path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+
+        if os.path.exists(path):
+            try:
+                df = pd.read_parquet(path)
+                df.columns = [str(c).lower() for c in df.columns]
+                df = df.dropna(subset=["volume"]).sort_values("date")
+
+                recent_window = min(3, days_above_pivot - 1)  # exclude the initial breakout day itself
+
+                if recent_window >= 1 and len(df) >= days_above_pivot + 20:
+                    recent_avg = float(df["volume"].tail(recent_window).mean())
+                    pre_breakout_avg = float(df["volume"].iloc[-(days_above_pivot + 20):-days_above_pivot].mean())
+
+                    if pre_breakout_avg > 0:
+                        ratio = round(recent_avg / pre_breakout_avg, 2)
+                        return {
+                            "phase": "POST-BREAKOUT",
+                            "metric_label": "Post-Breakout Volume",
+                            "metric_value": ratio,
+                            "note": "Volume genuinely remaining elevated since breakout" if ratio >= 1.0
+                                    else "Volume fading since the breakout - a real warning sign",
+                        }
+            except Exception:
+                pass
+
+    return {
+        "phase": "OTHER",
+        "metric_label": "Weekly RVOL",
+        "metric_value": weekly_rvol,
+        "note": None,
+    }
+
+
 def compute_breakout_checklist(ticker, price, pivot, rvol, real_state, distance):
     """
     #65 - Explicit breakout-volume requirement checklist. Combines
@@ -1192,9 +1272,6 @@ def lookup(ticker, capital=None, risk_pct=None):
         if edp:
             print(f"  Expected Days to Pivot : {edp}")
 
-    weekly_rvol_str = f"{weekly_rvol}x" if weekly_rvol is not None else "N/A (insufficient history)"
-    print(f"  Weekly RVOL      : {weekly_rvol_str}")
-
     trigger = round(pivot * 1.005, 2)
     real_state = evaluate_trade(price, pivot, trigger, rvol, "WAITING", stop_loss=stop_loss)
     read_text = get_read(real_state, tech["discount_pct"], tech["vdry_ratio"], rvol)
@@ -1214,6 +1291,16 @@ def lookup(ticker, capital=None, risk_pct=None):
     print(f"    % above pivot           {checklist['pct_above_pivot']:+.2f}%")
     print(f"    Days above pivot        {checklist['days_above_pivot']}")
     print(f"    Retest successful?      {'YES' if checklist['retest_successful'] else 'NO'}")
+
+    # #68 - phase-aware volume, real fix for a real concern: showing
+    # weekly RVOL without context risked misreading a normal
+    # pre-breakout coil as a weak-volume warning sign.
+    phase_vol = compute_breakout_phase_volume(ticker, real_state, checklist['days_above_pivot'], rvol, weekly_rvol)
+    print(f"  Volume Phase     : {phase_vol['phase']}")
+    if phase_vol['metric_value'] is not None:
+        print(f"  {phase_vol['metric_label']:<17}: {phase_vol['metric_value']}x")
+    if phase_vol['note']:
+        print(f"    -> {phase_vol['note']}")
 
 
     ema50 = compute_ema50(ticker)
