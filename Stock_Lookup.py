@@ -667,6 +667,31 @@ def compute_relative_performance(ticker, benchmark_ticker="NIFTYBEES", horizons=
         return None
 
 
+def is_banking_stock(ticker):
+    """
+    Real, honest finding: core/sector_map.py's sector labels are
+    inconsistent across data sources - AXISBANK/HDFCBANK are labeled
+    "Banking", but RBLBANK (used as this system's own running example
+    all night) is labeled "Financial Services" with theme "Banks -
+    Regional". A strict sector-name match would have silently excluded
+    it. Checking both sector and theme for "bank" catches both cases.
+    """
+
+    from core.sector_map import UNIVERSE
+
+    clean = ticker.upper().strip()
+    if not clean.endswith(".NS"):
+        clean += ".NS"
+
+    entry = UNIVERSE.get(clean)
+
+    if not entry:
+        return False
+
+    combined = f"{entry.get('sector', '')} {entry.get('theme', '')}".lower()
+    return "bank" in combined
+
+
 def compute_rs_vs_sector(ticker, lookback=252):
     """
     #67 - RS relative to the stock's own sector, not just NIFTY. Real,
@@ -1255,6 +1280,31 @@ def lookup(ticker, capital=None, risk_pct=None):
     if rel_perf and rel_perf.get(20) is not None:
         leadership = "CURRENTLY OUTPERFORMING" if rel_perf[20] > 0 else "CURRENTLY UNDERPERFORMING"
         print(f"  Current Leadership   : {leadership}  (based on 20D relative return)")
+
+    # Phase B of the RS redesign: BANKBEES backfilled to 4,353 real
+    # rows (from 2009), confirmed sufficient for all 4 horizons. Only
+    # shown for genuine banking stocks - showing "vs BANKBEES" for a
+    # non-banking stock would be meaningless. Precisely labeled as an
+    # ETF proxy, not "NIFTY BANK INDEX" itself, per real, direct
+    # feedback about that distinction.
+    if is_banking_stock(ticker):
+        print()
+        print("  === RELATIVE STRENGTH - vs BANKBEES (sector benchmark proxy) ===")
+
+        sector_perf = compute_relative_performance(ticker, benchmark_ticker="BANKBEES")
+        if sector_perf:
+            for h, label in [(20, "20D"), (63, "63D"), (126, "126D"), (252, "252D")]:
+                val = sector_perf.get(h)
+                if val is not None:
+                    print(f"    {label} Relative Return  : {val:+.2f}%")
+                else:
+                    print(f"    {label} Relative Return  : unavailable (insufficient history)")
+
+            if sector_perf.get(20) is not None:
+                sector_leadership = "CURRENTLY OUTPERFORMING SECTOR" if sector_perf[20] > 0 else "CURRENTLY UNDERPERFORMING SECTOR"
+                print(f"  Sector Leadership    : {sector_leadership}  (based on 20D relative return)")
+        else:
+            print("    Unable to compute - check BANKBEES data availability")
 
     rs_sector = compute_rs_vs_sector(ticker)
     if rs_sector:
