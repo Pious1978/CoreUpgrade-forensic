@@ -74,6 +74,24 @@ def section_kill_switch():
                   f"this week: {result['weekly_loss_pct']:.2f}%")
 
 
+def section_sector_concentration():
+
+    print("\n" + "-" * 70)
+    print("SECTOR CONCENTRATION")
+    print("-" * 70)
+
+    from core.sector_concentration import check_sector_concentration
+
+    warnings = check_sector_concentration(TOTAL_CAPITAL_DEFAULT)
+
+    if not warnings:
+        print("  ✅ No sector currently exceeds the 35% concentration threshold.")
+    else:
+        for w in warnings:
+            print(f"  ⚠ {w['sector']}: {w['pct']}% of capital (Rs{w['capital']:,.0f}) "
+                  f"across {len(w['tickers'])} positions: {', '.join(w['tickers'])}")
+
+
 def section_open_positions():
 
     print("\n" + "-" * 70)
@@ -159,6 +177,7 @@ def run():
 
     section_regime()
     section_kill_switch()
+    section_sector_concentration()
     section_open_positions()
     section_new_candidates()
     section_recent_alerts()
