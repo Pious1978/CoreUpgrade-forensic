@@ -961,6 +961,11 @@ def fetch_quick_fundamentals(ticker):
             "fifty_two_week_high": info.get("fiftyTwoWeekHigh"),
             "fifty_two_week_low": info.get("fiftyTwoWeekLow"),
             "peg_ratio": info.get("pegRatio"),
+            # Added for the valuation comparison (P/E, P/B, EV/EBITDA vs
+            # sector average) - all from this same .info call, zero
+            # extra API cost
+            "enterprise_value": info.get("enterpriseValue"),
+            "ebitda": info.get("ebitda"),
         }
 
     except Exception:
@@ -1030,6 +1035,91 @@ def find_sector_peers(ticker, max_peers=5):
     ]
 
     return peers[:max_peers]
+
+
+def compute_dividend_history(ticker, years=5):
+    """
+    Real dividend history via yfinance's own .dividends property - a
+    genuinely simple, direct data source, not a derived calculation.
+    """
+
+    try:
+        import yfinance as yf
+        from core.symbol_utils import normalize_ticker
+    except ImportError:
+        return None
+
+    try:
+        normalized = normalize_ticker(ticker)
+        divs = yf.Ticker(f"{normalized}.NS").dividends
+
+        if divs is None or divs.empty:
+            return {"has_dividends": False, "recent": []}
+
+        cutoff = pd.Timestamp.now(tz=divs.index.tz) - pd.Timedelta(days=365 * years)
+        recent_divs = divs[divs.index >= cutoff]
+
+        return {
+            "has_dividends": len(recent_divs) > 0,
+            "recent": [(str(d.date()), round(float(amt), 2)) for d, amt in recent_divs.items()],
+        }
+
+    except Exception:
+        return None
+
+
+def compute_valuation_comparison(ticker, fundamentals):
+    """
+    Real, direct extension per Stock_Lookup.py's redefined purpose:
+    deeper fundamental/valuation insight, complementing
+    Live_Execution_Monitor's technical focus. Current P/E, P/B, and
+    EV/EBITDA compared against a real sector-peer average - reuses
+    find_sector_peers() and fetch_quick_fundamentals() exactly as-is,
+    no new data source.
+
+    HONEST SCOPE: this covers current values and sector average only.
+    A genuine "stock's own 5-year historical average" needs historical
+    EPS/book-value data, which requires directly testing yfinance's
+    historical financials API (.financials/.quarterly_earnings) -
+    explicitly NOT assumed to work here, deferred to a separate,
+    evidence-based investigation before building on it.
+    """
+
+    if not fundamentals:
+        return None
+
+    pe = fundamentals.get("trailing_pe")
+    pb = fundamentals.get("price_to_book")
+    ev = fundamentals.get("enterprise_value")
+    ebitda = fundamentals.get("ebitda")
+    ev_ebitda = round(ev / ebitda, 2) if ev and ebitda and ebitda > 0 else None
+
+    peers = find_sector_peers(ticker, max_peers=5)
+    peer_pes, peer_pbs, peer_ev_ebitdas = [], [], []
+
+    for peer in peers:
+        peer_fund = fetch_quick_fundamentals(peer)
+        if not peer_fund:
+            continue
+        if peer_fund.get("trailing_pe"):
+            peer_pes.append(peer_fund["trailing_pe"])
+        if peer_fund.get("price_to_book"):
+            peer_pbs.append(peer_fund["price_to_book"])
+        p_ev, p_ebitda = peer_fund.get("enterprise_value"), peer_fund.get("ebitda")
+        if p_ev and p_ebitda and p_ebitda > 0:
+            peer_ev_ebitdas.append(p_ev / p_ebitda)
+
+    import statistics
+
+    return {
+        "pe": pe,
+        "pe_sector_avg": round(statistics.median(peer_pes), 2) if peer_pes else None,
+        "pb": pb,
+        "pb_sector_avg": round(statistics.median(peer_pbs), 2) if peer_pbs else None,
+        "ev_ebitda": ev_ebitda,
+        "ev_ebitda_sector_avg": round(statistics.median(peer_ev_ebitdas), 2) if peer_ev_ebitdas else None,
+        "peer_count": len(peers),
+    }
 
 
 def compute_value_zone(ticker, fundamentals):
@@ -1449,6 +1539,31 @@ def lookup(ticker, capital=None, risk_pct=None):
 
     for note in fund_notes:
         print(f"    -> {note}")
+
+    if fundamentals:
+        valuation = compute_valuation_comparison(ticker, fundamentals)
+        if valuation:
+            print()
+            print("  === VALUATION vs SECTOR (median of real peers) ===")
+            pe_disp = f"{valuation['pe']}" if valuation['pe'] else "N/A"
+            pe_sector_disp = f"{valuation['pe_sector_avg']}" if valuation['pe_sector_avg'] else "N/A"
+            print(f"    P/E        : {pe_disp}  vs sector {pe_sector_disp}  (n={valuation['peer_count']} peers)")
+            pb_disp = f"{valuation['pb']}" if valuation['pb'] else "N/A"
+            pb_sector_disp = f"{valuation['pb_sector_avg']}" if valuation['pb_sector_avg'] else "N/A"
+            print(f"    P/B        : {pb_disp}  vs sector {pb_sector_disp}")
+            ev_disp = f"{valuation['ev_ebitda']}" if valuation['ev_ebitda'] else "N/A"
+            ev_sector_disp = f"{valuation['ev_ebitda_sector_avg']}" if valuation['ev_ebitda_sector_avg'] else "N/A"
+            print(f"    EV/EBITDA  : {ev_disp}  vs sector {ev_sector_disp}")
+
+        div_history = compute_dividend_history(ticker)
+        if div_history:
+            print()
+            if div_history["has_dividends"]:
+                print(f"  Dividend History (last 5 years, {len(div_history['recent'])} payouts):")
+                for date_str, amount in div_history["recent"][-5:]:
+                    print(f"    {date_str}: Rs{amount}")
+            else:
+                print("  Dividend History: No dividends in the last 5 years")
 
     print()
     print("  === VALUE OPPORTUNITY ===")
