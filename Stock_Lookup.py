@@ -1219,6 +1219,18 @@ def lookup(ticker, capital=None, risk_pct=None):
             if val is not None:
                 print(f"    {label:<6} {val:+.1f}%")
 
+    print()
+    print("  === RELATIVE STRENGTH - vs NIFTYBEES ===")
+
+    rel_perf = compute_relative_performance(ticker)
+    if rel_perf:
+        for h, label in [(20, "20D"), (63, "63D"), (126, "126D"), (252, "252D")]:
+            val = rel_perf.get(h)
+            if val is not None:
+                print(f"    {label} Relative Return  : {val:+.2f}%")
+            else:
+                print(f"    {label} Relative Return  : unavailable (insufficient history)")
+
     if rs_drawdown is not None:
         if rs_drawdown > -10:
             drawdown_note = "very persistent relative leadership"
@@ -1226,7 +1238,17 @@ def lookup(ticker, capital=None, risk_pct=None):
             drawdown_note = "reasonably consistent leadership"
         else:
             drawdown_note = "choppy - relative outperformance has had real setbacks"
-        print(f"  RS Line Drawdown : {rs_drawdown}%  ({drawdown_note})  [vs NIFTY]")
+        print(f"  RS Line Drawdown     : {rs_drawdown}%  ({drawdown_note})")
+
+    # Real, direct fix: RS Line Drawdown measures distance from a past
+    # peak, not current standing - a stock can be genuinely
+    # outperforming right now while still well below its own RS peak.
+    # Based on the 20D horizon specifically, matching the real example
+    # given: "+4.2% over 20 days" is what determines current
+    # leadership, not the multi-year drawdown figure.
+    if rel_perf and rel_perf.get(20) is not None:
+        leadership = "CURRENTLY OUTPERFORMING" if rel_perf[20] > 0 else "CURRENTLY UNDERPERFORMING"
+        print(f"  Current Leadership   : {leadership}  (based on 20D relative return)")
 
     rs_sector = compute_rs_vs_sector(ticker)
     if rs_sector:
