@@ -718,7 +718,13 @@ def compute_rs_vs_sector(ticker, lookback=252):
         if len(peer_returns) < 2:
             return None  # too few real peers for a meaningful synthetic benchmark
 
-        sector_index = pd.concat(peer_returns, axis=1).mean(axis=1).dropna()
+        # Real fix, per direct feedback: median instead of mean. A
+        # single outlier peer (e.g., one stock crashing or spiking)
+        # would drag an equal-weight MEAN in a way that misrepresents
+        # "the typical peer" - median is a genuinely better diagnostic
+        # for this specific use, even though it's not how a real,
+        # tradable index would be constructed.
+        sector_index = pd.concat(peer_returns, axis=1).median(axis=1).dropna()
 
         aligned = pd.DataFrame({
             "stock": stock_close,
@@ -1254,19 +1260,25 @@ def lookup(ticker, capital=None, risk_pct=None):
     if rs_sector:
         sector_dd = rs_sector["drawdown_pct"]
         if sector_dd > -10:
-            sector_note = "very persistent leadership WITHIN its own sector"
+            sector_note = "very persistent leadership among comparable peers"
         elif sector_dd > -20:
-            sector_note = "reasonably consistent leadership within its sector"
+            sector_note = "reasonably consistent leadership among comparable peers"
         else:
-            sector_note = "choppy - underperforming its own sector peers at times"
-        print(f"  RS Line Drawdown : {sector_dd}%  ({sector_note})  [vs {rs_sector['peer_count']} sector peers]")
+            sector_note = "choppy - underperforming comparable peers at times"
+        # Real, honest relabeling per direct feedback: this is a
+        # synthetic peer basket, not a real, tradable sector index like
+        # a genuine Nifty Bank series would be - calling it "Peer
+        # Relative Strength" avoids implying more precision or
+        # methodological rigor than a 2-5 stock median actually has.
+        print(f"  Peer Relative Strength : {sector_dd}%  ({sector_note})  "
+              f"[median of {rs_sector['peer_count']} peers]")
 
         # #67 - the specific case the real feedback called out: a stock
         # can outperform the market while underperforming its own
         # sector, and that distinction matters, not just two numbers
         # sitting next to each other unremarked.
         if rs_drawdown is not None and rs_drawdown > -15 and sector_dd <= -20:
-            print("    -> Outperforming the broader market but genuinely struggling within its own sector - worth noting")
+            print("    -> Outperforming the broader market but genuinely lagging comparable peers - worth noting")
 
     # #62 - VCR directional interpretation, combining VCR with what's
     # already computed (distance to pivot, RS trend, current state) -
