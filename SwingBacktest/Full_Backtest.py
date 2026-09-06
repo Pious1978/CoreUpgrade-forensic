@@ -344,7 +344,7 @@ def run_full_backtest(total_capital=1000000, risk_per_trade_pct=0.005,
           f"{len(still_open)} still open at end of data.")
 
     metrics = compute_backtest_metrics(closed_trades, total_capital)
-    save_results(closed_trades, still_open, metrics, table_name=table_name)
+    save_results(closed_trades, still_open, metrics, table_name=table_name, enable_time_stop=enable_time_stop)
 
     print_summary(metrics)
 
@@ -387,7 +387,7 @@ def compute_backtest_metrics(closed_trades, starting_capital):
     }
 
 
-def save_results(closed_trades, still_open, metrics, table_name="backtest_trades"):
+def save_results(closed_trades, still_open, metrics, table_name="backtest_trades", enable_time_stop=False):
 
     conn = sqlite3.connect(BACKTEST_DB_PATH)
 
