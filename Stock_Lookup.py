@@ -925,6 +925,44 @@ def get_size_factor(atr_pct):
         return 1.0
 
 
+def compute_debt_to_equity_trend(ticker, years=5):
+    """
+    Real D/E TREND across 5 years, not just the single current value
+    already available via .info's debtToEquity. Uses .balance_sheet's
+    confirmed real "Total Debt" and "Stockholders Equity" lines.
+    """
+
+    try:
+        import yfinance as yf
+        from core.symbol_utils import normalize_ticker
+    except ImportError:
+        return None
+
+    try:
+        normalized = normalize_ticker(ticker)
+        yf_ticker = yf.Ticker(f"{normalized}.NS")
+        balance_sheet = yf_ticker.balance_sheet
+
+        if balance_sheet is None or balance_sheet.empty:
+            return None
+        if "Total Debt" not in balance_sheet.index or "Stockholders Equity" not in balance_sheet.index:
+            return None
+
+        debt = balance_sheet.loc["Total Debt"]
+        equity = balance_sheet.loc["Stockholders Equity"]
+
+        result = []
+        for date in debt.index[:years]:
+            d, e = debt.get(date), equity.get(date)
+            if d is not None and e is not None and e > 0:
+                result.append((date.strftime("%Y-%m-%d"), round(float(d) / float(e), 2)))
+
+        return result if result else None
+
+    except Exception:
+        return None
+
+
 def compute_free_cash_flow_history(ticker, years=5):
     """
     Real FCF, using yfinance's own already-computed "Free Cash Flow"
@@ -1667,6 +1705,13 @@ def lookup(ticker, capital=None, risk_pct=None):
                 # mislabeling a raw absolute value as "Cr"
                 val_cr = val / 1e7
                 print(f"    {date_str}: Rs{val_cr:,.0f} Cr")
+
+        de_trend = compute_debt_to_equity_trend(ticker)
+        if de_trend:
+            print()
+            print("  === DEBT-TO-EQUITY (5-year trend) ===")
+            for date_str, de_val in de_trend:
+                print(f"    {date_str}: {de_val}")
 
         div_history = compute_dividend_history(ticker)
         if div_history:
