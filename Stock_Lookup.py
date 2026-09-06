@@ -925,6 +925,38 @@ def get_size_factor(atr_pct):
         return 1.0
 
 
+def compute_free_cash_flow_history(ticker, years=5):
+    """
+    Real FCF, using yfinance's own already-computed "Free Cash Flow"
+    line from .cashflow - confirmed directly present via investigation,
+    not derived manually from operating cash flow minus capex (which
+    would risk a different definition than yfinance's own).
+    """
+
+    try:
+        import yfinance as yf
+        from core.symbol_utils import normalize_ticker
+    except ImportError:
+        return None
+
+    try:
+        normalized = normalize_ticker(ticker)
+        yf_ticker = yf.Ticker(f"{normalized}.NS")
+        cashflow = yf_ticker.cashflow
+
+        if cashflow is None or cashflow.empty or "Free Cash Flow" not in cashflow.index:
+            return None
+
+        fcf_series = cashflow.loc["Free Cash Flow"].dropna()
+        fcf_series = fcf_series[fcf_series.index.sort_values(ascending=False)][:years]
+
+        return [(date.strftime("%Y-%m-%d"), round(float(val), 2))
+                for date, val in fcf_series.items()]
+
+    except Exception:
+        return None
+
+
 def compute_growth_cagr(ticker):
     """
     Real Revenue/Net Profit/EPS CAGR, confirmed buildable via direct
@@ -1623,6 +1655,18 @@ def lookup(ticker, capital=None, risk_pct=None):
                 cagr_3y_str = f"{cagr_3y:+.1f}%" if cagr_3y is not None else "N/A (insufficient history)"
                 cagr_5y_str = f"{cagr_5y:+.1f}%" if cagr_5y is not None else "N/A (insufficient history)"
                 print(f"    {name:<11}: 3Y {cagr_3y_str}  |  5Y {cagr_5y_str}")
+
+        fcf_history = compute_free_cash_flow_history(ticker)
+        if fcf_history:
+            print()
+            print("  === FREE CASH FLOW (last 5 years) ===")
+            for date_str, val in fcf_history:
+                # yfinance returns absolute rupees, not crores (confirmed
+                # via the earlier totalDebt investigation showing a raw,
+                # un-scaled figure) - converting explicitly rather than
+                # mislabeling a raw absolute value as "Cr"
+                val_cr = val / 1e7
+                print(f"    {date_str}: Rs{val_cr:,.0f} Cr")
 
         div_history = compute_dividend_history(ticker)
         if div_history:
