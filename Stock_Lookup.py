@@ -925,6 +925,64 @@ def get_size_factor(atr_pct):
         return 1.0
 
 
+def compute_growth_cagr(ticker):
+    """
+    Real Revenue/Net Profit/EPS CAGR, confirmed buildable via direct
+    investigation of yfinance's .financials for a real Indian stock
+    (RBLBANK) - "Total Revenue", "Net Income", and "Diluted EPS" lines
+    are genuinely present, 5 real annual columns, most recent first.
+    Not assumed to work - verified with real data before building this.
+    """
+
+    try:
+        import yfinance as yf
+        from core.symbol_utils import normalize_ticker
+    except ImportError:
+        return None
+
+    try:
+        normalized = normalize_ticker(ticker)
+        yf_ticker = yf.Ticker(f"{normalized}.NS")
+        financials = yf_ticker.financials
+
+        if financials is None or financials.empty:
+            return None
+
+        # Columns come back most-recent-first (confirmed directly) -
+        # reverse to oldest-first for a clean, readable CAGR calculation
+        financials = financials[financials.columns[::-1]]
+
+        def cagr(series, years):
+            if len(series) <= years:
+                return None
+            end_val = series.iloc[-1]
+            start_val = series.iloc[-(years + 1)]
+            if start_val is None or end_val is None or start_val <= 0:
+                return None
+            try:
+                return round((((end_val / start_val) ** (1 / years)) - 1) * 100, 2)
+            except Exception:
+                return None
+
+        result = {}
+
+        for label, line_item in [("revenue", "Total Revenue"),
+                                  ("net_profit", "Net Income"),
+                                  ("eps", "Diluted EPS")]:
+            if line_item in financials.index:
+                series = financials.loc[line_item].dropna()
+                result[f"{label}_cagr_3y"] = cagr(series, 3)
+                result[f"{label}_cagr_5y"] = cagr(series, 5)
+            else:
+                result[f"{label}_cagr_3y"] = None
+                result[f"{label}_cagr_5y"] = None
+
+        return result
+
+    except Exception:
+        return None
+
+
 def fetch_quick_fundamentals(ticker):
     """
     Fast, single-call fundamentals context for a spiking stock - NOT the
@@ -1554,6 +1612,17 @@ def lookup(ticker, capital=None, risk_pct=None):
             ev_disp = f"{valuation['ev_ebitda']}" if valuation['ev_ebitda'] else "N/A"
             ev_sector_disp = f"{valuation['ev_ebitda_sector_avg']}" if valuation['ev_ebitda_sector_avg'] else "N/A"
             print(f"    EV/EBITDA  : {ev_disp}  vs sector {ev_sector_disp}")
+
+        growth = compute_growth_cagr(ticker)
+        if growth:
+            print()
+            print("  === GROWTH (CAGR) ===")
+            for label, name in [("revenue", "Revenue"), ("net_profit", "Net Profit"), ("eps", "EPS")]:
+                cagr_3y = growth.get(f"{label}_cagr_3y")
+                cagr_5y = growth.get(f"{label}_cagr_5y")
+                cagr_3y_str = f"{cagr_3y:+.1f}%" if cagr_3y is not None else "N/A (insufficient history)"
+                cagr_5y_str = f"{cagr_5y:+.1f}%" if cagr_5y is not None else "N/A (insufficient history)"
+                print(f"    {name:<11}: 3Y {cagr_3y_str}  |  5Y {cagr_5y_str}")
 
         div_history = compute_dividend_history(ticker)
         if div_history:
