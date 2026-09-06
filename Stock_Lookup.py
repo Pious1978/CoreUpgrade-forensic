@@ -925,6 +925,53 @@ def get_size_factor(atr_pct):
         return 1.0
 
 
+def compute_event_risk(ticker):
+    """
+    #75 - Real, direct feedback: "a technical breakout immediately
+    before earnings is a fundamentally different risk profile from
+    one occurring in an ordinary session." Confirmed directly via
+    investigation: yfinance's .calendar genuinely provides a real
+    upcoming earnings date for Indian stocks (not assumed to work),
+    plus ex-dividend date. Historical earnings dates (.earnings_dates)
+    failed due to a missing lxml package, not a data-availability
+    issue - not chased further since .calendar already gives the more
+    critical piece (the upcoming date) for this specific use case.
+    """
+
+    try:
+        import yfinance as yf
+        from core.symbol_utils import normalize_ticker
+    except ImportError:
+        return None
+
+    try:
+        from datetime import date
+
+        normalized = normalize_ticker(ticker)
+        yf_ticker = yf.Ticker(f"{normalized}.NS")
+        calendar = yf_ticker.calendar
+
+        if not calendar:
+            return None
+
+        result = {"earnings_date": None, "days_to_earnings": None, "ex_dividend_date": None}
+
+        earnings_dates = calendar.get("Earnings Date")
+        if earnings_dates and len(earnings_dates) > 0:
+            next_earnings = earnings_dates[0]
+            result["earnings_date"] = next_earnings.strftime("%Y-%m-%d")
+            result["days_to_earnings"] = (next_earnings - date.today()).days
+
+        ex_div = calendar.get("Ex-Dividend Date")
+        if ex_div:
+            result["ex_dividend_date"] = ex_div.strftime("%Y-%m-%d")
+
+        return result
+
+    except Exception:
+        return None
+
+
 def compute_financial_health_extended(ticker):
     """
     Real, direct investigation confirmed: currentRatio, EBIT are
@@ -1790,6 +1837,18 @@ def lookup(ticker, capital=None, risk_pct=None):
                 print(f"    Interest Coverage  : {health['interest_coverage']}x  (approx, EBIT ≈ Pretax Income + Interest Expense)")
             if health["roce"] is not None:
                 print(f"    ROCE               : {health['roce']}%  (approx)")
+
+        event_risk = compute_event_risk(ticker)
+        if event_risk and event_risk["earnings_date"]:
+            print()
+            print("  === EVENT RISK ===")
+            days = event_risk["days_to_earnings"]
+            print(f"    Next Earnings      : {event_risk['earnings_date']}  ({days} days away)")
+            if days is not None and 0 <= days <= 10:
+                print(f"    ⚠ EARNINGS WITHIN {days} DAYS - a breakout right now carries genuinely different, "
+                      f"event-driven risk, not a purely technical one")
+            if event_risk["ex_dividend_date"]:
+                print(f"    Ex-Dividend Date   : {event_risk['ex_dividend_date']}")
 
         div_history = compute_dividend_history(ticker)
         if div_history:
