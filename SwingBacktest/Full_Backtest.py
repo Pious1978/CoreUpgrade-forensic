@@ -188,8 +188,7 @@ def find_entry_trigger(data, ticker, discovery_date, pivot, watch_window_days=WA
 def run_full_backtest(total_capital=1000000, risk_per_trade_pct=0.005,
                        max_positions=10, max_per_sector=3,
                        concentration_cap_pct=0.20, same_bar_policy="STOP_FIRST",
-                       require_volume_confirmation=True, table_name="backtest_trades",
-                       enable_time_stop=False):
+                       require_volume_confirmation=True, table_name="backtest_trades"):
 
     print()
     print("=" * 70)
@@ -304,7 +303,7 @@ def run_full_backtest(total_capital=1000000, risk_per_trade_pct=0.005,
             result = simulate_trade(
                 price_history_after_entry, entry_price=price_now, initial_stop=stop,
                 target_1=target_1, target_2=target_2, shares=shares,
-                same_bar_policy=same_bar_policy, enable_time_stop=enable_time_stop
+                same_bar_policy=same_bar_policy
             )
 
             available_capital -= capital_needed
@@ -344,16 +343,11 @@ def run_full_backtest(total_capital=1000000, risk_per_trade_pct=0.005,
           f"{len(still_open)} still open at end of data.")
 
     metrics = compute_backtest_metrics(closed_trades, total_capital)
-    save_results(closed_trades, still_open, metrics, table_name=table_name, enable_time_stop=enable_time_stop)
+    save_results(closed_trades, still_open, metrics, table_name=table_name)
 
     print_summary(metrics)
 
     print("=" * 70)
-
-    # Backward-compatible addition: existing callers that don't capture
-    # a return value are unaffected. Needed for Compare_Time_Stop_Scenarios.py
-    # to compare metrics directly rather than re-reading them from disk.
-    return metrics
 
 
 def compute_backtest_metrics(closed_trades, starting_capital):
@@ -387,7 +381,7 @@ def compute_backtest_metrics(closed_trades, starting_capital):
     }
 
 
-def save_results(closed_trades, still_open, metrics, table_name="backtest_trades", enable_time_stop=False):
+def save_results(closed_trades, still_open, metrics, table_name="backtest_trades"):
 
     conn = sqlite3.connect(BACKTEST_DB_PATH)
 
@@ -413,7 +407,6 @@ def save_results(closed_trades, still_open, metrics, table_name="backtest_trades
     manifest["metrics"] = metrics
     manifest["still_open_count"] = len(still_open)
     manifest["table_name"] = table_name
-    manifest["enable_time_stop"] = enable_time_stop
 
     manifest_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                   f"assumptions_manifest_{table_name}.json")

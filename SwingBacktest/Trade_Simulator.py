@@ -36,28 +36,13 @@ def simulate_trade(price_history_after_entry, entry_price, initial_stop,
                     target_1, target_2, shares,
                     trailing_start_pct=TRAILING_START_PCT,
                     trailing_distance_pct=TRAILING_DISTANCE_PCT,
-                    same_bar_policy="STOP_FIRST",
-                    enable_time_stop=False,
-                    time_stop_min_progress_fraction=0.5,
-                    time_stop_max_sessions=5):
+                    same_bar_policy="STOP_FIRST"):
     """
     price_history_after_entry: a real daily OHLC DataFrame (columns
     open/high/low/close), covering the entry date onward, in
     chronological order. The entry date's own bar is included, matching
     how a real breakout day's own range can also be where the position
     gets managed.
-
-    #71 backtest extension - real, direct feedback: "never hits stop,
-    never hits target... what does the system do?" Matches
-    Exit_Engine.py's check_time_stop() logic exactly: risk unit is
-    entry_price - initial_stop (already 1.5xATR at entry), require at
-    least half that risk-unit of progress within 5 sessions.
-
-    Deliberately OPT-IN, defaulting to False: this is a real,
-    meaningful methodology change to the already-validated backtest
-    (-16.64% at capacity-unconstrained scale). Enabling it changes
-    results - it should be a deliberate comparison, not a silent
-    change to validated numbers.
 
     Returns a dict with the real exit outcome, or an explicit
     "still_open" result if the price history runs out before any exit
@@ -70,13 +55,11 @@ def simulate_trade(price_history_after_entry, entry_price, initial_stop,
     current_stop = initial_stop
     t1_hit = False
     ambiguous_bars = 0
-    risk_per_share = entry_price - initial_stop
 
-    for sessions_elapsed, (date, bar) in enumerate(price_history_after_entry.iterrows()):
+    for date, bar in price_history_after_entry.iterrows():
 
         day_high = float(bar["high"])
         day_low = float(bar["low"])
-
 
         stop_touched = day_low <= current_stop
         t1_touched = day_high >= target_1
@@ -156,27 +139,6 @@ def simulate_trade(price_history_after_entry, entry_price, initial_stop,
                 "ambiguous_bars": ambiguous_bars,
                 "same_bar_policy_applied": False,
             }
-
-        # #71 - time stop / stagnation exit. Checked after stop/target
-        # (those take genuine priority) but before the trailing stop
-        # update, using the day's close as the progress measurement
-        # point, matching Exit_Engine.py's live logic exactly.
-        if enable_time_stop and sessions_elapsed >= time_stop_max_sessions and risk_per_share > 0:
-
-            day_close = float(bar["close"])
-            progress = day_close - entry_price
-            required_progress = time_stop_min_progress_fraction * risk_per_share
-
-            if progress < required_progress:
-                pnl = (day_close - entry_price) * shares
-                return {
-                    "exit_reason": "TIME_STOP",
-                    "exit_price": round(day_close, 2),
-                    "exit_date": date,
-                    "pnl": round(pnl, 2),
-                    "ambiguous_bars": ambiguous_bars,
-                    "same_bar_policy_applied": False,
-                }
 
         # Trailing stop - matches Position_Manager.py's real, live logic
         # exactly: once profit reaches trailing_start_pct, the stop
