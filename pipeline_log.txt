@@ -1,0 +1,111 @@
+2026-09-10 12:24:41,783 [INFO] 
+==================================================================
+ QUANTITATIVE PIPELINE DAG STARTING
+==================================================================
+
+2026-09-10 12:24:41,783 [INFO] RUN ID : 20260910_122441
+2026-09-10 12:24:41,783 [INFO] 
+--------------------------------------------------
+STARTING STAGE
+bhav_to_parquet_converter.py
+Attempt 1/3
+--------------------------------------------------
+
+Bhav copy files read: 47
+Symbol parquet files written: 2809
+Symbols with preserved older (backfilled) history: 2052
+Date range covered by bhav copies: 2026-06-29 to 2026-09-09
+2026-09-10 12:25:15,209 [INFO] COMPLETED bhav_to_parquet_converter.py | 33.43s
+2026-09-10 12:25:15,210 [INFO] 
+--------------------------------------------------
+STARTING STAGE
+RelativeStrengthEngine.py
+Attempt 1/3
+--------------------------------------------------
+
+======================================================================
+Traceback (most recent call last):
+  File "C:\Users\GS102\OneDrive\Research\Invest\BETA\CoreUpgrade-forensic\RelativeStrengthEngine.py", line 177, in <module>
+    run_relative_strength_engine()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\GS102\OneDrive\Research\Invest\BETA\CoreUpgrade-forensic\RelativeStrengthEngine.py", line 18, in run_relative_strength_engine
+    print("\U0001f4c8 RELATIVE STRENGTH ENGINE")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\GS102\AppData\Local\Python\pythoncore-3.14-64\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4c8' in position 0: character maps to <undefined>
+2026-09-10 12:25:16,153 [WARNING] RelativeStrengthEngine.py FAILED attempt 1
+2026-09-10 12:25:21,154 [INFO] 
+--------------------------------------------------
+STARTING STAGE
+RelativeStrengthEngine.py
+Attempt 2/3
+--------------------------------------------------
+
+======================================================================
+Traceback (most recent call last):
+  File "C:\Users\GS102\OneDrive\Research\Invest\BETA\CoreUpgrade-forensic\RelativeStrengthEngine.py", line 177, in <module>
+    run_relative_strength_engine()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\GS102\OneDrive\Research\Invest\BETA\CoreUpgrade-forensic\RelativeStrengthEngine.py", line 18, in run_relative_strength_engine
+    print("\U0001f4c8 RELATIVE STRENGTH ENGINE")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\GS102\AppData\Local\Python\pythoncore-3.14-64\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4c8' in position 0: character maps to <undefined>
+2026-09-10 12:25:22,070 [WARNING] RelativeStrengthEngine.py FAILED attempt 2
+2026-09-10 12:25:27,070 [INFO] 
+--------------------------------------------------
+STARTING STAGE
+RelativeStrengthEngine.py
+Attempt 3/3
+--------------------------------------------------
+
+======================================================================
+Traceback (most recent call last):
+  File "C:\Users\GS102\OneDrive\Research\Invest\BETA\CoreUpgrade-forensic\RelativeStrengthEngine.py", line 177, in <module>
+    run_relative_strength_engine()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\GS102\OneDrive\Research\Invest\BETA\CoreUpgrade-forensic\RelativeStrengthEngine.py", line 18, in run_relative_strength_engine
+    print("\U0001f4c8 RELATIVE STRENGTH ENGINE")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\GS102\AppData\Local\Python\pythoncore-3.14-64\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4c8' in position 0: character maps to <undefined>
+2026-09-10 12:25:27,998 [WARNING] RelativeStrengthEngine.py FAILED attempt 3
+2026-09-10 12:25:27,999 [ERROR] PIPELINE FAILED
+2026-09-10 12:25:28,001 [ERROR] Pipeline halted at RelativeStrengthEngine.py
+Traceback (most recent call last):
+  File "C:\Users\GS102\OneDrive\Research\Invest\BETA\CoreUpgrade-forensic\Pipeline_DAG_Executor.py", line 349, in run_stage
+    subprocess.run(
+    ~~~~~~~~~~~~~~^
+    
+    
+    ...<8 lines>...
+    
+    
+    )
+    ^
+  File "C:\Users\GS102\AppData\Local\Python\pythoncore-3.14-64\Lib\subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['C:\\Users\\GS102\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe', 'C:\\Users\\GS102\\OneDrive\\Research\\Invest\\BETA\\CoreUpgrade-forensic\\RelativeStrengthEngine.py']' returned non-zero exit status 1.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\GS102\OneDrive\Research\Invest\BETA\CoreUpgrade-forensic\Pipeline_DAG_Executor.py", line 567, in execute_pipeline_dag
+    run_stage(
+    ~~~~~~~~~^
+        stage
+        ^^^^^
+    )
+    ^
+  File "C:\Users\GS102\OneDrive\Research\Invest\BETA\CoreUpgrade-forensic\Pipeline_DAG_Executor.py", line 413, in run_stage
+    raise RuntimeError(
+        f"Pipeline halted at {script}"
+    ) from e
+RuntimeError: Pipeline halted at RelativeStrengthEngine.py

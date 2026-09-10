@@ -346,6 +346,21 @@ Attempt {attempt}/{MAX_RETRIES}
             )
 
 
+            # Real fix: encoding="utf-8" above only controls how THIS
+            # (parent) process decodes the child's output bytes back
+            # into a string - it does nothing for the child process
+            # itself. On Windows, a child Python process still defaults
+            # to the system's own code page (typically cp1252) for its
+            # own internal print() calls, which cannot encode emoji -
+            # confirmed directly: RelativeStrengthEngine.py's very
+            # first print(), containing "📈", crashed with
+            # UnicodeEncodeError before producing any output at all,
+            # halting the entire pipeline. Setting PYTHONIOENCODING in
+            # the child's own environment (merged with the existing
+            # environment, not replacing it) fixes this at the source.
+            child_env = os.environ.copy()
+            child_env["PYTHONIOENCODING"] = "utf-8"
+
             subprocess.run(
 
                 [
@@ -355,7 +370,9 @@ Attempt {attempt}/{MAX_RETRIES}
 
                 check=True,
 
-                encoding="utf-8"
+                encoding="utf-8",
+
+                env=child_env
 
             )
 
@@ -493,6 +510,13 @@ def launch_live_execution():
     )
 
 
+    # Same real fix as the subprocess.run() calls above - Live_Execution_Monitor.py
+    # and anything it imports use special characters (confirmed:
+    # this system's own "⚠" warning markers), so this new console
+    # needs the same UTF-8 environment to avoid the identical crash.
+    popen_env = os.environ.copy()
+    popen_env["PYTHONIOENCODING"] = "utf-8"
+
     if sys.platform == "win32":
 
 
@@ -503,7 +527,9 @@ def launch_live_execution():
                 script
             ],
 
-            creationflags=subprocess.CREATE_NEW_CONSOLE
+            creationflags=subprocess.CREATE_NEW_CONSOLE,
+
+            env=popen_env
 
         )
 
@@ -518,7 +544,9 @@ def launch_live_execution():
                 script
             ],
 
-            start_new_session=True
+            start_new_session=True,
+
+            env=popen_env
 
         )
 
