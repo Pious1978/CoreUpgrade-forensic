@@ -202,6 +202,37 @@ def log_manual_entry():
         conn.close()
         return
 
+    # Real, direct fix for a real bug found tonight: 4 actual trades
+    # (BHARAT ELECTRONICS LTD, JIO FIN SERVICES LTD, LARSEN & TOUBRO
+    # LTD., RELIANCE INDUSTRIES LTD) got entered as full company names
+    # instead of ticker symbols, silently breaking every live price
+    # fetch for those positions for hours before being traced back here.
+    # A space is never valid in a real NSE ticker symbol - this is a
+    # safe, always-correct hard rejection. NOT checking for "&" - a
+    # real bug caught in testing: M&M (Mahindra & Mahindra) is a
+    # genuine, valid NSE ticker, confirmed in this system's own real
+    # positions table - the space check alone already catches all 4
+    # real bad values, since every one of them contains a space anyway.
+    if " " in ticker:
+        print(f"'{ticker}' looks like a company name, not a ticker symbol "
+              f"(contains a space). Please enter the actual ticker, "
+              f"e.g. 'RELIANCE' not 'Reliance Industries Ltd'.")
+        conn.close()
+        return
+
+    try:
+        from core.sector_map import UNIVERSE
+        clean_check = ticker if ticker.endswith(".NS") else ticker + ".NS"
+        if clean_check not in UNIVERSE:
+            confirm = input(f"'{ticker}' isn't in the known universe - could be a typo, "
+                             f"or just not curated yet. Continue anyway? (y/n): ").strip().lower()
+            if confirm != "y":
+                print("Cancelled.")
+                conn.close()
+                return
+    except Exception:
+        pass  # universe check is a soft safety net, never block entry if it fails
+
     try:
         entry_price = float(input("Entry price (Rs): ").strip())
         entry_shares = int(input("Quantity bought: ").strip())
