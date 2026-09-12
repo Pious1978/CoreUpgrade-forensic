@@ -171,6 +171,8 @@ BULLISH_DISCOVERY_STAGES = [
 
     "Cup_and_Handle.py",
 
+    "Reversal_Exhaustion_Scanner.py",
+
 ]
 
 

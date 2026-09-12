@@ -24,9 +24,18 @@ FACTOR_DEFINITIONS = {
     "accumulation_ratio": {"family": "institutional",     "weight": 0.08, "owner": "Emerging_Leader"},
 
     # Technical Structure (20%)
-    "trend_alignment":    {"family": "structure",         "weight": 0.08, "owner": "Hybrid_Alpha"},
-    "base_compression":   {"family": "structure",         "weight": 0.07, "owner": "Consolidation"},
-    "cup_handle_quality": {"family": "structure",         "weight": 0.05, "owner": "Cup_Handle"},
+    # reversal_exhaustion_score added here: a genuinely new pattern
+    # type identified against real swing-trading methodology - every
+    # other scanner in this system (Consolidation, Hybrid_Alpha,
+    # Emerging_Leader, Earnings_Gap, Cup_and_Handle) is continuation-
+    # only, none detect a stock reversing OUT of a downtrend. Same
+    # treatment as earnings_gap_strength: small, conservative,
+    # EXPLICITLY UNVALIDATED weight, taken from the 3 existing
+    # structure factors (0.01 each), family total unchanged at 0.20.
+    "trend_alignment":        {"family": "structure",         "weight": 0.07, "owner": "Hybrid_Alpha"},
+    "base_compression":       {"family": "structure",         "weight": 0.06, "owner": "Consolidation"},
+    "cup_handle_quality":     {"family": "structure",         "weight": 0.04, "owner": "Cup_Handle"},
+    "reversal_exhaustion_score": {"family": "structure",      "weight": 0.03, "owner": "Reversal_Exhaustion"},
 
     # Breakout Confirmation (15%) — used only in execution mode
     # earnings_gap_strength added here: confirmed genuinely dead code
