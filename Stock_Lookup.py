@@ -676,6 +676,70 @@ def compute_breakout_checklist(ticker, price, pivot, rvol, real_state, distance)
     }
 
 
+def compute_sector_strength_context(ticker):
+    """
+    Real, direct integration fix: Sector_Strength_Ranker.py existed as
+    a standalone, manually-run script with no persistence and no
+    connection to live decision-making. Now reads the latest saved
+    ranking to show whether this specific stock's sector is currently
+    one of the market's leading or lagging sectors - directly
+    addresses the "ride the hot sector" theme-momentum concept, which
+    was genuinely absent from live monitoring before this.
+    """
+
+    import sqlite3
+    from core.config import DB_PATH
+    from core.sector_map import get_sector
+
+    sector = get_sector(ticker)
+
+    if sector == "UNKNOWN":
+        return None
+
+    try:
+        conn = sqlite3.connect(DB_PATH)
+
+        table_exists = conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='sector_strength_ranking'"
+        ).fetchone()
+
+        if not table_exists:
+            conn.close()
+            return None
+
+        latest_date = conn.execute("SELECT MAX(run_date) FROM sector_strength_ranking").fetchone()[0]
+
+        if not latest_date:
+            conn.close()
+            return None
+
+        all_sectors = pd.read_sql(
+            "SELECT sector, liquidity_weighted_rs, stock_count FROM sector_strength_ranking "
+            "WHERE run_date = ? ORDER BY liquidity_weighted_rs DESC",
+            conn, params=(latest_date,)
+        )
+        conn.close()
+
+        if all_sectors.empty or sector not in all_sectors["sector"].values:
+            return None
+
+        rank = int(all_sectors[all_sectors["sector"] == sector].index[0]) + 1
+        total = len(all_sectors)
+        row = all_sectors[all_sectors["sector"] == sector].iloc[0]
+
+        return {
+            "sector": sector,
+            "rank": rank,
+            "total_sectors": total,
+            "rs_score": round(float(row["liquidity_weighted_rs"]), 2),
+            "stock_count": int(row["stock_count"]),
+            "run_date": latest_date,
+        }
+
+    except Exception:
+        return None
+
+
 def compute_relative_performance(ticker, benchmark_ticker="NIFTYBEES", horizons=(20, 63, 126, 252)):
     """
     Real, direct fix for the most important gap identified in the RS
@@ -1746,6 +1810,18 @@ def lookup(ticker, capital=None, risk_pct=None):
         # sitting next to each other unremarked.
         if rs_drawdown is not None and rs_drawdown > -15 and sector_dd <= -20:
             print("    -> Outperforming the broader market but genuinely lagging comparable peers - worth noting")
+
+    sector_strength = compute_sector_strength_context(ticker)
+    if sector_strength:
+        print()
+        pct_rank = round((1 - (sector_strength["rank"] - 1) / sector_strength["total_sectors"]) * 100)
+        print(f"  Sector Strength  : {sector_strength['sector']} ranks #{sector_strength['rank']} "
+              f"of {sector_strength['total_sectors']} sectors (top {pct_rank}%), "
+              f"RS {sector_strength['rs_score']:+.1f}%  [as of {sector_strength['run_date']}]")
+        if sector_strength["rank"] <= max(3, sector_strength["total_sectors"] // 10):
+            print("    -> A genuinely leading sector right now - real, current theme/sector momentum behind this stock")
+        elif sector_strength["rank"] > sector_strength["total_sectors"] * 0.75:
+            print("    -> A genuinely lagging sector right now - this stock is swimming against its own sector's current")
 
     # #62 - VCR directional interpretation, combining VCR with what's
     # already computed (distance to pivot, RS trend, current state) -

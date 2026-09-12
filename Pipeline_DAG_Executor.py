@@ -148,6 +148,8 @@ PRE_REGIME_STAGES = [
 
     "RelativeStrengthEngine.py",
 
+    "Sector_Strength_Ranker.py",
+
     "Market_Regime_Engine.py",
 
 ]

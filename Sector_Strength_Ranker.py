@@ -32,8 +32,9 @@ import numpy as np
 import os
 from datetime import datetime
 
-from core.config import PARQUET_CACHE_DIR, UNIVERSE_CSV_PATH, NIFTY_BENCHMARK_SYMBOL, MIN_TRADING_DAYS_RS
+from core.config import PARQUET_CACHE_DIR, UNIVERSE_CSV_PATH, NIFTY_BENCHMARK_SYMBOL, MIN_TRADING_DAYS_RS, DB_PATH
 from core.sector_map import get_sector, UNIVERSE as SECTOR_UNIVERSE
+import sqlite3
 
 MIN_STOCKS_PER_SECTOR = 2  # below this, a sector's score isn't statistically meaningful
 
@@ -176,6 +177,29 @@ def run():
         return
 
     result_df = pd.DataFrame(sector_scores).sort_values("liquidity_weighted_rs", ascending=False)
+
+    # Real, direct fix for a genuine integration gap: this ranking
+    # existed only as console output, with no way for
+    # Stock_Lookup.py or the nightly pipeline to actually use it.
+    # Persisted with a run_date so the latest ranking is always
+    # queryable, and history accumulates over time rather than being
+    # overwritten.
+    run_date = datetime.now().strftime("%Y-%m-%d")
+    persist_df = result_df.copy()
+    persist_df["run_date"] = run_date
+
+    conn = sqlite3.connect(DB_PATH)
+
+    table_exists = conn.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='sector_strength_ranking'"
+    ).fetchone()
+
+    if table_exists:
+        conn.execute("DELETE FROM sector_strength_ranking WHERE run_date = ?", (run_date,))
+
+    persist_df.to_sql("sector_strength_ranking", conn, if_exists="append", index=False)
+    conn.commit()
+    conn.close()
 
     print(f"\n[+] Sector strength ranking ({len(result_df)} sectors, "
           f"minimum {MIN_STOCKS_PER_SECTOR} mapped stocks each):")
