@@ -422,7 +422,8 @@ def calculate_conviction_score(
         weekly_rvol,
         pivot_extension,
         remaining_r,
-        distance
+        distance,
+        earnings_gap_strength=None
 ):
     """
     Returns (conviction, opportunity, readiness) - three related numbers
@@ -483,14 +484,25 @@ def calculate_conviction_score(
     structure = sum(v * w for v, w in available) / total_w if total_w > 0 else 50.0
 
     # Confirmation/Tape (15%) - live data, reusing the same rvol*40
-    # mapping convention already established for the old blended score
+    # mapping convention already established for the old blended score.
+    # Internal weights (0.33/0.27/0.2/0.2) match core/factor_registry.py's
+    # confirmation-family proportions (0.05/0.04/0.03/0.03 of 0.15) for
+    # consistency between the two places this family's weighting lives.
+    # earnings_gap_strength IS a 0-1 percentile rank stored in
+    # scanner_factors (confirmed: Earnings_Gap_Scanner.py uses the same
+    # .rank(pct=True) convention as base_compression, not the raw,
+    # unbounded max_gap_10d x vol_surge product) - *100 matches the
+    # established convention for percentile-based factors, same as
+    # base_compression elsewhere in this function.
     tape_components = []
     if intraday_rvol is not None:
-        tape_components.append((min(100, intraday_rvol * 40), 0.4))
+        tape_components.append((min(100, intraday_rvol * 40), 0.33))
     if weekly_rvol is not None:
-        tape_components.append((min(100, weekly_rvol * 40), 0.3))
+        tape_components.append((min(100, weekly_rvol * 40), 0.27))
     if pivot_extension is not None:
-        tape_components.append((pivot_extension * 100, 0.3))
+        tape_components.append((pivot_extension * 100, 0.2))
+    if earnings_gap_strength is not None and earnings_gap_strength > 0:
+        tape_components.append((earnings_gap_strength * 100, 0.2))
     total_w2 = sum(w for v, w in tape_components)
     tape = sum(v * w for v, w in tape_components) / total_w2 if total_w2 > 0 else 50.0
 
@@ -641,7 +653,7 @@ def fetch_factor_lookup(conn):
         pass
 
     try:
-        factor_names = ("accumulation_ratio", "base_compression", "cup_handle_quality", "hybrid_alpha_score", "pivot_extension")
+        factor_names = ("accumulation_ratio", "base_compression", "cup_handle_quality", "hybrid_alpha_score", "pivot_extension", "earnings_gap_strength")
 
         factors_df = pd.read_sql(f"""
             SELECT ticker, factor_name, score
@@ -1116,7 +1128,8 @@ def run_live_monitor(total_capital, risk_pct=0.5):
                 weekly_rvol=weekly_rvol,
                 pivot_extension=factors.get("pivot_extension"),
                 remaining_r=remaining_r,
-                distance=distance
+                distance=distance,
+                earnings_gap_strength=factors.get("earnings_gap_strength")
             )
 
             hold_period = get_hold_period(score)

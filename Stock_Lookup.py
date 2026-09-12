@@ -1625,7 +1625,8 @@ def lookup(ticker, capital=None, risk_pct=None):
         weekly_rvol=weekly_rvol,
         pivot_extension=factors.get("pivot_extension"),
         remaining_r=remaining_r,
-        distance=distance
+        distance=distance,
+        earnings_gap_strength=factors.get("earnings_gap_strength")
     )
 
     t1_mult, t2_mult = calculate_dynamic_rr_multipliers(regime, score / 100)

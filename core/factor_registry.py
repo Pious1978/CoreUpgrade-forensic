@@ -29,9 +29,24 @@ FACTOR_DEFINITIONS = {
     "cup_handle_quality": {"family": "structure",         "weight": 0.05, "owner": "Cup_Handle"},
 
     # Breakout Confirmation (15%) — used only in execution mode
-    "intraday_rvol":      {"family": "confirmation",      "weight": 0.06, "owner": "Breakout_Trigger"},
-    "weekly_rvol":        {"family": "confirmation",      "weight": 0.05, "owner": "Breakout_Trigger"},
-    "pivot_extension":    {"family": "confirmation",      "weight": 0.04, "owner": "Breakout_Trigger"},
+    # earnings_gap_strength added here: confirmed genuinely dead code
+    # for months (Earnings_Gap_Scanner.py computed it, but it was never
+    # in this registry, so Master_Terminal.py's scoring loop - which
+    # iterates FACTOR_DEFINITIONS.items(), not scanner_factors' actual
+    # distinct names - never even looked at it). Reframed as directly
+    # relevant after comparing this system against real swing-trading
+    # methodology: gap-up + volume confirmation is a named, recognized
+    # entry signal there, not an arbitrary formula. Weight (0.03) is a
+    # deliberately small, conservative, EXPLICITLY UNVALIDATED starting
+    # point - taken by reducing the 3 existing confirmation factors by
+    # 0.01 each, keeping the family's total exactly unchanged at 0.15.
+    # Revisit once real backtest evidence exists, matching this
+    # project's established "don't hardcode without validation"
+    # principle from tonight's RS redesign work.
+    "intraday_rvol":         {"family": "confirmation",      "weight": 0.05, "owner": "Breakout_Trigger"},
+    "weekly_rvol":           {"family": "confirmation",      "weight": 0.04, "owner": "Breakout_Trigger"},
+    "pivot_extension":       {"family": "confirmation",      "weight": 0.03, "owner": "Breakout_Trigger"},
+    "earnings_gap_strength": {"family": "confirmation",      "weight": 0.03, "owner": "Earnings_Gap"},
 
     # Risk & Liquidity (15%)
     "liquidity_flow":     {"family": "risk_liquidity",    "weight": 0.08, "owner": "Hybrid_Alpha"},
