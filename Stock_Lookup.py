@@ -272,6 +272,92 @@ def compute_measured_move_target(ticker, pivot, lookback=60):
         return None
 
 
+def compute_undercut_reclaim(ticker, support_lookback=30, recent_window=5, min_volume_ratio=1.3):
+    """
+    #81 - Real, direct feedback: "undercut and reclaim scenarios" -
+    genuinely absent before this. A real, specific pattern: price
+    briefly trades BELOW an already-established support level
+    (trapping shorts and weak-handed longs into selling at the worst
+    moment), then reclaims it - often triggering a sharp move higher
+    as those trapped shorts cover. Different from
+    Reversal_Exhaustion_Scanner.py's capitulation logic, which looks
+    for the single lowest close in a window, not a specific,
+    previously-respected support LEVEL being undercut and reclaimed.
+
+    Real, testable definition:
+    1. Support level = the lowest LOW in support_lookback days,
+       BEFORE the recent_window (a real, already-respected level, not
+       an invented one).
+    2. Undercut = within recent_window, price traded below that level
+       intraday at least once.
+    3. Reclaim = the most recent close is back above that level.
+    4. Volume confirmation (real, not required, but a genuine quality
+       signal) = the reclaim day's volume is at least min_volume_ratio
+       times the recent_window's own average volume.
+    """
+
+    import os
+    from core.config import PARQUET_CACHE_DIR
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+
+    if not os.path.exists(path):
+        return None
+
+    try:
+        df = pd.read_parquet(path)
+        df.columns = [str(c).lower() for c in df.columns]
+        df = df.dropna(subset=["close", "low", "volume"]).sort_values("date").reset_index(drop=True)
+
+        if len(df) < support_lookback + recent_window:
+            return None
+
+        support_window = df.iloc[-(support_lookback + recent_window):-recent_window]
+        recent = df.tail(recent_window)
+
+        if support_window.empty:
+            return None
+
+        support_level = float(support_window["low"].min())
+
+        if support_level <= 0:
+            return {"pattern_present": False, "reason": "Invalid support level."}
+
+        undercut_occurred = bool((recent["low"] < support_level).any())
+
+        if not undercut_occurred:
+            return {"pattern_present": False, "reason": "No undercut of the established support level detected."}
+
+        current_close = float(recent["close"].iloc[-1])
+        reclaimed = current_close > support_level
+
+        if not reclaimed:
+            return {
+                "pattern_present": False,
+                "reason": f"Undercut support (Rs{support_level:.2f}) but hasn't reclaimed it yet - "
+                          f"still below, watch for a real reclaim before treating this as bullish.",
+                "support_level": round(support_level, 2),
+            }
+
+        current_volume = float(recent["volume"].iloc[-1])
+        avg_recent_volume = float(recent["volume"].mean())
+        volume_confirmed = avg_recent_volume > 0 and (current_volume / avg_recent_volume) >= min_volume_ratio
+
+        return {
+            "pattern_present": True,
+            "support_level": round(support_level, 2),
+            "current_close": round(current_close, 2),
+            "volume_confirmed": volume_confirmed,
+            "reason": f"Undercut support (Rs{support_level:.2f}) and reclaimed it, "
+                      f"now at Rs{current_close:.2f}"
+                      + (" - with real volume confirmation" if volume_confirmed
+                         else " - reclaim not yet volume-confirmed"),
+        }
+
+    except Exception:
+        return None
+
+
 def compute_topping_risk(ticker, prior_lookback=120, recent_window=20,
                           min_prior_gain_pct=25.0, max_recent_net_move_pct=5.0,
                           min_distribution_days=3):
@@ -2044,6 +2130,10 @@ def lookup(ticker, capital=None, risk_pct=None):
     topping = compute_topping_risk(ticker)
     if topping and topping.get("topping_risk"):
         print(f"  ⚠ TOPPING RISK   : {topping['reason']}")
+
+    undercut = compute_undercut_reclaim(ticker)
+    if undercut and undercut.get("pattern_present"):
+        print(f"  Undercut/Reclaim : {undercut['reason']}")
 
     vcr = compute_vcr(ticker)
     if vcr is not None:
