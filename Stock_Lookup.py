@@ -1380,6 +1380,60 @@ def compute_execution_risk(ticker, qty):
         return None
 
 
+def compute_anticipation_setup(ticker, vcr, distance):
+    """
+    #82 - Real, direct feedback: "anticipation setups" - genuinely
+    absent before this. Positioning ahead of a KNOWN, upcoming
+    catalyst, rather than waiting for confirmation - the deliberate
+    flip side of #75's event-risk WARNING framing. Combines existing,
+    already-computed infrastructure rather than duplicating any of it:
+    VCR (genuine contraction), distance-to-pivot (genuine readiness,
+    not extended), and compute_event_risk()'s real earnings date.
+
+    Real, testable definition - all three required:
+    1. Genuinely tight (VCR < 1.0, the same threshold already used for
+       "mildly contracting" elsewhere).
+    2. Genuinely near the pivot (-5% to +2% - approaching or just at
+       it, not far away or already extended).
+    3. A real, known catalyst (earnings) within a reasonable window
+       (1-10 days) - reuses compute_event_risk() directly, not a
+       second earnings-date lookup.
+    """
+
+    if vcr is None or distance is None:
+        return None
+
+    is_tight = vcr < 1.0
+    is_near_pivot = -5.0 <= distance <= 2.0
+
+    if not (is_tight and is_near_pivot):
+        return {"setup_present": False, "reason": "Not tight and near the pivot simultaneously."}
+
+    event_risk = compute_event_risk(ticker)
+
+    if not event_risk or event_risk.get("days_to_earnings") is None:
+        return {"setup_present": False, "reason": "No known upcoming catalyst to anticipate."}
+
+    days_to_earnings = event_risk["days_to_earnings"]
+
+    if not (1 <= days_to_earnings <= 10):
+        return {
+            "setup_present": False,
+            "reason": f"Tight and near pivot, but earnings is {days_to_earnings} days away - "
+                      f"outside the real anticipation window (1-10 days).",
+        }
+
+    return {
+        "setup_present": True,
+        "vcr": vcr,
+        "distance": distance,
+        "days_to_earnings": days_to_earnings,
+        "reason": f"Genuinely tight (VCR {vcr}) and near pivot ({distance:+.1f}%), with earnings "
+                  f"in {days_to_earnings} days - a real anticipation setup, deliberately higher-risk "
+                  f"since the catalyst could trigger a move either direction.",
+    }
+
+
 def compute_event_risk(ticker):
     """
     #75 - Real, direct feedback: "a technical breakout immediately
@@ -2157,6 +2211,10 @@ def lookup(ticker, capital=None, risk_pct=None):
             else:
                 adr_note = "low ADR - a thin, low-movement stock, less swing-trade potential"
             print(f"  ADR              : {adr_pct}%  ({adr_note})")
+
+        anticipation = compute_anticipation_setup(ticker, vcr, distance)
+        if anticipation and anticipation.get("setup_present"):
+            print(f"  🎯 ANTICIPATION  : {anticipation['reason']}")
 
     rs_drawdown = compute_rs_line_drawdown(ticker)
     # Real, direct fix: relative RETURN and RS drawdown answer genuinely
