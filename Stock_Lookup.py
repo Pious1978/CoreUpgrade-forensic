@@ -312,10 +312,30 @@ def compute_ema_slope_persistence(ticker):
         else:
             note = "neither EMA rising - trend quality weakening, even if price is above them"
 
+        # #86 - real, direct feedback: binary rising/falling loses the
+        # distinction between a barely-positive slope and a genuinely
+        # steep one - the video methodology explicitly wants "~45
+        # degrees or steeper" as an ideal trend quality signal, not
+        # just "up vs down". A raw price slope is scale-dependent
+        # (different stocks have wildly different price levels), so
+        # this converts average daily % change to an angle via
+        # arctan(), a standard, defensible way to make it comparable
+        # across stocks - honestly, this is a NORMALIZED angle
+        # convention (1%/day average EMA gain -> 45 degrees), not a
+        # literal, pixel-accurate chart angle, which would depend on
+        # each chart's own aspect ratio and isn't a fixed, comparable
+        # number at all.
+        import math
+
+        lookback = 10
+        ema20_pct_change_per_day = ((ema20.iloc[-1] / ema20.iloc[-lookback]) - 1) / lookback
+        ema20_angle_degrees = round(math.degrees(math.atan(ema20_pct_change_per_day * 100)), 1)
+
         return {
             "ema20_rising": ema20_rising,
             "ema50_rising": ema50_rising,
             "note": note,
+            "ema20_angle_degrees": ema20_angle_degrees,
         }
 
     except Exception:
@@ -1786,7 +1806,18 @@ def lookup(ticker, capital=None, risk_pct=None):
 
     slope = compute_ema_slope_persistence(ticker)
     if slope:
+        angle = slope.get("ema20_angle_degrees")
+        angle_note = ""
+        if angle is not None:
+            if angle >= 45:
+                angle_note = "  (steep, ideal trend angle)"
+            elif angle >= 20:
+                angle_note = "  (moderate angle)"
+            elif angle > 0:
+                angle_note = "  (shallow angle)"
         print(f"  EMA Slope        : {slope['note']}")
+        if angle is not None:
+            print(f"    EMA20 Angle    : {angle:+.1f}°{angle_note}")
 
     vcr = compute_vcr(ticker)
     if vcr is not None:
