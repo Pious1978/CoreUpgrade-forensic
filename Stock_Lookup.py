@@ -533,6 +533,88 @@ def compute_higher_lows(ticker, lookback=50, swing_window=3, min_swings=2, min_p
         return None
 
 
+def compute_wedge_pop(ticker, wedge_window=12, pop_confirmation_days=2):
+    """
+    #83 (part 2) - Real, direct feedback: "wedge pops" - genuinely
+    absent before this. Structurally distinct from VCR (which measures
+    overall range compression, regardless of direction) - a real wedge
+    requires GENUINE, DIRECTIONAL convergence: highs making lower
+    highs while lows make higher lows, narrowing the range in a
+    specific, trending way, not just "some quiet days."
+
+    Real, testable definition:
+    1. Within wedge_window days (excluding the most recent
+       pop_confirmation_days), highs must show a genuinely negative
+       slope (falling) and lows a genuinely positive slope (rising) -
+       measured via real linear regression, not just first-vs-last
+       comparison, so a single outlier day doesn't distort the read.
+    2. The "pop": within the most recent pop_confirmation_days, price
+       closes above the wedge's own highest high - a real, observable
+       breakout level, not an invented one.
+    """
+
+    import os
+    import numpy as np
+    from core.config import PARQUET_CACHE_DIR
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+
+    if not os.path.exists(path):
+        return None
+
+    try:
+        df = pd.read_parquet(path)
+        df.columns = [str(c).lower() for c in df.columns]
+        df = df.dropna(subset=["high", "low", "close"]).sort_values("date").reset_index(drop=True)
+
+        total_needed = wedge_window + pop_confirmation_days
+        if len(df) < total_needed:
+            return None
+
+        window = df.tail(total_needed).reset_index(drop=True)
+        wedge_part = window.iloc[:wedge_window]
+        pop_part = window.iloc[wedge_window:]
+
+        x = np.arange(len(wedge_part))
+        high_slope = float(np.polyfit(x, wedge_part["high"].values, 1)[0])
+        low_slope = float(np.polyfit(x, wedge_part["low"].values, 1)[0])
+
+        # Real, scale-aware threshold: slope must be meaningfully
+        # negative/positive relative to the stock's own price level,
+        # not an arbitrary fixed number that would be meaningless
+        # across stocks with very different absolute prices.
+        avg_price = float(wedge_part["close"].mean())
+        if avg_price <= 0:
+            return None
+
+        high_slope_pct = high_slope / avg_price * 100
+        low_slope_pct = low_slope / avg_price * 100
+
+        is_converging = high_slope_pct < -0.05 and low_slope_pct > 0.05
+
+        if not is_converging:
+            return {"pattern_present": False, "reason": "No genuine, directional wedge convergence found."}
+
+        wedge_high = float(wedge_part["high"].max())
+        pop_close = float(pop_part["close"].max())
+        has_popped = pop_close > wedge_high
+
+        return {
+            "pattern_present": has_popped,
+            "wedge_high": round(wedge_high, 2),
+            "high_slope_pct": round(high_slope_pct, 3),
+            "low_slope_pct": round(low_slope_pct, 3),
+            "reason": f"Genuine converging wedge (highs falling {abs(high_slope_pct):.2f}%/day, "
+                      f"lows rising {low_slope_pct:.2f}%/day) and popped above Rs{wedge_high:.2f}"
+                      if has_popped else
+                      f"Genuine converging wedge found (highs falling {abs(high_slope_pct):.2f}%/day, "
+                      f"lows rising {low_slope_pct:.2f}%/day), but hasn't popped above Rs{wedge_high:.2f} yet.",
+        }
+
+    except Exception:
+        return None
+
+
 def compute_ema_crossback(ticker, ema_span=20, lookback=10):
     """
     #83 (part 1) - Real, direct feedback: "EMA crossbacks" - genuinely
@@ -2287,6 +2369,10 @@ def lookup(ticker, capital=None, risk_pct=None):
     ema_crossback = compute_ema_crossback(ticker)
     if ema_crossback and ema_crossback.get("pattern_present"):
         print(f"  EMA Crossback    : {ema_crossback['reason']}")
+
+    wedge_pop = compute_wedge_pop(ticker)
+    if wedge_pop and wedge_pop.get("pattern_present"):
+        print(f"  Wedge Pop        : {wedge_pop['reason']}")
 
     rs_drawdown = compute_rs_line_drawdown(ticker)
     # Real, direct fix: relative RETURN and RS drawdown answer genuinely
