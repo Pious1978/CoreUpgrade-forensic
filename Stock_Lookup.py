@@ -989,6 +989,77 @@ def get_size_factor(atr_pct):
         return 1.0
 
 
+def compute_execution_risk(ticker, qty):
+    """
+    #74 - Real, direct feedback: "entry -> stop = known risk" ignores
+    real execution mechanics. Also directly closes the long-pending
+    "order-size-vs-ADV liquidity check" item from the original
+    OMS-spine investigation - same underlying need.
+
+    Liquidity (% of ADV) and gap risk (real historical overnight-gap
+    distribution) use genuine parquet_cache data, no invented numbers.
+    Slippage is HONESTLY labeled as a rough estimate, not an
+    empirically calibrated model - no real historical fill data exists
+    to calibrate a coefficient against, and presenting one with false
+    precision would be worse than not providing it.
+    """
+
+    import os
+    from core.config import PARQUET_CACHE_DIR
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+
+    if not os.path.exists(path):
+        return None
+
+    try:
+        df = pd.read_parquet(path)
+        df.columns = [str(c).lower() for c in df.columns]
+        df = df.dropna(subset=["close", "open", "volume"]).sort_values("date")
+
+        if len(df) < 25:
+            return None
+
+        adv_20d = float(df["volume"].tail(20).mean())
+        pct_of_adv = round((qty / adv_20d) * 100, 3) if adv_20d > 0 else None
+
+        # Real historical overnight gap distribution - genuine data,
+        # not assumed
+        gaps = []
+        closes = df["close"].tolist()
+        opens = df["open"].tolist()
+        for i in range(1, min(len(df), 90)):
+            prev_close = closes[-(i + 1)]
+            today_open = opens[-i]
+            if prev_close > 0:
+                gaps.append((today_open - prev_close) / prev_close)
+
+        gap_std_pct = round(pd.Series(gaps).std() * 100, 2) if len(gaps) >= 20 else None
+
+        # Honest, clearly-labeled rough estimate - standard square-root
+        # market-impact SHAPE (impact scales with the stock's own real
+        # volatility and the square root of order size relative to
+        # liquidity). Coefficient (0.3) is a reasonable, conservative
+        # heuristic, NOT calibrated against real fill data, since none
+        # exists.
+        slippage_estimate_pct = None
+        if pct_of_adv is not None and pct_of_adv > 0:
+            daily_returns = df["close"].pct_change().dropna().tail(60)
+            daily_vol_pct = float(daily_returns.std()) * 100 if len(daily_returns) >= 20 else None
+            if daily_vol_pct is not None:
+                slippage_estimate_pct = round(0.3 * daily_vol_pct * (pct_of_adv / 100) ** 0.5, 3)
+
+        return {
+            "adv_20d": int(adv_20d),
+            "pct_of_adv": pct_of_adv,
+            "gap_risk_std_pct": gap_std_pct,
+            "slippage_estimate_pct": slippage_estimate_pct,
+        }
+
+    except Exception:
+        return None
+
+
 def compute_event_risk(ticker):
     """
     #75 - Real, direct feedback: "a technical breakout immediately
@@ -2026,6 +2097,19 @@ def lookup(ticker, capital=None, risk_pct=None):
         if size_factor != 1.0:
             note = "reduced - high volatility (ATR)" if size_factor < 1.0 else "increased - low volatility (ATR)"
             print(f"    -> size factor {size_factor}x applied ({note})")
+
+        exec_risk = compute_execution_risk(ticker, qty)
+        if exec_risk:
+            print("-" * 68)
+            print("  Execution Risk (real, order-specific):")
+            print(f"    Liquidity  : {exec_risk['pct_of_adv']}% of 20-day ADV ({exec_risk['adv_20d']:,} shares/day)")
+            if exec_risk["pct_of_adv"] is not None and exec_risk["pct_of_adv"] > 10:
+                print(f"      ⚠ Order is a genuinely large share of daily volume - expect real execution difficulty")
+            if exec_risk["gap_risk_std_pct"] is not None:
+                print(f"    Gap Risk   : {exec_risk['gap_risk_std_pct']}% (real historical overnight-gap std dev)")
+            if exec_risk["slippage_estimate_pct"] is not None:
+                print(f"    Slippage   : ~{exec_risk['slippage_estimate_pct']}% (rough estimate, NOT empirically "
+                      f"calibrated - no real fill data exists to validate a coefficient against)")
 
     print("=" * 68)
 
