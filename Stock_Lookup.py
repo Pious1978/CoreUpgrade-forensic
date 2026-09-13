@@ -272,6 +272,100 @@ def compute_measured_move_target(ticker, pivot, lookback=60):
         return None
 
 
+def compute_topping_risk(ticker, prior_lookback=120, recent_window=20,
+                          min_prior_gain_pct=25.0, max_recent_net_move_pct=5.0,
+                          min_distribution_days=3):
+    """
+    #80 - Real, direct feedback: Stage Analysis (Weinstein) - Stage 1
+    (basing) and Stage 2 (advancing) are already effectively captured
+    by this system's BASE_BUILDING/VALID_BREAKOUT states. Stage 3
+    (topping/distribution) is genuinely absent - the same blind spot
+    Reversal_Exhaustion_Scanner.py addressed for the opposite
+    direction (a stock reversing OUT of a downtrend). This detects a
+    PREVIOUSLY STRONG stock now churning near its highs with
+    genuine, repeated distribution-day selling pressure - not a
+    scoring factor (a high topping score should reduce conviction,
+    not increase it), a direct warning check instead.
+
+    Real, testable definition:
+    1. Genuine prior strength: at least min_prior_gain_pct gain from
+       the start of prior_lookback to its peak within that window -
+       confirms real Stage 2 history, not just noise.
+    2. Currently churning: price is still near that peak (within 10%)
+       but recent_window's net return is small - no further real
+       progress despite being at/near highs.
+    3. Real, repeated distribution-day selling pressure within the
+       recent window (same down-day-on-higher-volume formula as
+       Market_Regime_Engine.py's check_distribution_day(), applied
+       per-stock) - at least min_distribution_days, not just one.
+    """
+
+    import os
+    from core.config import PARQUET_CACHE_DIR
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+
+    if not os.path.exists(path):
+        return None
+
+    try:
+        df = pd.read_parquet(path)
+        df.columns = [str(c).lower() for c in df.columns]
+        df = df.dropna(subset=["close", "volume"]).sort_values("date").reset_index(drop=True)
+
+        if len(df) < prior_lookback + recent_window:
+            return None
+
+        prior_window = df.iloc[-(prior_lookback + recent_window):-recent_window]
+        recent = df.tail(recent_window)
+
+        if prior_window.empty:
+            return None
+
+        prior_start = float(prior_window["close"].iloc[0])
+        prior_peak = float(prior_window["close"].max())
+
+        if prior_start <= 0:
+            return None
+
+        prior_gain_pct = (prior_peak - prior_start) / prior_start * 100
+
+        if prior_gain_pct < min_prior_gain_pct:
+            return {"topping_risk": False, "reason": "No genuine prior Stage 2 strength found."}
+
+        recent_start = float(recent["close"].iloc[0])
+        recent_end = float(recent["close"].iloc[-1])
+        recent_net_move_pct = (recent_end - recent_start) / recent_start * 100 if recent_start > 0 else 0
+
+        near_peak = recent_end >= prior_peak * 0.90
+
+        if not near_peak or abs(recent_net_move_pct) > max_recent_net_move_pct:
+            return {"topping_risk": False, "reason": "Not currently churning near prior highs."}
+
+        closes = recent["close"].values
+        volumes = recent["volume"].values
+        distribution_days = sum(
+            1 for i in range(1, len(closes))
+            if closes[i] < closes[i - 1] and volumes[i] > volumes[i - 1]
+        )
+
+        topping_risk = distribution_days >= min_distribution_days
+
+        return {
+            "topping_risk": topping_risk,
+            "prior_gain_pct": round(prior_gain_pct, 2),
+            "recent_net_move_pct": round(recent_net_move_pct, 2),
+            "distribution_days": distribution_days,
+            "reason": f"+{prior_gain_pct:.1f}% prior rally, now churning "
+                      f"({recent_net_move_pct:+.1f}% over {recent_window}d) with "
+                      f"{distribution_days} distribution days"
+                      + (" - genuine Stage 3 topping risk" if topping_risk else ""),
+        }
+
+    except Exception:
+        return None
+
+
 def compute_higher_lows(ticker, lookback=50, swing_window=3, min_swings=2, min_prominence_pct=2.0):
     """
     #87 - Real, direct feedback: "building higher lows while a stock
@@ -1946,6 +2040,10 @@ def lookup(ticker, capital=None, risk_pct=None):
             print(f"  Higher Lows      : YES ({higher_lows['swing_count']} swings: {lows_str}) - genuine accumulation pattern")
         else:
             print(f"  Higher Lows      : NO ({higher_lows['swing_count']} swings found, not consistently rising)")
+
+    topping = compute_topping_risk(ticker)
+    if topping and topping.get("topping_risk"):
+        print(f"  ⚠ TOPPING RISK   : {topping['reason']}")
 
     vcr = compute_vcr(ticker)
     if vcr is not None:
