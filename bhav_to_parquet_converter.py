@@ -89,14 +89,33 @@ def convert() -> dict:
 
         out = pd.DataFrame({
             "date": sym_df["DATE1"].values,
-            "open": sym_df["OPEN_PRICE"].astype(float).values,
-            "high": sym_df["HIGH_PRICE"].astype(float).values,
-            "low": sym_df["LOW_PRICE"].astype(float).values,
-            "close": sym_df["CLOSE_PRICE"].astype(float).values,
-            "volume": sym_df["TTL_TRD_QNTY"].astype(float).values,
-            "delivery_qty": sym_df["DELIV_QTY"].astype(float).values,
+            # Real bug fix: NSE bhav copies can use "-" (or similar
+            # non-numeric placeholders) for missing data in any of
+            # these columns - confirmed directly (DELIV_QTY crashed
+            # the entire pipeline on a real ' -' value). DELIV_PER
+            # already used the correct, robust pattern below; applying
+            # it consistently to every numeric column now, rather than
+            # only the one that happened to crash first.
+            "open": pd.to_numeric(sym_df["OPEN_PRICE"], errors="coerce").values,
+            "high": pd.to_numeric(sym_df["HIGH_PRICE"], errors="coerce").values,
+            "low": pd.to_numeric(sym_df["LOW_PRICE"], errors="coerce").values,
+            "close": pd.to_numeric(sym_df["CLOSE_PRICE"], errors="coerce").values,
+            "volume": pd.to_numeric(sym_df["TTL_TRD_QNTY"], errors="coerce").values,
+            "delivery_qty": pd.to_numeric(sym_df["DELIV_QTY"], errors="coerce").values,
             "delivery_pct": pd.to_numeric(sym_df["DELIV_PER"], errors="coerce").values,
         })
+
+        # Real, necessary companion to the coercion fix above: without
+        # this, a genuinely bad OHLC value (coerced to NaN instead of
+        # crashing) would get silently written into parquet_cache as an
+        # incomplete row, rather than being dropped. Delivery fields
+        # deliberately excluded from this filter - a stock can have a
+        # completely valid trading day with missing delivery data.
+        before_drop = len(out)
+        out = out.dropna(subset=["open", "high", "low", "close"])
+        dropped = before_drop - len(out)
+        if dropped > 0:
+            print(f"  [!] {symbol}: dropped {dropped} row(s) with invalid OHLC data")
 
         out_path = os.path.join(PARQUET_CACHE_DIR, f"{symbol}.parquet")
 
