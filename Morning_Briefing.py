@@ -1,7 +1,7 @@
 """
 Morning_Briefing.py
 
-#55 - Unified daily workflow / Morning Briefing.
+Unified daily workflow / Morning Briefing.
 
 Pure orchestration - every section reads from real, existing tables or
 calls real, existing functions already built and tested tonight.
@@ -25,7 +25,7 @@ import pandas as pd
 from datetime import datetime
 
 from core.config import DB_PATH
-from core.kill_switch import check_kill_switch
+from core.kill_switch import check_kill_switch, check_recent_large_loss
 
 TOTAL_CAPITAL_DEFAULT = 1000000  # matches Risk_Positioning_Engine.py's own default
 
@@ -72,6 +72,15 @@ def section_kill_switch():
         if "daily_loss_pct" in result:
             print(f"  Today: {result['daily_loss_pct']:.2f}% realized loss, "
                   f"this week: {result['weekly_loss_pct']:.2f}%")
+
+    # #85 - real, direct feedback: a single abnormally large loss is a
+    # genuinely different signal from the aggregate daily/weekly
+    # thresholds above - a deliberate, behavioral nudge, not a hard
+    # block, so shown here regardless of whether the aggregate kill
+    # switch itself triggered.
+    large_loss = check_recent_large_loss(TOTAL_CAPITAL_DEFAULT)
+    if large_loss["warning"]:
+        print(f"  ⚠ {large_loss['reason']}")
 
 
 def section_sector_concentration():

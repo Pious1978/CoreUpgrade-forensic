@@ -27,6 +27,57 @@ MAX_WEEKLY_LOSS_PCT = 6.0   # configurable - blocks new positions if this week's
 MANUAL_OVERRIDE_FILE = "KILL_SWITCH_ACTIVE.txt"  # presence of this file = manual emergency stop
 
 
+def check_recent_large_loss(total_capital, threshold_pct=1.5):
+    """
+    #85 - Real, direct feedback: "after a gap-down loss, stepping back
+    rather than revenge-trading helps prevent compounding errors." This
+    is a genuinely different signal from the existing daily/weekly
+    aggregate thresholds above - a SINGLE abnormally large loss (e.g.
+    a gap-through-stop) can be a warning sign worth a deliberate pause
+    even when the aggregate daily/weekly loss hasn't hit its own
+    threshold yet.
+
+    Deliberately a WARNING, not a hard block like check_kill_switch()
+    - a single bad trade is a behavioral nudge to step back and think,
+    not necessarily a reason to halt all new sizing outright.
+
+    Scoped to trades closed TODAY, since trade_journal's exit_date is
+    date-only (no timestamp) - the finest real granularity available.
+    """
+
+    if total_capital <= 0:
+        return {"warning": False, "reason": "Invalid capital for comparison."}
+
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        today = datetime.now().strftime("%Y-%m-%d")
+
+        rows = conn.execute("""
+            SELECT ticker, realized_pnl FROM trade_journal
+            WHERE status = 'CLOSED' AND exit_date = ? AND realized_pnl < 0
+        """, (today,)).fetchall()
+
+        conn.close()
+
+        for ticker, pnl in rows:
+            loss_pct = (-pnl / total_capital) * 100
+            if loss_pct >= threshold_pct:
+                return {
+                    "warning": True,
+                    "ticker": ticker,
+                    "loss_pct": round(loss_pct, 2),
+                    "loss_amount": round(pnl, 2),
+                    "reason": f"{ticker} closed today with a {loss_pct:.2f}% loss - a single, "
+                              f"abnormally large loss. Consider stepping back before the next trade "
+                              f"rather than immediately re-entering to make it back.",
+                }
+
+        return {"warning": False, "reason": "No single large loss detected today."}
+
+    except Exception:
+        return {"warning": False, "reason": "Unable to check - defaulting to no warning."}
+
+
 def get_realized_pnl_since(since_date):
     """
     Real, aggregated realized P&L since a given date, combining full
