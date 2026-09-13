@@ -87,10 +87,17 @@ def calculate_highrisk_score(tech):
     """
     Real v9+ formula from long_planner_Highrisk.py - heavier weight on
     momentum and trend (growth-chasing), drawdown penalized more
-    severely than the Core sleeve. Uses raw values here since this
-    function scores one stock at a time; z-score normalization across
-    the scored universe happens afterward in run(), same as the Core
-    sleeve.
+    severely than the Core sleeve.
+
+    #29 - real, confirmed regression found via direct forensic
+    re-verification against the original: this formula was missing
+    the original's division by (volatility + 0.25) entirely, which
+    directly penalized high-volatility stocks within the raw score
+    itself. Z-score normalization across the scored universe
+    (happening afterward in run()) does NOT accomplish the same
+    thing - it adjusts for the distribution of scores across stocks,
+    not an individual stock's own volatility relative to its own
+    return. Restored to match the original exactly.
     """
 
     return (
@@ -98,7 +105,7 @@ def calculate_highrisk_score(tech):
         tech["cagr"] * 1.5 +
         tech["trend"] * 1.5 -
         tech["drawdown"] * 2.0
-    )
+    ) / (tech["volatility"] + 0.25)
 
 
 def run():
