@@ -272,6 +272,87 @@ def compute_measured_move_target(ticker, pivot, lookback=60):
         return None
 
 
+def compute_higher_lows(ticker, lookback=50, swing_window=3, min_swings=2, min_prominence_pct=2.0):
+    """
+    #87 - Real, direct feedback: "building higher lows while a stock
+    rides a moving average" - genuinely absent before this. Detects
+    real, local swing lows (a day whose low is the minimum among
+    swing_window days before and after it) within a recent lookback,
+    then checks whether that sequence is genuinely, monotonically
+    increasing.
+
+    Real bug caught in testing: a plain local-minimum definition picks
+    up every noise-level dip, not just genuinely significant
+    retracements - confirmed directly when realistic (noisy) test data
+    produced 6 "swing lows" instead of the 3 intended, real ones.
+    Fixed with a minimum prominence filter (a swing low must be at
+    least min_prominence_pct below the highest point since the prior
+    swing low) - filters out noise, keeps genuine pullbacks.
+    """
+
+    import os
+    from core.config import PARQUET_CACHE_DIR
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+
+    if not os.path.exists(path):
+        return None
+
+    try:
+        df = pd.read_parquet(path)
+        df.columns = [str(c).lower() for c in df.columns]
+        df = df.dropna(subset=["low", "high"]).sort_values("date").reset_index(drop=True)
+
+        if len(df) < lookback:
+            return None
+
+        window = df.tail(lookback).reset_index(drop=True)
+        lows = window["low"].values
+        highs = window["high"].values
+
+        raw_swing_lows = []
+        for i in range(swing_window, len(lows) - swing_window):
+            neighborhood = lows[i - swing_window:i + swing_window + 1]
+            if lows[i] == neighborhood.min():
+                raw_swing_lows.append((i, float(lows[i])))
+
+        # Real prominence filter: only keep a swing low if it's
+        # genuinely, meaningfully below the highest point since the
+        # LAST ACCEPTED swing low - filters out noise-level dips.
+        # Real bug caught and fixed in testing: an earlier version
+        # carried a cumulative peak across the whole window, never
+        # resetting after accepting a swing low, so later candidates
+        # were compared against a stale, distant peak rather than the
+        # real, local one - making genuinely small dips look falsely
+        # significant.
+        significant_swings = []
+        last_accepted_idx = 0
+
+        for idx, val in raw_swing_lows:
+            peak_since_last = float(highs[last_accepted_idx:idx + 1].max())
+            if peak_since_last <= 0:
+                continue
+            drop_pct = (peak_since_last - val) / peak_since_last * 100
+            if drop_pct >= min_prominence_pct:
+                significant_swings.append((idx, val))
+                last_accepted_idx = idx
+
+        if len(significant_swings) < min_swings:
+            return {"pattern_present": False, "swing_count": len(significant_swings)}
+
+        values = [v for _, v in significant_swings]
+        is_higher_lows = all(values[i] < values[i + 1] for i in range(len(values) - 1))
+
+        return {
+            "pattern_present": is_higher_lows,
+            "swing_count": len(significant_swings),
+            "swing_lows": values,
+        }
+
+    except Exception:
+        return None
+
+
 def compute_ema_slope_persistence(ticker):
     """
     Real, simple addition adapted from Alpha1's Pullback_Analyzer.py -
@@ -454,6 +535,45 @@ def compute_fibonacci_value_zone(ticker, rr_ratio=2.0):
             "high_6m": round(high_6m, 2),
             "low_6m": round(low_6m, 2),
         }
+
+    except Exception:
+        return None
+
+
+def compute_adr(ticker, lookback=20):
+    """
+    #79 - Real, direct feedback: "high Average Daily Range (ADR) stocks
+    preferred; low-ADR/thin stocks discouraged" - genuinely absent
+    before this. Distinct from compute_vcr()'s RELATIVE contraction
+    ratio (recent range vs historical range) - this is the standard,
+    ABSOLUTE ADR% used as a selection filter: how much a stock
+    typically moves intraday, as a percentage, not a ratio.
+
+    Standard formula: average of (High-Low)/Low per day, over the
+    lookback window, as a percentage.
+    """
+
+    import os
+    from core.config import PARQUET_CACHE_DIR
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+
+    if not os.path.exists(path):
+        return None
+
+    try:
+        df = pd.read_parquet(path)
+        df.columns = [str(c).lower() for c in df.columns]
+        df = df.dropna(subset=["high", "low"]).sort_values("date")
+
+        if len(df) < lookback:
+            return None
+
+        recent = df.tail(lookback)
+        daily_ranges_pct = (recent["high"] - recent["low"]) / recent["low"] * 100
+        adr_pct = round(float(daily_ranges_pct.mean()), 2)
+
+        return {"adr_pct": adr_pct}
 
     except Exception:
         return None
@@ -1819,6 +1939,14 @@ def lookup(ticker, capital=None, risk_pct=None):
         if angle is not None:
             print(f"    EMA20 Angle    : {angle:+.1f}°{angle_note}")
 
+    higher_lows = compute_higher_lows(ticker)
+    if higher_lows and higher_lows.get("swing_count", 0) >= 2:
+        if higher_lows["pattern_present"]:
+            lows_str = " -> ".join(f"Rs{v:.2f}" for v in higher_lows["swing_lows"])
+            print(f"  Higher Lows      : YES ({higher_lows['swing_count']} swings: {lows_str}) - genuine accumulation pattern")
+        else:
+            print(f"  Higher Lows      : NO ({higher_lows['swing_count']} swings found, not consistently rising)")
+
     vcr = compute_vcr(ticker)
     if vcr is not None:
         if vcr < 0.6:
@@ -1830,6 +1958,17 @@ def lookup(ticker, capital=None, risk_pct=None):
         else:
             vcr_note = "expanding - not a tight setup right now"
         print(f"  VCR              : {vcr}  ({vcr_note})")
+
+        adr = compute_adr(ticker)
+        if adr:
+            adr_pct = adr["adr_pct"]
+            if adr_pct >= 4:
+                adr_note = "genuinely high ADR - real profit potential per swing"
+            elif adr_pct >= 2:
+                adr_note = "moderate ADR"
+            else:
+                adr_note = "low ADR - a thin, low-movement stock, less swing-trade potential"
+            print(f"  ADR              : {adr_pct}%  ({adr_note})")
 
     rs_drawdown = compute_rs_line_drawdown(ticker)
     # Real, direct fix: relative RETURN and RS drawdown answer genuinely
