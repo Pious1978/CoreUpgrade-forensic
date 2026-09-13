@@ -1415,14 +1415,24 @@ def compute_valuation_comparison(ticker, fundamentals):
 
     import statistics
 
+    # Real bug fix, per direct feedback: peer_count previously showed
+    # the TOTAL peers found (e.g. 5), not how many actually had valid
+    # data for each specific metric - misleadingly implied more
+    # coverage than the median was actually based on. Now tracks each
+    # metric's own real count, since PE/PB/EV-EBITDA availability can
+    # genuinely differ per peer (one peer missing PE doesn't mean it's
+    # also missing PB).
     return {
         "pe": pe,
         "pe_sector_avg": round(statistics.median(peer_pes), 2) if peer_pes else None,
+        "pe_peer_count": len(peer_pes),
         "pb": pb,
         "pb_sector_avg": round(statistics.median(peer_pbs), 2) if peer_pbs else None,
+        "pb_peer_count": len(peer_pbs),
         "ev_ebitda": ev_ebitda,
         "ev_ebitda_sector_avg": round(statistics.median(peer_ev_ebitdas), 2) if peer_ev_ebitdas else None,
-        "peer_count": len(peers),
+        "ev_ebitda_peer_count": len(peer_ev_ebitdas),
+        "total_peers_available": len(peers),
     }
 
 
@@ -1495,11 +1505,11 @@ def compute_value_zone(ticker, fundamentals):
             import statistics
             peer_median_pe = statistics.median(peer_pes)
             if pe < peer_median_pe * 0.85:
-                result["sector_peer"] = f"CHEAPER than sector peers (PE {pe:.1f} vs peer median {peer_median_pe:.1f}, n={len(peer_pes)})"
+                result["sector_peer"] = f"CHEAPER than sector peers (PE {pe:.1f} vs peer median {peer_median_pe:.1f}, {len(peer_pes)} peers with valid PE)"
             elif pe > peer_median_pe * 1.15:
-                result["sector_peer"] = f"MORE EXPENSIVE than sector peers (PE {pe:.1f} vs peer median {peer_median_pe:.1f}, n={len(peer_pes)})"
+                result["sector_peer"] = f"MORE EXPENSIVE than sector peers (PE {pe:.1f} vs peer median {peer_median_pe:.1f}, {len(peer_pes)} peers with valid PE)"
             else:
-                result["sector_peer"] = f"IN LINE with sector peers (PE {pe:.1f} vs peer median {peer_median_pe:.1f}, n={len(peer_pes)})"
+                result["sector_peer"] = f"IN LINE with sector peers (PE {pe:.1f} vs peer median {peer_median_pe:.1f}, {len(peer_pes)} peers with valid PE)"
         else:
             result["sector_peer"] = "No peer PE data available for comparison"
 
@@ -1797,13 +1807,17 @@ def lookup(ticker, capital=None, risk_pct=None):
             sector_note = "reasonably consistent leadership among comparable peers"
         else:
             sector_note = "choppy - underperforming comparable peers at times"
-        # Real, honest relabeling per direct feedback: this is a
-        # synthetic peer basket, not a real, tradable sector index like
-        # a genuine Nifty Bank series would be - calling it "Peer
-        # Relative Strength" avoids implying more precision or
-        # methodological rigor than a 2-5 stock median actually has.
-        print(f"  Peer Relative Strength : {sector_dd}%  ({sector_note})  "
-              f"[median of {rs_sector['peer_count']} peers]")
+        # Real, honest relabeling per direct feedback: explicit "RS
+        # Peer Basket" framing distinguishes this from the "Valuation
+        # Peer Basket" below - both draw from the same
+        # find_sector_peers() call, but each metric's actual usable
+        # count can genuinely differ (a peer might have valid price
+        # history for RS but missing PE data, or vice versa). Without
+        # this distinction, seeing "5 peers" here and "n=4" there reads
+        # as a discrepancy rather than the legitimate, different thing
+        # it actually is.
+        print(f"  RS Peer Basket ({rs_sector['peer_count']} peers available)")
+        print(f"    Median relative return : {sector_dd}%  ({sector_note})")
 
         # #67 - the specific case the real feedback called out: a stock
         # can outperform the market while underperforming its own
@@ -1861,16 +1875,16 @@ def lookup(ticker, capital=None, risk_pct=None):
         valuation = compute_valuation_comparison(ticker, fundamentals)
         if valuation:
             print()
-            print("  === VALUATION vs SECTOR (median of real peers) ===")
+            print(f"  === VALUATION PEER BASKET ({valuation['total_peers_available']} peers available) ===")
             pe_disp = f"{valuation['pe']}" if valuation['pe'] else "N/A"
             pe_sector_disp = f"{valuation['pe_sector_avg']}" if valuation['pe_sector_avg'] else "N/A"
-            print(f"    P/E        : {pe_disp}  vs sector {pe_sector_disp}  (n={valuation['peer_count']} peers)")
+            print(f"    P/E        : {pe_disp}  vs sector {pe_sector_disp}  ({valuation['pe_peer_count']} peers with valid P/E)")
             pb_disp = f"{valuation['pb']}" if valuation['pb'] else "N/A"
             pb_sector_disp = f"{valuation['pb_sector_avg']}" if valuation['pb_sector_avg'] else "N/A"
-            print(f"    P/B        : {pb_disp}  vs sector {pb_sector_disp}")
+            print(f"    P/B        : {pb_disp}  vs sector {pb_sector_disp}  ({valuation['pb_peer_count']} peers with valid P/B)")
             ev_disp = f"{valuation['ev_ebitda']}" if valuation['ev_ebitda'] else "N/A"
             ev_sector_disp = f"{valuation['ev_ebitda_sector_avg']}" if valuation['ev_ebitda_sector_avg'] else "N/A"
-            print(f"    EV/EBITDA  : {ev_disp}  vs sector {ev_sector_disp}")
+            print(f"    EV/EBITDA  : {ev_disp}  vs sector {ev_sector_disp}  ({valuation['ev_ebitda_peer_count']} peers with valid EV/EBITDA)")
 
         growth = compute_growth_cagr(ticker)
         if growth:
