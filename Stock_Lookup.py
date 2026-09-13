@@ -533,6 +533,74 @@ def compute_higher_lows(ticker, lookback=50, swing_window=3, min_swings=2, min_p
         return None
 
 
+def compute_ema_crossback(ticker, ema_span=20, lookback=10):
+    """
+    #83 (part 1) - Real, direct feedback: "EMA crossbacks" - genuinely
+    absent before this. Price briefly dips below a key EMA, then
+    quickly closes back above it - a real "test and hold" continuation
+    signal, meaningfully different from undercut-and-reclaim (#81),
+    which checks a specific, previously-established support LEVEL, not
+    a moving, dynamic EMA line.
+
+    Real, testable definition - all required:
+    1. The EMA itself must be genuinely rising (ema[-1] > ema[-lookback])
+       - without this, a dip-and-recovery in a flat/declining EMA isn't
+       a meaningful bullish continuation signal, just noise.
+    2. Close traded below the EMA at least once within the lookback.
+    3. The most recent close is back above the EMA.
+    """
+
+    import os
+    from core.config import PARQUET_CACHE_DIR
+
+    path = os.path.join(PARQUET_CACHE_DIR, f"{ticker.upper()}.parquet")
+
+    if not os.path.exists(path):
+        return None
+
+    try:
+        df = pd.read_parquet(path)
+        df.columns = [str(c).lower() for c in df.columns]
+        df = df.dropna(subset=["close"]).sort_values("date").reset_index(drop=True)
+
+        if len(df) < ema_span + lookback:
+            return None
+
+        ema = df["close"].ewm(span=ema_span, adjust=False).mean()
+
+        ema_rising = bool(ema.iloc[-1] > ema.iloc[-lookback])
+
+        if not ema_rising:
+            return {"pattern_present": False, "reason": f"EMA{ema_span} isn't genuinely rising - not a meaningful uptrend context."}
+
+        recent_close = df["close"].tail(lookback).values
+        recent_ema = ema.tail(lookback).values
+
+        dipped_below = bool((recent_close[:-1] < recent_ema[:-1]).any())
+
+        if not dipped_below:
+            return {"pattern_present": False, "reason": f"Price hasn't dipped below EMA{ema_span} recently - no crossback to detect."}
+
+        current_close = float(recent_close[-1])
+        current_ema = float(recent_ema[-1])
+        reclaimed = current_close > current_ema
+
+        return {
+            "pattern_present": reclaimed,
+            "ema_span": ema_span,
+            "current_close": round(current_close, 2),
+            "current_ema": round(current_ema, 2),
+            "reason": f"Dipped below EMA{ema_span} (Rs{current_ema:.2f}) recently and reclaimed it, "
+                      f"now at Rs{current_close:.2f} - genuine continuation signal within a rising trend"
+                      if reclaimed else
+                      f"Dipped below EMA{ema_span} (Rs{current_ema:.2f}) but hasn't reclaimed it yet - "
+                      f"still below, watch before treating this as a continuation signal.",
+        }
+
+    except Exception:
+        return None
+
+
 def compute_ema_slope_persistence(ticker):
     """
     Real, simple addition adapted from Alpha1's Pullback_Analyzer.py -
@@ -2215,6 +2283,10 @@ def lookup(ticker, capital=None, risk_pct=None):
         anticipation = compute_anticipation_setup(ticker, vcr, distance)
         if anticipation and anticipation.get("setup_present"):
             print(f"  🎯 ANTICIPATION  : {anticipation['reason']}")
+
+    ema_crossback = compute_ema_crossback(ticker)
+    if ema_crossback and ema_crossback.get("pattern_present"):
+        print(f"  EMA Crossback    : {ema_crossback['reason']}")
 
     rs_drawdown = compute_rs_line_drawdown(ticker)
     # Real, direct fix: relative RETURN and RS drawdown answer genuinely
