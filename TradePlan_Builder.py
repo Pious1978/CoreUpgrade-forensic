@@ -155,7 +155,48 @@ def build_trade_plan(ticker):
         },
     }
 
+    trade_plan["trade_plan_id"] = persist_trade_plan(trade_plan)
+
     return trade_plan
+
+
+def persist_trade_plan(trade_plan):
+    """
+    Real, direct fix for #90's dependency: HumanTradeDecision needs a
+    genuine trade_plan_id to reference, not an invented one - this
+    persists each built plan with a real, stable, auto-incrementing ID
+    so a later decision can point back to the exact plan it was made
+    against.
+    """
+
+    import json
+
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS trade_plans (
+            trade_plan_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ticker TEXT,
+            as_of_date TEXT,
+            plan_json TEXT,
+            generated_at TEXT
+        )
+    """)
+
+    cursor = conn.execute("""
+        INSERT INTO trade_plans (ticker, as_of_date, plan_json, generated_at)
+        VALUES (?, ?, ?, ?)
+    """, (
+        trade_plan["ticker"],
+        trade_plan["as_of_date"],
+        json.dumps(trade_plan, default=str),
+        trade_plan["provenance"]["generated_at"],
+    ))
+
+    trade_plan_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+
+    return trade_plan_id
 
 
 def print_trade_plan(trade_plan):
@@ -163,7 +204,7 @@ def print_trade_plan(trade_plan):
 
     print()
     print("=" * 70)
-    print(f"TRADE PLAN: {trade_plan['ticker']}  (as of {trade_plan['as_of_date']})")
+    print(f"TRADE PLAN #{trade_plan.get('trade_plan_id', '?')}: {trade_plan['ticker']}  (as of {trade_plan['as_of_date']})")
     print("=" * 70)
 
     print("\nRESEARCH EVIDENCE")
