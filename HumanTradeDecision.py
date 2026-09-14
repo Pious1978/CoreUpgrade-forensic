@@ -28,6 +28,7 @@ import sqlite3
 from datetime import datetime
 
 from core.config import DB_PATH
+from Event_Log import log_event
 
 VALID_DECISIONS = ("ACCEPT", "REJECT", "DEFER")
 
@@ -48,12 +49,14 @@ def record_decision(trade_plan_id, decision, planned_quantity=None, planned_entr
     conn = sqlite3.connect(DB_PATH)
 
     plan_exists = conn.execute(
-        "SELECT 1 FROM trade_plans WHERE trade_plan_id = ?", (trade_plan_id,)
+        "SELECT ticker FROM trade_plans WHERE trade_plan_id = ?", (trade_plan_id,)
     ).fetchone()
 
     if not plan_exists:
         conn.close()
         return None
+
+    ticker = plan_exists[0]
 
     conn.execute("""
         CREATE TABLE IF NOT EXISTS human_trade_decisions (
@@ -85,6 +88,13 @@ def record_decision(trade_plan_id, decision, planned_quantity=None, planned_entr
     decision_id = cursor.lastrowid
     conn.commit()
     conn.close()
+
+    log_event("HUMAN_DECISION", ticker, {
+        "decision_id": decision_id,
+        "trade_plan_id": trade_plan_id,
+        "decision": decision,
+        "reason": reason,
+    })
 
     return decision_id
 

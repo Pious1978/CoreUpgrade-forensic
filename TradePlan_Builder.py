@@ -37,6 +37,7 @@ import pandas as pd
 from datetime import datetime
 
 from core.config import DB_PATH
+from Event_Log import log_event
 
 
 def build_research_evidence(ticker, conn):
@@ -195,6 +196,13 @@ def persist_trade_plan(trade_plan):
     trade_plan_id = cursor.lastrowid
     conn.commit()
     conn.close()
+
+    log_event("TRADE_PLAN_CREATED", trade_plan["ticker"], {
+        "trade_plan_id": trade_plan_id,
+        "pivot": trade_plan["entry_plan"]["pivot"],
+        "pattern": trade_plan["setup"]["pattern"],
+        "composite_score": trade_plan["provenance"]["composite_score"],
+    })
 
     return trade_plan_id
 

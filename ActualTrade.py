@@ -31,6 +31,7 @@ import sqlite3
 import json
 
 from core.config import DB_PATH
+from Event_Log import log_event
 
 
 def record_actual_trade(decision_id, broker, actual_entry, actual_quantity,
@@ -47,9 +48,11 @@ def record_actual_trade(decision_id, broker, actual_entry, actual_quantity,
 
     conn = sqlite3.connect(DB_PATH)
 
-    decision_row = conn.execute(
-        "SELECT decision FROM human_trade_decisions WHERE decision_id = ?", (decision_id,)
-    ).fetchone()
+    decision_row = conn.execute("""
+        SELECT d.decision, p.ticker FROM human_trade_decisions d
+        JOIN trade_plans p ON d.trade_plan_id = p.trade_plan_id
+        WHERE d.decision_id = ?
+    """, (decision_id,)).fetchone()
 
     if not decision_row:
         conn.close()
@@ -58,6 +61,8 @@ def record_actual_trade(decision_id, broker, actual_entry, actual_quantity,
     if decision_row[0] != "ACCEPT":
         conn.close()
         return None, f"decision was {decision_row[0]}, not ACCEPT - can't record an actual trade against it"
+
+    ticker = decision_row[1]
 
     conn.execute("""
         CREATE TABLE IF NOT EXISTS actual_trades (
@@ -87,6 +92,14 @@ def record_actual_trade(decision_id, broker, actual_entry, actual_quantity,
     trade_id = cursor.lastrowid
     conn.commit()
     conn.close()
+
+    log_event("ACTUAL_FILL", ticker, {
+        "trade_id": trade_id,
+        "decision_id": decision_id,
+        "broker": broker,
+        "actual_entry": actual_entry,
+        "actual_quantity": actual_quantity,
+    })
 
     return trade_id, None
 
