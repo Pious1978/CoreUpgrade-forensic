@@ -38,6 +38,7 @@ from datetime import datetime
 
 from core.config import DB_PATH
 from Event_Log import log_event
+from core.factor_registry import FACTOR_REGISTRY_VERSION
 
 
 def build_research_evidence(ticker, conn):
@@ -202,6 +203,7 @@ def persist_trade_plan(trade_plan):
         "pivot": trade_plan["entry_plan"]["pivot"],
         "pattern": trade_plan["setup"]["pattern"],
         "composite_score": trade_plan["provenance"]["composite_score"],
+        "factor_registry_version": FACTOR_REGISTRY_VERSION,
     })
 
     return trade_plan_id

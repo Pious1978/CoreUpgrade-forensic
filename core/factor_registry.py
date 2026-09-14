@@ -5,6 +5,14 @@ Centralized factor registry defining economic signal families, weights,
 and robust production-grade validation immune to python -O optimization.
 """
 
+# #94 - real, direct provenance need: knowing WHICH version of the
+# factor weights produced a given composite score is genuinely
+# valuable when reconstructing why a trade scored the way it did
+# months later. Bump this manually whenever FACTOR_DEFINITIONS or
+# SIGNAL_FAMILIES weights change - not yet automatically enforced,
+# but a real, explicit starting point where none existed before.
+FACTOR_REGISTRY_VERSION = "v1.0"
+
 SIGNAL_FAMILIES = {
     "relative_strength": {"weight": 0.30},
     "institutional":     {"weight": 0.20},

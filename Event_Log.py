@@ -35,7 +35,26 @@ def log_event(event_type, ticker, payload):
     once logged, an event is permanent, matching the real, immutable
     nature of what it represents (a plan was generated; a decision
     was made; a fill happened - none of these can un-happen).
+
+    #94 - real, direct finding from investigating the existing
+    artifact/provenance infrastructure (core/artifact_registry.py):
+    it is genuinely BROKEN, not just unconnected - confirmed by
+    directly running it: register_artifact() calls
+    envelope.to_dict(), a method AuditArtifactEnvelope never defines,
+    and verify_artifact() references fields (generated_by,
+    platform_version, artifact_fingerprint, and more) that don't
+    exist anywhere on that same dataclass. Repairing an untested,
+    broken subsystem just to then connect it here would be higher
+    risk than extending this already-working event log directly.
+    core/artifact_store.py's content-hashing WAS genuinely correct,
+    though - that real, working pattern is reused below, rather than
+    depending on the broken registry around it.
     """
+
+    import hashlib
+
+    payload_str = json.dumps(payload, sort_keys=True, default=str)
+    content_hash = hashlib.sha256(payload_str.encode()).hexdigest()[:12]
 
     conn = sqlite3.connect(DB_PATH)
     conn.execute("""
@@ -44,18 +63,21 @@ def log_event(event_type, ticker, payload):
             event_type TEXT,
             ticker TEXT,
             event_timestamp TEXT,
-            payload_json TEXT
+            payload_json TEXT,
+            content_hash TEXT
         )
     """)
 
     conn.execute("""
-        INSERT INTO event_log (event_type, ticker, event_timestamp, payload_json)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO event_log (event_type, ticker, event_timestamp, payload_json, content_hash)
+        VALUES (?, ?, ?, ?, ?)
     """, (
         event_type,
         ticker.upper() if ticker else None,
         datetime.now().isoformat(),
+
         json.dumps(payload, default=str),
+        content_hash,
     ))
 
     conn.commit()
@@ -77,7 +99,7 @@ def get_events_for_ticker(ticker):
 
     try:
         df = pd.read_sql("""
-            SELECT event_type, event_timestamp, payload_json FROM event_log
+            SELECT event_type, event_timestamp, payload_json, content_hash FROM event_log
             WHERE UPPER(ticker) = ?
             ORDER BY event_timestamp ASC
         """, conn, params=(ticker.upper(),))
@@ -105,7 +127,7 @@ def print_ticker_story(ticker):
 
     for _, row in events.iterrows():
         payload = json.loads(row["payload_json"])
-        print(f"\n[{row['event_timestamp']}] {row['event_type']}")
+        print(f"\n[{row['event_timestamp']}] {row['event_type']}  (hash: {row['content_hash']})")
         for k, v in payload.items():
             print(f"    {k}: {v}")
 
