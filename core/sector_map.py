@@ -10,6 +10,14 @@ far beyond the index-based method's structural ~300-400 stock ceiling.
 
 Any ticker still not in this mapping falls back to UNKNOWN - the
 sector cap only protects candidates within this mapping.
+
+CORRECTION (2026-09-15): the commit that reclassified 19 private
+banks + 9 public banks (Financial Services/PSU Bank -> Banking) and
+4 pharma companies (Pharma -> Healthcare) - commit c9e06bb - credited
+its cross-check to "a comprehensive Finology dataset." That was
+incorrect. The actual verification data was a Stock Screener export
+from TickerTape, not Finology. The reclassification itself is
+unaffected and remains correct; only the source attribution was wrong.
 """
 
 UNIVERSE = {
