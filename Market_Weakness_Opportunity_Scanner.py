@@ -54,8 +54,13 @@ CURRENT_NIFTY_LEVEL = 23400
 
 NIFTY_DECLINE_SCENARIOS = [-0.05, -0.10, -0.15]
 
-STAGE1_MIN_RS_63D_PCT = 0.0
+STAGE1_MIN_RS_63D_PCT = 5.0
+STAGE1_MAX_RS_63D_PCT = 40.0
 STAGE1_TOP_N = 60
+
+# Real, already-established convention reused from
+# alpha_pipeline_orchestrator.py, not a newly-invented number.
+MIN_AVG_TURNOVER = 3e7
 
 
 def compute_beta_vs_nifty(ticker, lookback=126):
@@ -110,9 +115,28 @@ def stage1_technical_prefilter(universe=None):
     """
     Fast, parquet-only pass across the full universe - narrows to
     stocks genuinely showing relative-strength leadership DESPITE the
-    weak market (beating NIFTY over the past quarter), with real
-    technical health (price above its 200-day MA, not a stock merely
-    falling less than the index).
+    weak market, with real technical health (above the 200-day MA)
+    and real liquidity.
+
+    Real, direct fix found via an actual production run: sorting by
+    highest raw relative return mechanically selected the most extreme,
+    likely-unsustainable momentum spikes (confirmed directly - the
+    resulting list included P/E ratios as high as 4648, not genuine
+    value or quality leadership). Two changes:
+
+    1. Bounded the relative-return filter to a range (STAGE1_MIN to
+       STAGE1_MAX) rather than "no ceiling" - real, sustainable
+       outperformance, not a parabolic spike likely already exhausted.
+    2. Added a real liquidity floor (avg_turnover), reusing this
+       project's own already-established convention from
+       alpha_pipeline_orchestrator.py (3e7 = Rs 3 crore/day) rather
+       than inventing a new number - excludes thin, easily-distorted
+       micro-caps.
+
+    Ranking changed from "highest return wins" to "lowest drawdown
+    wins" (most stable ascent) - rewards steady, real outperformance
+    over volatile, spike-prone outperformance, a better fit for a
+    genuine value/quality screen.
     """
 
     universe = universe if universe is not None else load_universe()
@@ -129,11 +153,15 @@ def stage1_technical_prefilter(universe=None):
             if not rel_perf or rel_perf.get(63) is None:
                 continue
 
-            if rel_perf[63] <= STAGE1_MIN_RS_63D_PCT:
+            if not (STAGE1_MIN_RS_63D_PCT <= rel_perf[63] <= STAGE1_MAX_RS_63D_PCT):
                 continue
 
             tech = compute_technical_features(ticker)
             if not tech or tech.get("trend") != 1:
+                continue
+
+            avg_turnover = tech.get("avg_turnover")
+            if avg_turnover is None or avg_turnover < MIN_AVG_TURNOVER:
                 continue
 
             beta = compute_beta_vs_nifty(ticker)
@@ -148,13 +176,17 @@ def stage1_technical_prefilter(universe=None):
                 "beta": beta,
                 "cagr": tech.get("cagr"),
                 "drawdown": tech.get("drawdown"),
+                "avg_turnover": avg_turnover,
             })
 
         except Exception:
             continue
 
-    candidates.sort(key=lambda c: c["rel_return_63d"], reverse=True)
-    print(f"[+] Stage 1 complete: {len(candidates)} stocks show genuine relative-strength leadership")
+    # Real fix: rank by stability (least negative drawdown), not raw
+    # return magnitude - rewards steady outperformance over volatile,
+    # spike-prone outperformance.
+    candidates.sort(key=lambda c: c["drawdown"], reverse=True)
+    print(f"[+] Stage 1 complete: {len(candidates)} stocks show genuine, sustainable relative-strength leadership")
     return candidates[:STAGE1_TOP_N]
 
 
@@ -329,6 +361,9 @@ def print_report(candidates):
 
         print("  Value Zones (if NIFTY declines further from today's real "
               f"level of {CURRENT_NIFTY_LEVEL}):")
+        if c["beta"] < 0:
+            print(f"    ⚠ Negative beta ({c['beta']}) - this stock has historically moved "
+                  f"OPPOSITE to NIFTY, so projected prices correctly RISE as NIFTY falls further.")
         for decline_pct, price in c["value_zones"].items():
             print(f"    NIFTY {decline_pct*100:.0f}%  ->  Rs{price}")
 
