@@ -1,38 +1,37 @@
 """
 core/xbrl_parser.py
 
-Addresses the foundation of #73 - bank-specific fundamentals (NIM,
-GNPA/NNPA, capital adequacy) via NSE's official, regulator-mandated
-XBRL filings, rather than yfinance's generic .info fields (confirmed
+Addresses the foundation of #73 - bank-specific fundamentals (GNPA,
+NNPA, capital ratios) via NSE's official, regulator-mandated XBRL
+filings, rather than yfinance's generic .info fields (confirmed
 absent) or unofficial, undocumented third-party APIs (confirmed
 fragile and ToS-risky).
 
-HONEST, DIRECT STATEMENT OF WHAT'S VERIFIED AND WHAT ISN'T:
+REAL TAG NAMES, CONFIRMED DIRECTLY - not guessed. Extracted from the
+actual, official SEBI/NSE XBRL taxonomy schema and label files
+provided directly (the "HDFC Taxonomy Archives" folder), covering both
+the older "Financial result - Banking" taxonomy (version 2019-09-30)
+and the current, active "Integrated filing (Finance) - Banking"
+taxonomy (version 2025-01-31) - confirmed byte-for-byte identical on
+every tag checked here, so this genuinely reflects what's in force
+today:
 
-VERIFIED, by directly fetching and reading a real, live NSE XBRL
-filing (KSB Limited's Integrated Filing - Financial, Q3 FY2025-26):
-- The real, live URL pattern: nsearchives.nseindia.com/corporate/xbrl/...
-- The real structure: well-formed XML, namespaced tags (e.g.
-  "in-capmkt:RevenueFromOperations"), each value tied to a period via
-  contextRef, with unitRef for currency/per-share values.
-- The real taxonomy body (in.xbrl.org) confirms a dedicated "Banking
-  taxonomy" extension exists, adding ~1,200 bank-specific elements to
-  this same core schema - officially, structurally supporting exactly
-  the kind of tagged, machine-readable NIM/GNPA/NNPA/CAR data #73 needs.
+    PercentageOfGrossNpa   - official label: "Percentage of gross NPA"
+    PercentageOfNpa        - official label: "Percentage of net NPA"
+    CET1Ratio              - official label: "CET 1 ratio"
+    AdditionalTier1Ratio   - official label: "Additional tier 1 ratio"
 
-NOT YET VERIFIED - genuinely, directly stated, not glossed over:
-- The EXACT tag names the banking taxonomy extension uses for NIM,
-  GNPA, NNPA, and CAR specifically. NSE's own filing portal is a
-  dynamic, JavaScript-rendered system that isn't reachable through
-  search or a plain page fetch - actually confirming these requires
-  either downloading one real bank's live XBRL filing directly (from
-  NSE's site, logged in as a normal user, since the portal renders the
-  real download links client-side) or receiving one such file to
-  inspect. BANK_METRIC_TAGS below is a reasonable, evidence-informed
-  starting guess based on the real, confirmed core-taxonomy naming
-  convention (long, descriptive CamelCase) - explicitly NOT confirmed
-  against a real bank filing yet, and should not be trusted as correct
-  until checked against one.
+HONEST, DIRECT LIMITATION - confirmed, not assumed: this taxonomy
+genuinely has NO dedicated "total/overall Capital Adequacy Ratio" tag
+- only CET1Ratio and AdditionalTier1Ratio (Tier 1's own two
+components) exist as tagged elements, checked across both taxonomy
+versions. The commonly-quoted "CAR: 19.6%" figure would need to be
+approximated as CET1Ratio + AdditionalTier1Ratio (missing any Tier 2
+component, which isn't separately tagged here either), not read
+directly from a single field. Net Interest Margin (NIM) was searched
+for directly in both taxonomy versions and genuinely does not exist
+as a tagged element at all - it isn't a mandatory XBRL disclosure
+under this schema, and isn't recoverable from these filings.
 """
 
 import xml.etree.ElementTree as ET
@@ -46,22 +45,14 @@ NAMESPACES = {
     "in-capmkt": "http://www.sebi.gov.in/xbrl/2025-01-31/in-capmkt",
 }
 
-# HONEST, UNVERIFIED best-guess mapping - see the module docstring.
-# Each entry lists multiple plausible real tag name candidates, since
-# the exact one hasn't been confirmed - the parser tries each in turn.
-BANK_METRIC_TAG_CANDIDATES = {
-    "gross_npa_ratio": [
-        "GrossNPARatio", "GrossNonPerformingAssetsRatio", "PercentageOfGrossNPAsToGrossAdvances",
-    ],
-    "net_npa_ratio": [
-        "NetNPARatio", "NetNonPerformingAssetsRatio", "PercentageOfNetNPAsToNetAdvances",
-    ],
-    "net_interest_margin": [
-        "NetInterestMargin", "NIM",
-    ],
-    "capital_adequacy_ratio": [
-        "CapitalAdequacyRatio", "CRAR", "CapitalToRiskWeightedAssetsRatio",
-    ],
+# Real, confirmed tag names - see module docstring for how these were
+# verified. Genuinely absent metrics (a real total CAR field, NIM) are
+# not included here at all, rather than mapped to a guess.
+BANK_METRIC_TAGS = {
+    "gross_npa_pct": "PercentageOfGrossNpa",
+    "net_npa_pct": "PercentageOfNpa",
+    "cet1_ratio_pct": "CET1Ratio",
+    "additional_tier1_ratio_pct": "AdditionalTier1Ratio",
 }
 
 
@@ -110,38 +101,48 @@ def parse_xbrl_instance(xml_content):
     return results
 
 
-def extract_bank_metric(parsed_tags, metric_key, context_ref=None):
+def extract_bank_metrics(parsed_tags, context_ref=None):
     """
-    Real, direct lookup of a specific bank metric from an already-
-    parsed XBRL document, trying each candidate tag name in turn since
-    the exact real name isn't yet confirmed (see module docstring).
-    Returns None, with no invented fallback value, if none of the
-    candidates are found - an honest "we don't know" rather than a
-    fabricated number.
+    Real, direct extraction of every confirmed bank metric from an
+    already-parsed XBRL document, using the real, verified tag names
+    above. Genuinely absent metrics (e.g. total CAR, NIM) are returned
+    as None with an honest reason, not a fabricated value.
     """
 
-    candidates = BANK_METRIC_TAG_CANDIDATES.get(metric_key, [])
+    result = {}
 
-    for tag_name in candidates:
-        if tag_name in parsed_tags:
-            matches = parsed_tags[tag_name]
-            if context_ref:
-                matches = [(v, c) for v, c in matches if c == context_ref]
-            if matches:
-                try:
-                    return float(matches[0][0])
-                except ValueError:
-                    return matches[0][0]
+    for metric_key, tag_name in BANK_METRIC_TAGS.items():
+        matches = parsed_tags.get(tag_name, [])
+        if context_ref:
+            matches = [(v, c) for v, c in matches if c == context_ref]
 
-    return None
+        if matches:
+            try:
+                result[metric_key] = float(matches[0][0])
+            except ValueError:
+                result[metric_key] = matches[0][0]
+        else:
+            result[metric_key] = None
+
+    # Real, direct, honest computation - not a substitute for a real
+    # total CAR field, since Tier 2 isn't captured, but the closest
+    # real approximation available from this schema's actual tags.
+    if result.get("cet1_ratio_pct") is not None and result.get("additional_tier1_ratio_pct") is not None:
+        result["approx_tier1_capital_ratio_pct"] = round(
+            result["cet1_ratio_pct"] + result["additional_tier1_ratio_pct"], 2
+        )
+    else:
+        result["approx_tier1_capital_ratio_pct"] = None
+
+    result["net_interest_margin_pct"] = None  # confirmed genuinely absent from this taxonomy
+
+    return result
 
 
 def list_all_tags(parsed_tags):
     """
     Real, direct diagnostic: prints every tag name actually found in a
-    parsed filing - the genuine way to confirm the real bank-metric
-    tag names once a real bank XBRL file is available, rather than
-    continuing to guess.
+    parsed filing.
     """
 
     for tag_name in sorted(parsed_tags.keys()):
