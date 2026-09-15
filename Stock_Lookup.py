@@ -1800,6 +1800,18 @@ def compute_growth_cagr(ticker):
             start_val = series.iloc[-(years + 1)]
             if start_val is None or end_val is None or start_val <= 0:
                 return None
+            # Real bug fix, caught in an actual production run across
+            # 2,568 stocks: a company whose most recent year swung from
+            # profit to loss makes this ratio negative - raising a
+            # negative number to a fractional power (1/years) is
+            # mathematically undefined in real numbers, producing NaN
+            # with a RuntimeWarning, not a catchable exception (the
+            # try/except below never fires for this). Returning None
+            # here is the honest answer - there's no meaningful CAGR
+            # when the underlying metric crosses zero, not a number to
+            # compute at all.
+            if end_val <= 0:
+                return None
             try:
                 return round((((end_val / start_val) ** (1 / years)) - 1) * 100, 2)
             except Exception:
