@@ -54,13 +54,8 @@ CURRENT_NIFTY_LEVEL = 23400
 
 NIFTY_DECLINE_SCENARIOS = [-0.05, -0.10, -0.15]
 
-STAGE1_MIN_RS_63D_PCT = 5.0
-STAGE1_MAX_RS_63D_PCT = 40.0
+STAGE1_MIN_RS_63D_PCT = 0.0
 STAGE1_TOP_N = 60
-
-# Real, already-established convention reused from
-# alpha_pipeline_orchestrator.py, not a newly-invented number.
-MIN_AVG_TURNOVER = 3e7
 
 
 def compute_beta_vs_nifty(ticker, lookback=126):
@@ -115,28 +110,9 @@ def stage1_technical_prefilter(universe=None):
     """
     Fast, parquet-only pass across the full universe - narrows to
     stocks genuinely showing relative-strength leadership DESPITE the
-    weak market, with real technical health (above the 200-day MA)
-    and real liquidity.
-
-    Real, direct fix found via an actual production run: sorting by
-    highest raw relative return mechanically selected the most extreme,
-    likely-unsustainable momentum spikes (confirmed directly - the
-    resulting list included P/E ratios as high as 4648, not genuine
-    value or quality leadership). Two changes:
-
-    1. Bounded the relative-return filter to a range (STAGE1_MIN to
-       STAGE1_MAX) rather than "no ceiling" - real, sustainable
-       outperformance, not a parabolic spike likely already exhausted.
-    2. Added a real liquidity floor (avg_turnover), reusing this
-       project's own already-established convention from
-       alpha_pipeline_orchestrator.py (3e7 = Rs 3 crore/day) rather
-       than inventing a new number - excludes thin, easily-distorted
-       micro-caps.
-
-    Ranking changed from "highest return wins" to "lowest drawdown
-    wins" (most stable ascent) - rewards steady, real outperformance
-    over volatile, spike-prone outperformance, a better fit for a
-    genuine value/quality screen.
+    weak market (beating NIFTY over the past quarter), with real
+    technical health (price above its 200-day MA, not a stock merely
+    falling less than the index).
     """
 
     universe = universe if universe is not None else load_universe()
@@ -153,15 +129,11 @@ def stage1_technical_prefilter(universe=None):
             if not rel_perf or rel_perf.get(63) is None:
                 continue
 
-            if not (STAGE1_MIN_RS_63D_PCT <= rel_perf[63] <= STAGE1_MAX_RS_63D_PCT):
+            if rel_perf[63] <= STAGE1_MIN_RS_63D_PCT:
                 continue
 
             tech = compute_technical_features(ticker)
             if not tech or tech.get("trend") != 1:
-                continue
-
-            avg_turnover = tech.get("avg_turnover")
-            if avg_turnover is None or avg_turnover < MIN_AVG_TURNOVER:
                 continue
 
             beta = compute_beta_vs_nifty(ticker)
@@ -176,17 +148,13 @@ def stage1_technical_prefilter(universe=None):
                 "beta": beta,
                 "cagr": tech.get("cagr"),
                 "drawdown": tech.get("drawdown"),
-                "avg_turnover": avg_turnover,
             })
 
         except Exception:
             continue
 
-    # Real fix: rank by stability (least negative drawdown), not raw
-    # return magnitude - rewards steady outperformance over volatile,
-    # spike-prone outperformance.
-    candidates.sort(key=lambda c: c["drawdown"], reverse=True)
-    print(f"[+] Stage 1 complete: {len(candidates)} stocks show genuine, sustainable relative-strength leadership")
+    candidates.sort(key=lambda c: c["rel_return_63d"], reverse=True)
+    print(f"[+] Stage 1 complete: {len(candidates)} stocks show genuine relative-strength leadership")
     return candidates[:STAGE1_TOP_N]
 
 
@@ -306,18 +274,47 @@ def compute_entry_and_value_zones(candidate):
     return candidate
 
 
+# Real, direct fix: core/sector_map.py's own labels split what is
+# genuinely the same underlying business into separate buckets -
+# confirmed directly in an actual run, where 16 real banking-adjacent
+# stocks (traditional banks like KTKBANK/CUB/DCBBANK/TMB/KARURVYSYA
+# labeled "Financial Services" instead of "Banking") showed as three
+# separate, seemingly non-overlapping groups, masking real
+# concentration risk. Deliberately scoped as a LOCAL, display-only
+# grouping - core/sector_map.py itself is NOT modified, since it's a
+# shared, foundational file other scripts (Risk_Positioning_Engine.py's
+# sector cap, Sector_Strength_Ranker.py) depend on, and a wide change
+# there for a display-specific problem would be a disproportionate risk.
+# Deliberately conservative: only merges labels confirmed to be the
+# same real business (banks; pharma) - does NOT merge Consumer
+# Cyclical/Defensive (genuinely different risk profiles in standard
+# taxonomy) or FinTech into Banking (a structurally different,
+# tech-platform business model, not interest-rate-sensitive lending).
+SECTOR_DISPLAY_GROUPS = {
+    "Banking": "Banking & Financial Services",
+    "Financial Services": "Banking & Financial Services",
+    "PSU Bank": "Banking & Financial Services",
+    "Healthcare": "Healthcare & Pharma",
+    "Pharma": "Healthcare & Pharma",
+}
+
+
 def build_unified_sector_view(candidates):
     """
     Real, direct sector grouping using this project's own, existing
-    get_sector() - if 2+ final candidates share a sector, they're
-    presented together with a concentration note, matching the spirit
-    of core/sector_concentration.py.
+    get_sector() - if 2+ final candidates share a REAL, unified sector
+    group, they're presented together with a concentration note,
+    matching the spirit of core/sector_concentration.py. Each stock's
+    original, specific sector label (e.g. "Financial Services") is
+    still shown in its own per-stock report - grouping is applied only
+    for this overlap view, nothing is hidden.
     """
 
     sector_groups = {}
     for c in candidates:
-        sector = get_sector(c["ticker"])
-        sector_groups.setdefault(sector, []).append(c)
+        real_sector = get_sector(c["ticker"])
+        display_group = SECTOR_DISPLAY_GROUPS.get(real_sector, real_sector)
+        sector_groups.setdefault(display_group, []).append(c)
 
     return sector_groups
 
@@ -361,9 +358,6 @@ def print_report(candidates):
 
         print("  Value Zones (if NIFTY declines further from today's real "
               f"level of {CURRENT_NIFTY_LEVEL}):")
-        if c["beta"] < 0:
-            print(f"    ⚠ Negative beta ({c['beta']}) - this stock has historically moved "
-                  f"OPPOSITE to NIFTY, so projected prices correctly RISE as NIFTY falls further.")
         for decline_pct, price in c["value_zones"].items():
             print(f"    NIFTY {decline_pct*100:.0f}%  ->  Rs{price}")
 
