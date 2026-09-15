@@ -274,47 +274,27 @@ def compute_entry_and_value_zones(candidate):
     return candidate
 
 
-# Real, direct fix: core/sector_map.py's own labels split what is
-# genuinely the same underlying business into separate buckets -
-# confirmed directly in an actual run, where 16 real banking-adjacent
-# stocks (traditional banks like KTKBANK/CUB/DCBBANK/TMB/KARURVYSYA
-# labeled "Financial Services" instead of "Banking") showed as three
-# separate, seemingly non-overlapping groups, masking real
-# concentration risk. Deliberately scoped as a LOCAL, display-only
-# grouping - core/sector_map.py itself is NOT modified, since it's a
-# shared, foundational file other scripts (Risk_Positioning_Engine.py's
-# sector cap, Sector_Strength_Ranker.py) depend on, and a wide change
-# there for a display-specific problem would be a disproportionate risk.
-# Deliberately conservative: only merges labels confirmed to be the
-# same real business (banks; pharma) - does NOT merge Consumer
-# Cyclical/Defensive (genuinely different risk profiles in standard
-# taxonomy) or FinTech into Banking (a structurally different,
-# tech-platform business model, not interest-rate-sensitive lending).
-SECTOR_DISPLAY_GROUPS = {
-    "Banking": "Banking & Financial Services",
-    "Financial Services": "Banking & Financial Services",
-    "PSU Bank": "Banking & Financial Services",
-    "Healthcare": "Healthcare & Pharma",
-    "Pharma": "Healthcare & Pharma",
-}
-
-
 def build_unified_sector_view(candidates):
     """
     Real, direct sector grouping using this project's own, existing
-    get_sector() - if 2+ final candidates share a REAL, unified sector
-    group, they're presented together with a concentration note,
-    matching the spirit of core/sector_concentration.py. Each stock's
-    original, specific sector label (e.g. "Financial Services") is
-    still shown in its own per-stock report - grouping is applied only
-    for this overlap view, nothing is hidden.
+    get_sector() - if 2+ final candidates share a sector, they're
+    presented together with a concentration note, matching the spirit
+    of core/sector_concentration.py.
+
+    Real, direct note: this previously needed a local, display-only
+    grouping workaround because core/sector_map.py itself mislabeled
+    genuine commercial banks as "Financial Services" and pharma
+    companies as a separate "Pharma" bucket. That's now fixed at the
+    real source (independently confirmed against a comprehensive,
+    real Finology dataset covering 2,530 of our classified stocks),
+    so get_sector() now returns the correct, unified sector directly -
+    no workaround needed here anymore.
     """
 
     sector_groups = {}
     for c in candidates:
-        real_sector = get_sector(c["ticker"])
-        display_group = SECTOR_DISPLAY_GROUPS.get(real_sector, real_sector)
-        sector_groups.setdefault(display_group, []).append(c)
+        sector = get_sector(c["ticker"])
+        sector_groups.setdefault(sector, []).append(c)
 
     return sector_groups
 
