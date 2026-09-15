@@ -164,11 +164,21 @@ def stage2_fundamental_gate(candidates):
     fetch via the existing, tested fetch_quick_fundamentals(). Applies
     a genuine, direct quality/moat gate: must have positive real
     earnings (a real trailing P/E), and not be egregiously over-levered.
+
+    Real, direct diagnostic addition: a 0/60 pass rate in an actual
+    production run was suspicious enough to warrant explicit
+    rejection-reason tracking rather than a silent skip - a small
+    delay between calls is also added, since Yahoo Finance is known to
+    rate-limit rapid, sequential requests with exactly this symptom
+    (fetch_quick_fundamentals returning None for every ticker).
     """
+
+    import time
 
     print(f"[*] Stage 2: fetching real fundamentals for {len(candidates)} shortlisted stocks...")
 
     final = []
+    rejection_reasons = {"no_fundamentals": 0, "no_pe": 0, "over_levered": 0}
 
     for i, c in enumerate(candidates):
         ticker = c["ticker"]
@@ -177,14 +187,24 @@ def stage2_fundamental_gate(candidates):
         try:
             fundamentals = fetch_quick_fundamentals(ticker)
             if not fundamentals:
+                rejection_reasons["no_fundamentals"] += 1
+                print(f"        -> REJECTED: fetch_quick_fundamentals() returned nothing "
+                      f"(network/rate-limit or no yfinance data)")
+                time.sleep(0.5)
                 continue
 
             pe = fundamentals.get("trailing_pe")
             if pe is None or pe <= 0:
+                rejection_reasons["no_pe"] += 1
+                print(f"        -> REJECTED: trailing_pe={pe}")
+                time.sleep(0.5)
                 continue
 
             de = fundamentals.get("debt_to_equity")
             if de is not None and de > 200:
+                rejection_reasons["over_levered"] += 1
+                print(f"        -> REJECTED: debt_to_equity={de}")
+                time.sleep(0.5)
                 continue
 
             c["fundamentals"] = fundamentals
@@ -193,10 +213,14 @@ def stage2_fundamental_gate(candidates):
 
             final.append(c)
 
-        except Exception:
+        except Exception as e:
+            print(f"        -> EXCEPTION: {type(e).__name__}: {e}")
+            time.sleep(0.5)
             continue
 
     print(f"[+] Stage 2 complete: {len(final)} stocks pass the real fundamentals/moat gate")
+    print(f"    Rejection breakdown: no_fundamentals={rejection_reasons['no_fundamentals']}, "
+          f"no_pe={rejection_reasons['no_pe']}, over_levered={rejection_reasons['over_levered']}")
     return final
 
 
