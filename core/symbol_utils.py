@@ -55,6 +55,8 @@ def fetch_yfinance_info(ticker, timeout_executor=None):
 
     normalized = normalize_ticker(ticker)
 
+    last_exception = None
+
     for suffix in [".NS", ".BO"]:
         try:
             info = yf.Ticker(f"{normalized}{suffix}").info
@@ -66,7 +68,16 @@ def fetch_yfinance_info(ticker, timeout_executor=None):
             if info and len(info) > 5:
                 return info
 
-        except Exception:
+        except Exception as e:
+            # Real, direct fix: this used to silently swallow every
+            # exception here, which hid a 100% failure rate across many
+            # diverse, real tickers in an actual production run -
+            # printing the real cause (rate-limit, connection error,
+            # or something else entirely) rather than a blind guess.
+            last_exception = e
             continue
+
+    if last_exception:
+        print(f"    [yfinance] {ticker}: {type(last_exception).__name__}: {last_exception}")
 
     return None
