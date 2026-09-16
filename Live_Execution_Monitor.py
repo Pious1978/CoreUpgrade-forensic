@@ -286,6 +286,38 @@ def fetch_quote(ticker):
 
 
 
+def fetch_kite_live_prices(tickers):
+    """
+    Real, genuinely live prices via core.kite_client - confirmed
+    working end-to-end (a real RELIANCE quote, correct timestamp,
+    real depth). Distinct from LivePriceEngine above, which uses
+    yfinance's 5-minute-delayed bars, not true real-time data.
+
+    Real, direct fallback: if Kite isn't configured (.env missing) or
+    the connection fails for any reason (no internet, expired session,
+    market closed), returns an empty dict rather than crashing - the
+    rest of this monitor keeps working normally, just without this
+    specific, additional live-price display.
+    """
+
+    try:
+        from core.kite_client import get_kite_client
+        kite = get_kite_client()
+    except Exception:
+        return {}
+
+    prices = {}
+    for ticker in tickers:
+        try:
+            symbol = f"NSE:{ticker.upper()}"
+            quote = kite.quote(symbol)
+            prices[ticker] = quote.get(symbol, {}).get("last_price")
+        except Exception:
+            continue
+
+    return prices
+
+
 # ================================================================
 # OPEN POSITIONS (real, actually-held - from Trade_Journal.py)
 # ================================================================
@@ -306,7 +338,7 @@ def fetch_open_positions(conn):
     try:
         df = pd.read_sql("""
             SELECT id, ticker, entry_price, entry_date, entry_shares,
-                   planned_stop, planned_target_1, planned_target_2, pattern
+                   planned_stop, planned_target_1, planned_target_2, planned_pivot, pattern
             FROM trade_journal
             WHERE status='EXECUTED'
         """, conn)
@@ -907,6 +939,8 @@ def run_live_monitor(total_capital, risk_pct=0.5):
                         ticker, quote = f.result()
                         quotes[ticker] = quote
 
+            kite_live_prices = fetch_kite_live_prices(list(open_positions_df["ticker"]))
+
             for _, prow in open_positions_df.iterrows():
 
                 ticker = prow["ticker"]
@@ -915,6 +949,18 @@ def run_live_monitor(total_capital, risk_pct=0.5):
 
                 if current_price <= 0:
                     continue
+
+                # Real, genuinely live price (Kite), separate from the
+                # yfinance-based current_price above, which the
+                # existing unrealized_pnl calculation depends on and
+                # is left untouched. Real, direct fallback: if Kite
+                # wasn't available, live_price is None and simply
+                # isn't shown, rather than fabricating a number.
+                live_price = kite_live_prices.get(ticker)
+                planned_pivot = float(prow["planned_pivot"]) if prow.get("planned_pivot") else None
+                pct_from_pivot = None
+                if live_price is not None and planned_pivot and planned_pivot > 0:
+                    pct_from_pivot = round((live_price - planned_pivot) / planned_pivot * 100, 2)
 
                 unrealized_pnl, unrealized_pct, action = evaluate_position(
                     entry_price=float(prow["entry_price"]),
@@ -928,6 +974,8 @@ def run_live_monitor(total_capital, risk_pct=0.5):
                 position_results.append({
                     "ticker": ticker,
                     "entry_price": float(prow["entry_price"]),
+                    "live_price": live_price,
+                    "pct_from_pivot": pct_from_pivot,
                     "entry_date": prow["entry_date"],
                     "entry_shares": int(prow["entry_shares"]),
                     "current_price": current_price,
@@ -1381,6 +1429,10 @@ def run_live_monitor(total_capital, risk_pct=0.5):
                     f"Now Rs{p['current_price']:<9.2f} "
                     f"Rs{p['unrealized_pnl']:<8,.0f} ({p['unrealized_pct']:+.1f}%)"
                 )
+
+                if p.get("live_price") is not None:
+                    pivot_note = f", {p['pct_from_pivot']:+.2f}% from pivot" if p.get("pct_from_pivot") is not None else ""
+                    print(f"    Live: Rs{p['live_price']:.2f}{pivot_note}")
 
                 print(f"    -> {p['action']}")
 
