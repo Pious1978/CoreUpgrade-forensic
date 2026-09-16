@@ -561,58 +561,58 @@
 [2026-09-01 09:22:36] [CRITICAL] [STOP_BREACHED] EPIGRAL: Stop breached at Rs1201.30
 [2026-09-01 09:22:36] [CRITICAL] [STOP_BREACHED] TVSMOTOR: Stop breached at Rs4339.90
 [2026-09-01 09:24:02] [CRITICAL] [STOP_BREACHED] KFINTECH: Stop breached at Rs952.40
-[2026-09-01 09:27:05] [INFO] [VALID_BREAKOUT] RACLGEAR: Confirmed breakout at Rs1587.00, RVOL 2.89x | breakout_id=0cb0e99262 opportunity=61.1 backfilled=heuristic
-[2026-09-01 09:28:36] [INFO] [VALID_BREAKOUT] ENGINERSIN: Confirmed breakout at Rs271.00, RVOL 2.93x | breakout_id=b391e794fe opportunity=68.8 backfilled=heuristic
-[2026-09-01 09:33:02] [INFO] [VALID_BREAKOUT] GANDHAR: Confirmed breakout at Rs262.45, RVOL 4.8x | breakout_id=f10cb4b315 opportunity=70.3 backfilled=heuristic
+[2026-09-01 09:27:05] [INFO] [VALID_BREAKOUT] RACLGEAR: Confirmed breakout at Rs1587.00, RVOL 2.89x
+[2026-09-01 09:28:36] [INFO] [VALID_BREAKOUT] ENGINERSIN: Confirmed breakout at Rs271.00, RVOL 2.93x
+[2026-09-01 09:33:02] [INFO] [VALID_BREAKOUT] GANDHAR: Confirmed breakout at Rs262.45, RVOL 4.8x
 [2026-09-01 09:37:34] [CRITICAL] [STOP_BREACHED] DALBHARAT: Stop breached at Rs1844.70
 [2026-09-01 09:40:22] [CRITICAL] [STOP_BREACHED] TITAN: Stop breached at Rs5038.00
 [2026-09-01 09:40:27] [CRITICAL] [STOP_BREACHED] SBICARD: Stop breached at Rs649.70
 [2026-09-01 09:40:29] [CRITICAL] [STOP_BREACHED] SBFC: Stop breached at Rs98.93
 [2026-09-01 09:41:53] [CRITICAL] [STOP_BREACHED] RAYMOND: Stop breached at Rs626.25
-[2026-09-01 09:43:20] [INFO] [VALID_BREAKOUT] SAILIFE: Confirmed breakout at Rs1516.40, RVOL 1.91x | breakout_id=0b8aa4f540 opportunity=74.7 backfilled=heuristic
+[2026-09-01 09:43:20] [INFO] [VALID_BREAKOUT] SAILIFE: Confirmed breakout at Rs1516.40, RVOL 1.91x
 [2026-09-01 09:44:46] [CRITICAL] [STOP_BREACHED] NRBBEARING: Stop breached at Rs462.70
 [2026-09-01 09:46:15] [CRITICAL] [STOP_BREACHED] GAEL: Stop breached at Rs173.60
 [2026-09-01 09:47:38] [CRITICAL] [STOP_BREACHED] DLF: Stop breached at Rs666.95
 [2026-09-01 09:49:04] [CRITICAL] [STOP_BREACHED] SGFIN: Stop breached at Rs687.15
 [2026-09-01 09:49:05] [CRITICAL] [STOP_BREACHED] V2RETAIL: Stop breached at Rs221.02
 [2026-09-01 09:50:30] [CRITICAL] [STOP_BREACHED] BAJAJHCARE: Stop breached at Rs329.25
-[2026-09-01 09:53:29] [INFO] [VALID_BREAKOUT] VINDHYATEL: Confirmed breakout at Rs2623.10, RVOL 4.15x | breakout_id=bd425c4ce8 opportunity=61.9 backfilled=heuristic
+[2026-09-01 09:53:29] [INFO] [VALID_BREAKOUT] VINDHYATEL: Confirmed breakout at Rs2623.10, RVOL 4.15x
 [2026-09-01 09:56:19] [CRITICAL] [STOP_BREACHED] CGPOWER: Stop breached at Rs886.50
 [2026-09-01 10:00:47] [CRITICAL] [STOP_BREACHED] NCC: Stop breached at Rs148.36
 [2026-09-01 10:02:08] [CRITICAL] [STOP_BREACHED] NMDC: Stop breached at Rs86.05
-[2026-09-01 10:12:50] [INFO] [VALID_BREAKOUT] UNOMINDA: Confirmed breakout at Rs1299.10, RVOL 2.41x | breakout_id=d924e5835e opportunity=70.9 backfilled=heuristic
+[2026-09-01 10:12:50] [INFO] [VALID_BREAKOUT] UNOMINDA: Confirmed breakout at Rs1299.10, RVOL 2.41x
 [2026-09-01 10:31:59] [CRITICAL] [STOP_BREACHED] GLAND: Stop breached at Rs2876.80
-[2026-09-01 10:33:23] [INFO] [VALID_BREAKOUT] ORIENTBELL: Confirmed breakout at Rs409.40, RVOL 2.44x | breakout_id=1805825715 opportunity=65.8 backfilled=heuristic
+[2026-09-01 10:33:23] [INFO] [VALID_BREAKOUT] ORIENTBELL: Confirmed breakout at Rs409.40, RVOL 2.44x
 [2026-09-01 10:36:59] [CRITICAL] [STOP_BREACHED] KARURVYSYA: Stop breached at Rs345.55
-[2026-09-01 10:38:46] [INFO] [VALID_BREAKOUT] GARFIBRES: Confirmed breakout at Rs823.85, RVOL 8.96x | breakout_id=bc1cfffebc opportunity=59.4 backfilled=heuristic
-[2026-09-01 10:38:52] [INFO] [VALID_BREAKOUT] SSWL: Confirmed breakout at Rs330.30, RVOL 2.17x | breakout_id=7a79814d5b opportunity=70.5 backfilled=heuristic
+[2026-09-01 10:38:46] [INFO] [VALID_BREAKOUT] GARFIBRES: Confirmed breakout at Rs823.85, RVOL 8.96x
+[2026-09-01 10:38:52] [INFO] [VALID_BREAKOUT] SSWL: Confirmed breakout at Rs330.30, RVOL 2.17x
 [2026-09-01 10:48:43] [CRITICAL] [STOP_BREACHED] 20MICRONS: Stop breached at Rs217.63
 [2026-09-01 10:48:46] [CRITICAL] [STOP_BREACHED] ABSLAMC: Stop breached at Rs1015.40
-[2026-09-01 11:07:30] [INFO] [VALID_BREAKOUT] HINDOILEXP: Confirmed breakout at Rs167.95, RVOL 5.96x | breakout_id=4af3fc3d61 opportunity=53.9 backfilled=heuristic
+[2026-09-01 11:07:30] [INFO] [VALID_BREAKOUT] HINDOILEXP: Confirmed breakout at Rs167.95, RVOL 5.96x
 [2026-09-01 11:20:28] [CRITICAL] [STOP_BREACHED] HYUNDAI: Stop breached at Rs2210.70
 [2026-09-01 11:28:11] [CRITICAL] [STOP_BREACHED] SBC: Stop breached at Rs42.05
-[2026-09-01 11:29:38] [INFO] [VALID_BREAKOUT] ELECTCAST: Confirmed breakout at Rs86.87, RVOL 1.52x | breakout_id=9cbdeba706 opportunity=44.4 backfilled=heuristic
-[2026-09-01 11:34:36] [INFO] [VALID_BREAKOUT] JINDWORLD: Confirmed breakout at Rs42.68, RVOL 2.47x | breakout_id=b95cb14cc4 opportunity=53.0 backfilled=heuristic
-[2026-09-01 11:37:40] [INFO] [VALID_BREAKOUT] KSB: Confirmed breakout at Rs837.00, RVOL 2.37x | breakout_id=69048677a9 opportunity=56.6 backfilled=heuristic
+[2026-09-01 11:29:38] [INFO] [VALID_BREAKOUT] ELECTCAST: Confirmed breakout at Rs86.87, RVOL 1.52x
+[2026-09-01 11:34:36] [INFO] [VALID_BREAKOUT] JINDWORLD: Confirmed breakout at Rs42.68, RVOL 2.47x
+[2026-09-01 11:37:40] [INFO] [VALID_BREAKOUT] KSB: Confirmed breakout at Rs837.00, RVOL 2.37x
 [2026-09-01 11:44:49] [CRITICAL] [STOP_BREACHED] CAMS: Stop breached at Rs761.25
-[2026-09-01 11:44:50] [INFO] [VALID_BREAKOUT] CAPLIPOINT: Confirmed breakout at Rs2725.30, RVOL 5.8x | breakout_id=a551d160ab opportunity=62.9 backfilled=heuristic
+[2026-09-01 11:44:50] [INFO] [VALID_BREAKOUT] CAPLIPOINT: Confirmed breakout at Rs2725.30, RVOL 5.8x
 [2026-09-01 11:46:33] [CRITICAL] [STOP_BREACHED] THANGAMAYL: Stop breached at Rs5307.00
 [2026-09-01 12:03:51] [CRITICAL] [STOP_BREACHED] CARERATING: Stop breached at Rs1690.00
 [2026-09-01 12:14:42] [CRITICAL] [STOP_BREACHED] AGI: Stop breached at Rs770.50
-[2026-09-01 12:17:55] [INFO] [VALID_BREAKOUT] AEROFLEX: Confirmed breakout at Rs553.20, RVOL 3.95x | breakout_id=6b107cb48b opportunity=61.5 backfilled=heuristic
+[2026-09-01 12:17:55] [INFO] [VALID_BREAKOUT] AEROFLEX: Confirmed breakout at Rs553.20, RVOL 3.95x
 [2026-09-01 12:19:33] [CRITICAL] [STOP_BREACHED] VEDL: Stop breached at Rs277.30
 [2026-09-01 12:24:15] [CRITICAL] [STOP_BREACHED] SUPREMEIND: Stop breached at Rs3570.20
 [2026-09-01 12:42:22] [CRITICAL] [STOP_BREACHED] SAIL: Stop breached at Rs195.59
 [2026-09-01 12:53:24] [CRITICAL] [STOP_BREACHED] PRINCEPIPE: Stop breached at Rs290.15
-[2026-09-01 12:59:01] [INFO] [VALID_BREAKOUT] SAKAR: Confirmed breakout at Rs987.65, RVOL 4.51x | breakout_id=5aa9284df8 opportunity=70.9 backfilled=heuristic
+[2026-09-01 12:59:01] [INFO] [VALID_BREAKOUT] SAKAR: Confirmed breakout at Rs987.65, RVOL 4.51x
 [2026-09-01 13:01:25] [CRITICAL] [STOP_BREACHED] KDDL: Stop breached at Rs3886.00
 [2026-09-01 13:01:32] [CRITICAL] [STOP_BREACHED] BHEL: Stop breached at Rs428.40
-[2026-09-01 13:09:37] [INFO] [VALID_BREAKOUT] AYMSYNTEX: Confirmed breakout at Rs298.30, RVOL 35.39x | breakout_id=b69ee748b3 opportunity=59.2 backfilled=heuristic
+[2026-09-01 13:09:37] [INFO] [VALID_BREAKOUT] AYMSYNTEX: Confirmed breakout at Rs298.30, RVOL 35.39x
 [2026-09-01 13:14:46] [CRITICAL] [STOP_BREACHED] MAGADSUGAR: Stop breached at Rs577.50
 [2026-09-01 13:28:38] [CRITICAL] [STOP_BREACHED] SONACOMS: Stop breached at Rs806.50
 [2026-09-01 13:31:19] [CRITICAL] [STOP_BREACHED] SJS: Stop breached at Rs2443.50
 [2026-09-01 13:31:26] [CRITICAL] [STOP_BREACHED] PGIL: Stop breached at Rs2380.80
-[2026-09-01 13:39:36] [INFO] [VALID_BREAKOUT] GHCLTEXTIL: Confirmed breakout at Rs140.50, RVOL 4.38x | breakout_id=58e7cef179 opportunity=57.1 backfilled=heuristic
+[2026-09-01 13:39:36] [INFO] [VALID_BREAKOUT] GHCLTEXTIL: Confirmed breakout at Rs140.50, RVOL 4.38x
 [2026-09-01 13:41:58] [CRITICAL] [STOP_BREACHED] APOLLOHOSP: Stop breached at Rs8761.00
 [2026-09-01 13:47:46] [CRITICAL] [STOP_BREACHED] ASKAUTOLTD: Stop breached at Rs634.50
 [2026-09-01 13:50:05] [CRITICAL] [STOP_BREACHED] SINDHUTRAD: Stop breached at Rs24.21
@@ -644,12 +644,12 @@
 [2026-09-02 11:17:35] [CRITICAL] [STOP_BREACHED] DELHIVERY: Stop breached at Rs455.10
 [2026-09-02 11:17:35] [CRITICAL] [STOP_BREACHED] IGIL: Stop breached at Rs329.30
 [2026-09-02 11:17:35] [CRITICAL] [STOP_BREACHED] GAIL: Stop breached at Rs171.80
-[2026-09-02 11:17:35] [CRITICAL] [STOP_BREACHED] KSB: Stop breached at Rs801.90 | breakout_id=69048677a9 opportunity=56.6 backfilled=heuristic
+[2026-09-02 11:17:35] [CRITICAL] [STOP_BREACHED] KSB: Stop breached at Rs801.90
 [2026-09-02 11:17:36] [CRITICAL] [STOP_BREACHED] MAZDOCK: Stop breached at Rs2436.50
 [2026-09-02 11:17:36] [CRITICAL] [STOP_BREACHED] LICI: Stop breached at Rs409.40
 [2026-09-02 11:17:36] [CRITICAL] [STOP_BREACHED] ZAGGLE: Stop breached at Rs181.13
 [2026-09-02 11:17:36] [CRITICAL] [STOP_BREACHED] SINDHUTRAD: Stop breached at Rs23.98
-[2026-09-02 11:17:36] [CRITICAL] [STOP_BREACHED] UNOMINDA: Stop breached at Rs1234.20 | breakout_id=d924e5835e opportunity=70.9 backfilled=heuristic
+[2026-09-02 11:17:36] [CRITICAL] [STOP_BREACHED] UNOMINDA: Stop breached at Rs1234.20
 [2026-09-02 11:17:36] [CRITICAL] [STOP_BREACHED] CONCOR: Stop breached at Rs513.35
 [2026-09-02 11:17:36] [CRITICAL] [STOP_BREACHED] CANTABIL: Stop breached at Rs240.60
 [2026-09-02 11:17:36] [CRITICAL] [STOP_BREACHED] DOMS: Stop breached at Rs2207.30
@@ -1139,7 +1139,7 @@
 [2026-09-02 11:17:52] [CRITICAL] [STOP_BREACHED] EXICOM: Stop breached at Rs161.60
 [2026-09-02 11:17:52] [CRITICAL] [STOP_BREACHED] ROSSARI: Stop breached at Rs473.65
 [2026-09-02 11:17:52] [CRITICAL] [STOP_BREACHED] DCMSHRIRAM: Stop breached at Rs1047.00
-[2026-09-02 11:17:52] [CRITICAL] [STOP_BREACHED] HINDOILEXP: Stop breached at Rs165.62 | breakout_id=4af3fc3d61 opportunity=53.9 backfilled=heuristic
+[2026-09-02 11:17:52] [CRITICAL] [STOP_BREACHED] HINDOILEXP: Stop breached at Rs165.62
 [2026-09-02 11:17:52] [CRITICAL] [STOP_BREACHED] ADFFOODS: Stop breached at Rs259.60
 [2026-09-02 11:17:52] [CRITICAL] [STOP_BREACHED] STYLAMIND: Stop breached at Rs3292.30
 [2026-09-02 11:17:52] [CRITICAL] [STOP_BREACHED] MSPL: Stop breached at Rs35.21
@@ -1246,15 +1246,15 @@
 [2026-09-02 11:17:56] [CRITICAL] [STOP_BREACHED] NELCO: Stop breached at Rs932.60
 [2026-09-02 11:17:56] [CRITICAL] [STOP_BREACHED] SIMPLEXINF: Stop breached at Rs263.50
 [2026-09-02 11:17:56] [CRITICAL] [STOP_BREACHED] RICOAUTO: Stop breached at Rs124.75
-[2026-09-02 11:28:27] [CRITICAL] [STOP_BREACHED] RACLGEAR: Stop breached at Rs1485.00 | breakout_id=0cb0e99262 opportunity=61.1 backfilled=heuristic
+[2026-09-02 11:28:27] [CRITICAL] [STOP_BREACHED] RACLGEAR: Stop breached at Rs1485.00
 [2026-09-02 11:29:58] [CRITICAL] [STOP_BREACHED] KARURVYSYA: Stop breached at Rs346.30
 [2026-09-02 11:31:27] [CRITICAL] [STOP_BREACHED] PNB: Stop breached at Rs116.00
 [2026-09-02 11:31:29] [CRITICAL] [STOP_BREACHED] ANTELOPUS: Stop breached at Rs869.00
 [2026-09-02 11:32:59] [CRITICAL] [STOP_BREACHED] PETRONET: Stop breached at Rs289.80
 [2026-09-02 11:33:00] [CRITICAL] [STOP_BREACHED] ZYDUSLIFE: Stop breached at Rs1147.40
-[2026-09-02 11:37:33] [INFO] [VALID_BREAKOUT] RISHABH: Confirmed breakout at Rs743.80, RVOL 2.52x | breakout_id=79cb0bb0ac opportunity=62.6 backfilled=heuristic
-[2026-09-02 11:39:10] [INFO] [VALID_BREAKOUT] NUVAMA: Confirmed breakout at Rs1857.20, RVOL 1.79x | breakout_id=4dd3085a7f opportunity=62.2 backfilled=heuristic
-[2026-09-02 11:40:39] [CRITICAL] [STOP_BREACHED] ENGINERSIN: Stop breached at Rs274.10 | breakout_id=b391e794fe opportunity=68.8 backfilled=heuristic
+[2026-09-02 11:37:33] [INFO] [VALID_BREAKOUT] RISHABH: Confirmed breakout at Rs743.80, RVOL 2.52x
+[2026-09-02 11:39:10] [INFO] [VALID_BREAKOUT] NUVAMA: Confirmed breakout at Rs1857.20, RVOL 1.79x
+[2026-09-02 11:40:39] [CRITICAL] [STOP_BREACHED] ENGINERSIN: Stop breached at Rs274.10
 [2026-09-02 11:45:19] [CRITICAL] [STOP_BREACHED] SPORTKING: Stop breached at Rs226.02
 [2026-09-02 11:54:15] [CRITICAL] [STOP_BREACHED] ELGIEQUIP: Stop breached at Rs614.05
 [2026-09-02 11:58:59] [CRITICAL] [STOP_BREACHED] SUNDRMFAST: Stop breached at Rs1188.70
@@ -1263,21 +1263,21 @@
 [2026-09-02 12:17:03] [CRITICAL] [STOP_BREACHED] GUJTHEM: Stop breached at Rs409.10
 [2026-09-02 12:22:44] [CRITICAL] [STOP_BREACHED] RKFORGE: Stop breached at Rs729.30
 [2026-09-02 12:30:47] [CRITICAL] [STOP_BREACHED] JKPAPER: Stop breached at Rs388.20
-[2026-09-02 12:43:53] [INFO] [VALID_BREAKOUT] CLEAN: Confirmed breakout at Rs856.00, RVOL 3.97x | breakout_id=78834c04dc opportunity=44.3 backfilled=heuristic
+[2026-09-02 12:43:53] [INFO] [VALID_BREAKOUT] CLEAN: Confirmed breakout at Rs856.00, RVOL 3.97x
 [2026-09-02 12:43:58] [CRITICAL] [STOP_BREACHED] CRISIL: Stop breached at Rs4691.70
-[2026-09-02 12:48:47] [INFO] [VALID_BREAKOUT] BEML: Confirmed breakout at Rs2014.00, RVOL 3.15x | breakout_id=6e75d7f56d opportunity=44.1 backfilled=heuristic
-[2026-09-02 13:08:52] [INFO] [VALID_BREAKOUT] XPROINDIA: Confirmed breakout at Rs1212.00, RVOL 4.51x | breakout_id=558754d209 opportunity=56.8 backfilled=heuristic
+[2026-09-02 12:48:47] [INFO] [VALID_BREAKOUT] BEML: Confirmed breakout at Rs2014.00, RVOL 3.15x
+[2026-09-02 13:08:52] [INFO] [VALID_BREAKOUT] XPROINDIA: Confirmed breakout at Rs1212.00, RVOL 4.51x
 [2026-09-02 13:26:11] [CRITICAL] [STOP_BREACHED] CARERATING: Stop breached at Rs1688.10
-[2026-09-02 13:27:51] [INFO] [VALID_BREAKOUT] ANTELOPUS: Confirmed breakout at Rs926.55, RVOL 4.18x | breakout_id=3269c4e07c opportunity=73.3 backfilled=heuristic
+[2026-09-02 13:27:51] [INFO] [VALID_BREAKOUT] ANTELOPUS: Confirmed breakout at Rs926.55, RVOL 4.18x
 [2026-09-02 13:34:23] [CRITICAL] [STOP_BREACHED] ICICIBANK: Stop breached at Rs1421.70
 [2026-09-02 13:50:59] [CRITICAL] [STOP_BREACHED] VIJAYA: Stop breached at Rs1481.30
 [2026-09-02 13:52:39] [CRITICAL] [STOP_BREACHED] JINDALSTEL: Stop breached at Rs1152.10
 [2026-09-02 13:52:42] [CRITICAL] [STOP_BREACHED] SAMBHV: Stop breached at Rs125.71
-[2026-09-02 14:14:24] [INFO] [VALID_BREAKOUT] WINDLAS: Confirmed breakout at Rs1071.30, RVOL 3.27x | breakout_id=79b449a84e opportunity=59.0 backfilled=heuristic
+[2026-09-02 14:14:24] [INFO] [VALID_BREAKOUT] WINDLAS: Confirmed breakout at Rs1071.30, RVOL 3.27x
 [2026-09-02 14:52:28] [CRITICAL] [STOP_BREACHED] AUROPHARMA: Stop breached at Rs1644.00
-[2026-09-02 14:59:21] [INFO] [VALID_BREAKOUT] RAYMOND: Confirmed breakout at Rs669.65, RVOL 1.68x | breakout_id=42bcd0ba37 opportunity=57.8 backfilled=heuristic
+[2026-09-02 14:59:21] [INFO] [VALID_BREAKOUT] RAYMOND: Confirmed breakout at Rs669.65, RVOL 1.68x
 [2026-09-02 15:26:44] [CRITICAL] [STOP_BREACHED] UNIVCABLES: Stop breached at Rs1621.00
-[2026-09-02 15:29:53] [INFO] [VALID_BREAKOUT] AYMSYNTEX: Confirmed breakout at Rs311.20, RVOL 2.35x | breakout_id=a33b96e23e opportunity=60.0 backfilled=heuristic
+[2026-09-02 15:29:53] [INFO] [VALID_BREAKOUT] AYMSYNTEX: Confirmed breakout at Rs311.20, RVOL 2.35x
 [2026-09-03 11:00:36] [CRITICAL] [STOP_BREACHED] BAJAJFINSV: Stop breached at Rs1975.20
 [2026-09-03 11:00:36] [CRITICAL] [STOP_BREACHED] HCLTECH: Stop breached at Rs1314.00
 [2026-09-03 11:00:36] [CRITICAL] [STOP_BREACHED] GOKEX: Stop breached at Rs775.10
@@ -1793,7 +1793,7 @@
 [2026-09-03 11:00:56] [CRITICAL] [STOP_BREACHED] JSLL: Stop breached at Rs505.00
 [2026-09-03 11:00:57] [CRITICAL] [STOP_BREACHED] THOMASCOOK: Stop breached at Rs105.95
 [2026-09-03 11:00:57] [CRITICAL] [STOP_BREACHED] TARIL: Stop breached at Rs303.75
-[2026-09-03 11:00:57] [CRITICAL] [STOP_BREACHED] NUVAMA: Stop breached at Rs1826.80 | breakout_id=4dd3085a7f opportunity=62.2 backfilled=heuristic
+[2026-09-03 11:00:57] [CRITICAL] [STOP_BREACHED] NUVAMA: Stop breached at Rs1826.80
 [2026-09-03 11:00:57] [CRITICAL] [STOP_BREACHED] LICHSGFIN: Stop breached at Rs548.15
 [2026-09-03 11:00:57] [CRITICAL] [STOP_BREACHED] RBA: Stop breached at Rs98.27
 [2026-09-03 11:00:57] [CRITICAL] [STOP_BREACHED] PRICOLLTD: Stop breached at Rs773.00
@@ -1828,56 +1828,56 @@
 [2026-09-03 11:02:25] [CRITICAL] [STOP_BREACHED] KDDL: Stop breached at Rs3927.90
 [2026-09-03 11:02:30] [CRITICAL] [STOP_BREACHED] JAYNECOIND: Stop breached at Rs98.87
 [2026-09-03 11:04:02] [CRITICAL] [STOP_BREACHED] APOLLOHOSP: Stop breached at Rs8736.50
-[2026-09-03 11:04:05] [INFO] [VALID_BREAKOUT] VSSL: Confirmed breakout at Rs373.60, RVOL 3.63x | breakout_id=77c29b028d opportunity=74.6 backfilled=heuristic
+[2026-09-03 11:04:05] [INFO] [VALID_BREAKOUT] VSSL: Confirmed breakout at Rs373.60, RVOL 3.63x
 [2026-09-03 11:05:37] [CRITICAL] [STOP_BREACHED] GODREJPROP: Stop breached at Rs2013.10
 [2026-09-03 11:10:10] [CRITICAL] [STOP_BREACHED] POLYPLEX: Stop breached at Rs1197.60
 [2026-09-03 11:10:19] [CRITICAL] [STOP_BREACHED] AUROPHARMA: Stop breached at Rs1657.30
 [2026-09-03 11:11:55] [CRITICAL] [STOP_BREACHED] BANKINDIA: Stop breached at Rs144.81
-[2026-09-03 11:11:59] [INFO] [VALID_BREAKOUT] VISHNU: Confirmed breakout at Rs682.00, RVOL 2.24x | breakout_id=32218b4eb3 opportunity=66.8 backfilled=heuristic
+[2026-09-03 11:11:59] [INFO] [VALID_BREAKOUT] VISHNU: Confirmed breakout at Rs682.00, RVOL 2.24x
 [2026-09-03 11:13:29] [CRITICAL] [STOP_BREACHED] WENDT: Stop breached at Rs8305.00
 [2026-09-03 11:15:00] [CRITICAL] [STOP_BREACHED] JSL: Stop breached at Rs728.80
-[2026-09-03 11:15:01] [INFO] [VALID_BREAKOUT] SHANTIGEAR: Confirmed breakout at Rs578.35, RVOL 2.68x | breakout_id=1466ea5053 opportunity=46.3 backfilled=heuristic
+[2026-09-03 11:15:01] [INFO] [VALID_BREAKOUT] SHANTIGEAR: Confirmed breakout at Rs578.35, RVOL 2.68x
 [2026-09-03 11:15:04] [CRITICAL] [STOP_BREACHED] UNIVCABLES: Stop breached at Rs1624.00
 [2026-09-03 11:21:16] [CRITICAL] [STOP_BREACHED] USHAMART: Stop breached at Rs505.65
-[2026-09-03 11:27:21] [INFO] [VALID_BREAKOUT] HINDOILEXP: Confirmed breakout at Rs176.59, RVOL 5.73x | breakout_id=6eb3cd3b05 opportunity=45.6 backfilled=heuristic
-[2026-09-03 11:30:17] [INFO] [VALID_BREAKOUT] SIRCA: Confirmed breakout at Rs447.15, RVOL 2.51x | breakout_id=f95179094c opportunity=50.5 backfilled=heuristic
+[2026-09-03 11:27:21] [INFO] [VALID_BREAKOUT] HINDOILEXP: Confirmed breakout at Rs176.59, RVOL 5.73x
+[2026-09-03 11:30:17] [INFO] [VALID_BREAKOUT] SIRCA: Confirmed breakout at Rs447.15, RVOL 2.51x
 [2026-09-03 11:30:19] [CRITICAL] [STOP_BREACHED] AJAXENGG: Stop breached at Rs573.80
 [2026-09-03 11:30:23] [CRITICAL] [STOP_BREACHED] EIDPARRY: Stop breached at Rs790.25
 [2026-09-03 11:31:55] [CRITICAL] [STOP_BREACHED] SANSERA: Stop breached at Rs3824.60
-[2026-09-03 11:36:36] [INFO] [VALID_BREAKOUT] DEEPINDS: Confirmed breakout at Rs729.20, RVOL 1.79x | breakout_id=cdf9399567 opportunity=62.7 backfilled=heuristic
+[2026-09-03 11:36:36] [INFO] [VALID_BREAKOUT] DEEPINDS: Confirmed breakout at Rs729.20, RVOL 1.79x
 [2026-09-03 11:41:18] [CRITICAL] [STOP_BREACHED] EFCIL: Stop breached at Rs199.20
-[2026-09-03 11:42:55] [INFO] [VALID_BREAKOUT] KSL: Confirmed breakout at Rs950.00, RVOL 2.24x | breakout_id=4cc7a0f608 opportunity=57.3 backfilled=heuristic
+[2026-09-03 11:42:55] [INFO] [VALID_BREAKOUT] KSL: Confirmed breakout at Rs950.00, RVOL 2.24x
 [2026-09-03 11:46:10] [CRITICAL] [STOP_BREACHED] GPIL: Stop breached at Rs238.50
-[2026-09-03 11:49:19] [INFO] [VALID_BREAKOUT] CUB: Confirmed breakout at Rs237.30, RVOL 2.54x | breakout_id=ca65a5da9f opportunity=63.9 backfilled=heuristic
-[2026-09-03 11:52:27] [INFO] [VALID_BREAKOUT] GANDHAR: Confirmed breakout at Rs270.55, RVOL 1.81x | breakout_id=921804b02b opportunity=68.5 backfilled=heuristic
+[2026-09-03 11:49:19] [INFO] [VALID_BREAKOUT] CUB: Confirmed breakout at Rs237.30, RVOL 2.54x
+[2026-09-03 11:52:27] [INFO] [VALID_BREAKOUT] GANDHAR: Confirmed breakout at Rs270.55, RVOL 1.81x
 [2026-09-03 11:55:35] [CRITICAL] [STOP_BREACHED] RKFORGE: Stop breached at Rs728.80
-[2026-09-03 11:58:30] [INFO] [VALID_BREAKOUT] CAPLIPOINT: Confirmed breakout at Rs2858.20, RVOL 1.97x | breakout_id=c28c3a4ec1 opportunity=57.3 backfilled=heuristic
-[2026-09-03 12:00:09] [INFO] [VALID_BREAKOUT] SEAMECLTD: Confirmed breakout at Rs1763.60, RVOL 1.55x | breakout_id=70a300c4d9 opportunity=73.0 backfilled=heuristic
-[2026-09-03 12:04:47] [INFO] [VALID_BREAKOUT] JINDRILL: Confirmed breakout at Rs663.85, RVOL 2.74x | breakout_id=088b759aba opportunity=61.5 backfilled=heuristic
-[2026-09-03 12:04:56] [INFO] [VALID_BREAKOUT] RAYMOND: Confirmed breakout at Rs760.00, RVOL 2.3x | breakout_id=ee8ee5b76f opportunity=52.8 backfilled=heuristic
-[2026-09-03 12:12:48] [INFO] [VALID_BREAKOUT] AFCONS: Confirmed breakout at Rs294.95, RVOL 4.24x | breakout_id=c54f6277d3 opportunity=47.9 backfilled=heuristic
-[2026-09-03 12:18:55] [INFO] [VALID_BREAKOUT] KMEW: Confirmed breakout at Rs3135.40, RVOL 2.84x | breakout_id=83429f9839 opportunity=63.8 backfilled=heuristic
+[2026-09-03 11:58:30] [INFO] [VALID_BREAKOUT] CAPLIPOINT: Confirmed breakout at Rs2858.20, RVOL 1.97x
+[2026-09-03 12:00:09] [INFO] [VALID_BREAKOUT] SEAMECLTD: Confirmed breakout at Rs1763.60, RVOL 1.55x
+[2026-09-03 12:04:47] [INFO] [VALID_BREAKOUT] JINDRILL: Confirmed breakout at Rs663.85, RVOL 2.74x
+[2026-09-03 12:04:56] [INFO] [VALID_BREAKOUT] RAYMOND: Confirmed breakout at Rs760.00, RVOL 2.3x
+[2026-09-03 12:12:48] [INFO] [VALID_BREAKOUT] AFCONS: Confirmed breakout at Rs294.95, RVOL 4.24x
+[2026-09-03 12:18:55] [INFO] [VALID_BREAKOUT] KMEW: Confirmed breakout at Rs3135.40, RVOL 2.84x
 [2026-09-03 12:20:29] [CRITICAL] [STOP_BREACHED] LALPATHLAB: Stop breached at Rs1913.20
 [2026-09-03 12:20:34] [CRITICAL] [STOP_BREACHED] AEGISVOPAK: Stop breached at Rs289.35
 [2026-09-03 12:36:58] [CRITICAL] [STOP_BREACHED] COSMOFIRST: Stop breached at Rs939.65
-[2026-09-03 12:44:58] [CRITICAL] [STOP_BREACHED] GARFIBRES: Stop breached at Rs803.50 | breakout_id=bc1cfffebc opportunity=59.4 backfilled=heuristic
+[2026-09-03 12:44:58] [CRITICAL] [STOP_BREACHED] GARFIBRES: Stop breached at Rs803.50
 [2026-09-03 13:03:59] [CRITICAL] [STOP_BREACHED] FLUOROCHEM: Stop breached at Rs4720.00
 [2026-09-03 13:04:14] [CRITICAL] [STOP_BREACHED] ARTEMISMED: Stop breached at Rs318.15
-[2026-09-03 13:09:44] [INFO] [VALID_BREAKOUT] EDELWEISS: Confirmed breakout at Rs133.65, RVOL 12.58x | breakout_id=bb87017093 opportunity=57.5 backfilled=heuristic
+[2026-09-03 13:09:44] [INFO] [VALID_BREAKOUT] EDELWEISS: Confirmed breakout at Rs133.65, RVOL 12.58x
 [2026-09-03 13:15:14] [CRITICAL] [STOP_BREACHED] SHRIPISTON: Stop breached at Rs4551.20
 [2026-09-03 13:23:02] [CRITICAL] [STOP_BREACHED] SAIL: Stop breached at Rs194.78
 [2026-09-03 13:28:45] [CRITICAL] [STOP_BREACHED] VARROC: Stop breached at Rs834.60
 [2026-09-03 13:58:36] [CRITICAL] [STOP_BREACHED] UNIMECH: Stop breached at Rs1455.20
 [2026-09-03 14:06:36] [CRITICAL] [STOP_BREACHED] IDBI: Stop breached at Rs91.75
-[2026-09-03 14:22:27] [INFO] [VALID_BREAKOUT] JMFINANCIL: Confirmed breakout at Rs134.64, RVOL 5.38x | breakout_id=d7aac57e08 opportunity=43.4 backfilled=heuristic
+[2026-09-03 14:22:27] [INFO] [VALID_BREAKOUT] JMFINANCIL: Confirmed breakout at Rs134.64, RVOL 5.38x
 [2026-09-03 14:30:12] [CRITICAL] [STOP_BREACHED] ELECON: Stop breached at Rs434.20
 [2026-09-03 14:30:14] [CRITICAL] [STOP_BREACHED] ECLERX: Stop breached at Rs1933.00
 [2026-09-03 14:53:45] [CRITICAL] [STOP_BREACHED] NH: Stop breached at Rs1883.80
 [2026-09-03 15:00:00] [CRITICAL] [STOP_BREACHED] KINGFA: Stop breached at Rs5879.00
 [2026-09-03 15:00:02] [CRITICAL] [STOP_BREACHED] MSPL: Stop breached at Rs35.63
-[2026-09-03 15:11:00] [INFO] [VALID_BREAKOUT] RBLBANK: Confirmed breakout at Rs409.10, RVOL 1.69x | breakout_id=ae79eb22f3 opportunity=75.4 backfilled=heuristic
+[2026-09-03 15:11:00] [INFO] [VALID_BREAKOUT] RBLBANK: Confirmed breakout at Rs409.10, RVOL 1.69x
 [2026-09-03 15:11:02] [CRITICAL] [STOP_BREACHED] IONEXCHANG: Stop breached at Rs382.00
-[2026-09-03 15:31:02] [INFO] [VALID_BREAKOUT] JKPAPER: Confirmed breakout at Rs414.80, RVOL 2.53x | breakout_id=04755e6428 opportunity=59.3 backfilled=heuristic
+[2026-09-03 15:31:02] [INFO] [VALID_BREAKOUT] JKPAPER: Confirmed breakout at Rs414.80, RVOL 2.53x
 [2026-09-04 13:12:39] [CRITICAL] [STOP_BREACHED] NH: Stop breached at Rs1855.20
 [2026-09-04 13:12:39] [CRITICAL] [STOP_BREACHED] BAJAJFINSV: Stop breached at Rs1973.70
 [2026-09-04 13:12:39] [CRITICAL] [STOP_BREACHED] MANKIND: Stop breached at Rs2336.90
@@ -1982,7 +1982,7 @@
 [2026-09-04 13:12:42] [CRITICAL] [STOP_BREACHED] ZFCVINDIA: Stop breached at Rs2531.00
 [2026-09-04 13:12:42] [CRITICAL] [STOP_BREACHED] MEDPLUS: Stop breached at Rs658.85
 [2026-09-04 13:12:42] [CRITICAL] [STOP_BREACHED] INDIGO: Stop breached at Rs4988.50
-[2026-09-04 13:12:42] [INFO] [VALID_BREAKOUT] SBC: Confirmed breakout at Rs45.25, RVOL 1.61x | breakout_id=b172e49b5d opportunity=63.8 backfilled=heuristic
+[2026-09-04 13:12:42] [INFO] [VALID_BREAKOUT] SBC: Confirmed breakout at Rs45.25, RVOL 1.61x
 [2026-09-04 13:12:42] [CRITICAL] [STOP_BREACHED] CEATLTD: Stop breached at Rs3310.00
 [2026-09-04 13:12:42] [CRITICAL] [STOP_BREACHED] IEX: Stop breached at Rs119.52
 [2026-09-04 13:12:42] [CRITICAL] [STOP_BREACHED] RELIANCE: Stop breached at Rs1326.60
@@ -2426,45 +2426,45 @@
 [2026-09-04 13:12:56] [CRITICAL] [STOP_BREACHED] ORIENTHOT: Stop breached at Rs140.31
 [2026-09-04 13:12:56] [CRITICAL] [STOP_BREACHED] RKFORGE: Stop breached at Rs694.15
 [2026-09-04 13:12:56] [CRITICAL] [STOP_BREACHED] RICOAUTO: Stop breached at Rs127.55
-[2026-09-04 13:14:34] [INFO] [VALID_BREAKOUT] IONEXCHANG: Confirmed breakout at Rs403.45, RVOL 3.02x | breakout_id=f7ebe4901d opportunity=43.6 backfilled=heuristic
+[2026-09-04 13:14:34] [INFO] [VALID_BREAKOUT] IONEXCHANG: Confirmed breakout at Rs403.45, RVOL 3.02x
 [2026-09-04 13:17:01] [CRITICAL] [STOP_BREACHED] WHEELS: Stop breached at Rs1704.00
 [2026-09-04 13:17:03] [CRITICAL] [STOP_BREACHED] CARBORUNIV: Stop breached at Rs1132.50
 [2026-09-04 13:17:07] [CRITICAL] [STOP_BREACHED] GLENMARK: Stop breached at Rs2444.30
-[2026-09-04 13:18:46] [INFO] [VALID_BREAKOUT] ACMESOLAR: Confirmed breakout at Rs417.50, RVOL 4.41x | breakout_id=74ed3a89a3 opportunity=64.3 backfilled=heuristic
+[2026-09-04 13:18:46] [INFO] [VALID_BREAKOUT] ACMESOLAR: Confirmed breakout at Rs417.50, RVOL 4.41x
 [2026-09-04 13:20:26] [CRITICAL] [STOP_BREACHED] KINGFA: Stop breached at Rs5896.50
 [2026-09-04 13:20:28] [CRITICAL] [STOP_BREACHED] NAUKRI: Stop breached at Rs1322.70
-[2026-09-04 13:23:39] [INFO] [VALID_BREAKOUT] CASTROLIND: Confirmed breakout at Rs188.89, RVOL 6.58x | breakout_id=2c19256710 opportunity=67.6 backfilled=heuristic
+[2026-09-04 13:23:39] [INFO] [VALID_BREAKOUT] CASTROLIND: Confirmed breakout at Rs188.89, RVOL 6.58x
 [2026-09-04 13:23:40] [CRITICAL] [STOP_BREACHED] GUJTHEM: Stop breached at Rs411.60
 [2026-09-04 13:29:04] [CRITICAL] [STOP_BREACHED] PETRONET: Stop breached at Rs290.15
 [2026-09-04 13:42:08] [CRITICAL] [STOP_BREACHED] FORTIS: Stop breached at Rs906.05
 [2026-09-04 13:42:29] [CRITICAL] [STOP_BREACHED] STOVEKRAFT: Stop breached at Rs829.25
-[2026-09-04 13:42:33] [CRITICAL] [STOP_BREACHED] CLEAN: Stop breached at Rs838.70 | breakout_id=78834c04dc opportunity=44.3 backfilled=heuristic
+[2026-09-04 13:42:33] [CRITICAL] [STOP_BREACHED] CLEAN: Stop breached at Rs838.70
 [2026-09-04 13:42:34] [CRITICAL] [STOP_BREACHED] DCW: Stop breached at Rs46.01
-[2026-09-04 13:53:06] [INFO] [VALID_BREAKOUT] IRISDOREME: Confirmed breakout at Rs62.50, RVOL 6.88x | breakout_id=ed73245870 opportunity=62.5 backfilled=heuristic
+[2026-09-04 13:53:06] [INFO] [VALID_BREAKOUT] IRISDOREME: Confirmed breakout at Rs62.50, RVOL 6.88x
 [2026-09-04 13:55:45] [CRITICAL] [STOP_BREACHED] WINDMACHIN: Stop breached at Rs306.80
-[2026-09-04 13:58:14] [INFO] [VALID_BREAKOUT] MAITHANALL: Confirmed breakout at Rs1102.00, RVOL 3.13x | breakout_id=3152bf4c4b opportunity=59.3 backfilled=heuristic
+[2026-09-04 13:58:14] [INFO] [VALID_BREAKOUT] MAITHANALL: Confirmed breakout at Rs1102.00, RVOL 3.13x
 [2026-09-04 13:58:19] [CRITICAL] [STOP_BREACHED] VMART: Stop breached at Rs826.00
-[2026-09-04 14:03:51] [INFO] [VALID_BREAKOUT] BALAMINES: Confirmed breakout at Rs2538.00, RVOL 2.27x | breakout_id=b58798008f opportunity=58.8 backfilled=heuristic
+[2026-09-04 14:03:51] [INFO] [VALID_BREAKOUT] BALAMINES: Confirmed breakout at Rs2538.00, RVOL 2.27x
 [2026-09-04 14:06:04] [CRITICAL] [STOP_BREACHED] PRESTIGE: Stop breached at Rs1569.90
 [2026-09-04 14:08:55] [CRITICAL] [STOP_BREACHED] PNBHOUSING: Stop breached at Rs1169.10
 [2026-09-04 14:11:36] [CRITICAL] [STOP_BREACHED] PERSISTENT: Stop breached at Rs5660.50
-[2026-09-04 14:14:09] [INFO] [VALID_BREAKOUT] SKIPPER: Confirmed breakout at Rs597.15, RVOL 4.59x | breakout_id=6a893e200a opportunity=50.4 backfilled=heuristic
-[2026-09-04 14:37:41] [INFO] [VALID_BREAKOUT] SHANTIGEAR: Confirmed breakout at Rs628.00, RVOL 2.28x | breakout_id=87949d59ee opportunity=48.0 backfilled=heuristic
+[2026-09-04 14:14:09] [INFO] [VALID_BREAKOUT] SKIPPER: Confirmed breakout at Rs597.15, RVOL 4.59x
+[2026-09-04 14:37:41] [INFO] [VALID_BREAKOUT] SHANTIGEAR: Confirmed breakout at Rs628.00, RVOL 2.28x
 [2026-09-04 14:40:13] [CRITICAL] [STOP_BREACHED] BANKINDIA: Stop breached at Rs144.76
-[2026-09-04 14:40:19] [INFO] [VALID_BREAKOUT] RBLBANK: Confirmed breakout at Rs415.50, RVOL 2.13x | breakout_id=4f2053e074 opportunity=73.2 backfilled=heuristic
+[2026-09-04 14:40:19] [INFO] [VALID_BREAKOUT] RBLBANK: Confirmed breakout at Rs415.50, RVOL 2.13x
 [2026-09-04 14:43:55] [CRITICAL] [STOP_BREACHED] ICICIBANK: Stop breached at Rs1427.30
 [2026-09-04 14:47:12] [CRITICAL] [STOP_BREACHED] COHANCE: Stop breached at Rs454.50
-[2026-09-04 14:49:55] [INFO] [VALID_BREAKOUT] MANORAMA: Confirmed breakout at Rs2011.00, RVOL 2.03x | breakout_id=a4340d0e33 opportunity=60.8 backfilled=heuristic
-[2026-09-04 15:03:40] [INFO] [VALID_BREAKOUT] MANOMAY: Confirmed breakout at Rs233.10, RVOL 7.0x | breakout_id=f08aeb3d0c opportunity=56.8 backfilled=heuristic
-[2026-09-04 15:05:18] [INFO] [VALID_BREAKOUT] RELIGARE: Confirmed breakout at Rs257.80, RVOL 1.7x | breakout_id=37f0ef3644 opportunity=49.5 backfilled=heuristic
+[2026-09-04 14:49:55] [INFO] [VALID_BREAKOUT] MANORAMA: Confirmed breakout at Rs2011.00, RVOL 2.03x
+[2026-09-04 15:03:40] [INFO] [VALID_BREAKOUT] MANOMAY: Confirmed breakout at Rs233.10, RVOL 7.0x
+[2026-09-04 15:05:18] [INFO] [VALID_BREAKOUT] RELIGARE: Confirmed breakout at Rs257.80, RVOL 1.7x
 [2026-09-04 15:07:01] [CRITICAL] [STOP_BREACHED] AARTIDRUGS: Stop breached at Rs430.15
 [2026-09-04 15:07:01] [CRITICAL] [STOP_BREACHED] KROSS: Stop breached at Rs211.89
 [2026-09-04 15:12:03] [CRITICAL] [STOP_BREACHED] ETERNAL: Stop breached at Rs320.85
 [2026-09-04 15:16:48] [CRITICAL] [STOP_BREACHED] KPIL: Stop breached at Rs1404.40
 [2026-09-04 15:16:51] [CRITICAL] [STOP_BREACHED] ACE: Stop breached at Rs1123.80
 [2026-09-04 15:20:00] [CRITICAL] [STOP_BREACHED] GUJALKALI: Stop breached at Rs719.40
-[2026-09-04 15:20:03] [INFO] [VALID_BREAKOUT] RADHIKAJWE: Confirmed breakout at Rs82.50, RVOL 1.58x | breakout_id=3d50377df4 opportunity=38.8 backfilled=heuristic
-[2026-09-04 15:20:05] [INFO] [VALID_BREAKOUT] BOSCH-HCIL: Confirmed breakout at Rs1825.00, RVOL 17.05x | breakout_id=6e725b46e5 opportunity=59.6 backfilled=heuristic
+[2026-09-04 15:20:03] [INFO] [VALID_BREAKOUT] RADHIKAJWE: Confirmed breakout at Rs82.50, RVOL 1.58x
+[2026-09-04 15:20:05] [INFO] [VALID_BREAKOUT] BOSCH-HCIL: Confirmed breakout at Rs1825.00, RVOL 17.05x
 [2026-09-04 15:24:52] [CRITICAL] [STOP_BREACHED] GNA: Stop breached at Rs548.90
 [2026-09-04 15:29:49] [CRITICAL] [STOP_BREACHED] VIJAYA: Stop breached at Rs1490.20
 [2026-09-07 11:20:28] [CRITICAL] [STOP_BREACHED] SCHAEFFLER: Stop breached at Rs3938.10
@@ -2704,7 +2704,7 @@
 [2026-09-07 11:20:34] [CRITICAL] [STOP_BREACHED] SIS: Stop breached at Rs432.80
 [2026-09-07 11:20:34] [CRITICAL] [STOP_BREACHED] WEBELSOLAR: Stop breached at Rs74.40
 [2026-09-07 11:20:34] [CRITICAL] [STOP_BREACHED] GODFRYPHLP: Stop breached at Rs2031.20
-[2026-09-07 11:20:34] [CRITICAL] [STOP_BREACHED] KMEW: Stop breached at Rs2917.70 | breakout_id=83429f9839 opportunity=63.8 backfilled=heuristic
+[2026-09-07 11:20:34] [CRITICAL] [STOP_BREACHED] KMEW: Stop breached at Rs2917.70
 [2026-09-07 11:20:34] [CRITICAL] [STOP_BREACHED] HEXT: Stop breached at Rs522.55
 [2026-09-07 11:20:34] [CRITICAL] [STOP_BREACHED] APTUS: Stop breached at Rs255.00
 [2026-09-07 11:20:34] [CRITICAL] [STOP_BREACHED] JSWINFRA: Stop breached at Rs335.80
@@ -2909,7 +2909,7 @@
 [2026-09-07 11:20:40] [CRITICAL] [STOP_BREACHED] AVANTIFEED: Stop breached at Rs798.60
 [2026-09-07 11:20:40] [CRITICAL] [STOP_BREACHED] AJMERA: Stop breached at Rs116.75
 [2026-09-07 11:20:40] [CRITICAL] [STOP_BREACHED] SAPPHIRE: Stop breached at Rs227.43
-[2026-09-07 11:20:40] [CRITICAL] [STOP_BREACHED] JMFINANCIL: Stop breached at Rs129.36 | breakout_id=d7aac57e08 opportunity=43.4 backfilled=heuristic
+[2026-09-07 11:20:40] [CRITICAL] [STOP_BREACHED] JMFINANCIL: Stop breached at Rs129.36
 [2026-09-07 11:20:40] [CRITICAL] [STOP_BREACHED] GRWRHITECH: Stop breached at Rs6799.50
 [2026-09-07 11:20:40] [CRITICAL] [STOP_BREACHED] PREMIERENE: Stop breached at Rs993.50
 [2026-09-07 11:20:40] [CRITICAL] [STOP_BREACHED] DATAMATICS: Stop breached at Rs765.10
@@ -3050,10 +3050,10 @@
 [2026-09-07 11:28:33] [CRITICAL] [STOP_BREACHED] ACI: Stop breached at Rs500.30
 [2026-09-07 11:30:00] [CRITICAL] [STOP_BREACHED] PETRONET: Stop breached at Rs290.45
 [2026-09-07 11:30:03] [CRITICAL] [STOP_BREACHED] PROSTARM: Stop breached at Rs139.86
-[2026-09-07 11:30:04] [INFO] [VALID_BREAKOUT] WOCKPHARMA: Confirmed breakout at Rs2230.00, RVOL 2.1x | breakout_id=ef54871fc1 opportunity=59.6 backfilled=heuristic
-[2026-09-07 11:33:12] [CRITICAL] [STOP_BREACHED] ELECTCAST: Stop breached at Rs82.90 | breakout_id=9cbdeba706 opportunity=44.4 backfilled=heuristic
+[2026-09-07 11:30:04] [INFO] [VALID_BREAKOUT] WOCKPHARMA: Confirmed breakout at Rs2230.00, RVOL 2.1x
+[2026-09-07 11:33:12] [CRITICAL] [STOP_BREACHED] ELECTCAST: Stop breached at Rs82.90
 [2026-09-07 11:35:40] [CRITICAL] [STOP_BREACHED] SUNDRMFAST: Stop breached at Rs1205.00
-[2026-09-07 11:44:12] [INFO] [VALID_BREAKOUT] STAR: Confirmed breakout at Rs1098.80, RVOL 2.07x | breakout_id=4acca3761b opportunity=72.1 backfilled=heuristic
+[2026-09-07 11:44:12] [INFO] [VALID_BREAKOUT] STAR: Confirmed breakout at Rs1098.80, RVOL 2.07x
 [2026-09-07 11:47:11] [CRITICAL] [STOP_BREACHED] AJAXENGG: Stop breached at Rs595.30
 [2026-09-07 11:47:17] [CRITICAL] [STOP_BREACHED] EPIGRAL: Stop breached at Rs1192.00
 [2026-09-07 11:47:18] [CRITICAL] [STOP_BREACHED] SPORTKING: Stop breached at Rs224.93
@@ -3067,33 +3067,33 @@
 [2026-09-07 12:27:10] [CRITICAL] [STOP_BREACHED] SAIL: Stop breached at Rs188.50
 [2026-09-07 12:29:34] [CRITICAL] [STOP_BREACHED] CLEAN: Stop breached at Rs839.20
 [2026-09-07 12:31:21] [CRITICAL] [STOP_BREACHED] AXISBANK: Stop breached at Rs1264.10
-[2026-09-07 12:31:29] [INFO] [VALID_BREAKOUT] CUB: Confirmed breakout at Rs247.72, RVOL 3.28x | breakout_id=1944035aeb opportunity=64.3 backfilled=heuristic
-[2026-09-07 12:33:10] [INFO] [VALID_BREAKOUT] IOLCP: Confirmed breakout at Rs216.53, RVOL 1.5x | breakout_id=e5db6af9bd opportunity=61.0 backfilled=heuristic
-[2026-09-07 12:38:12] [INFO] [VALID_BREAKOUT] CENTUM: Confirmed breakout at Rs4028.00, RVOL 3.56x | breakout_id=0aa97fd8d5 opportunity=54.0 backfilled=heuristic
-[2026-09-07 12:39:56] [INFO] [VALID_BREAKOUT] PAISALO: Confirmed breakout at Rs78.51, RVOL 10.15x | breakout_id=fdf55adbd2 opportunity=66.6 backfilled=heuristic
-[2026-09-07 12:41:40] [INFO] [VALID_BREAKOUT] JKPAPER: Confirmed breakout at Rs425.50, RVOL 2.93x | breakout_id=c34861083c opportunity=57.4 backfilled=heuristic
+[2026-09-07 12:31:29] [INFO] [VALID_BREAKOUT] CUB: Confirmed breakout at Rs247.72, RVOL 3.28x
+[2026-09-07 12:33:10] [INFO] [VALID_BREAKOUT] IOLCP: Confirmed breakout at Rs216.53, RVOL 1.5x
+[2026-09-07 12:38:12] [INFO] [VALID_BREAKOUT] CENTUM: Confirmed breakout at Rs4028.00, RVOL 3.56x
+[2026-09-07 12:39:56] [INFO] [VALID_BREAKOUT] PAISALO: Confirmed breakout at Rs78.51, RVOL 10.15x
+[2026-09-07 12:41:40] [INFO] [VALID_BREAKOUT] JKPAPER: Confirmed breakout at Rs425.50, RVOL 2.93x
 [2026-09-07 12:47:07] [CRITICAL] [STOP_BREACHED] METROPOLIS: Stop breached at Rs577.40
-[2026-09-07 12:47:11] [INFO] [VALID_BREAKOUT] FCL: Confirmed breakout at Rs56.66, RVOL 3.3x | breakout_id=38280474b7 opportunity=63.1 backfilled=heuristic
-[2026-09-07 12:49:02] [INFO] [VALID_BREAKOUT] WSTCSTPAPR: Confirmed breakout at Rs671.50, RVOL 1.58x | breakout_id=15ccedee94 opportunity=67.9 backfilled=heuristic
+[2026-09-07 12:47:11] [INFO] [VALID_BREAKOUT] FCL: Confirmed breakout at Rs56.66, RVOL 3.3x
+[2026-09-07 12:49:02] [INFO] [VALID_BREAKOUT] WSTCSTPAPR: Confirmed breakout at Rs671.50, RVOL 1.58x
 [2026-09-07 12:51:06] [CRITICAL] [STOP_BREACHED] GENUSPOWER: Stop breached at Rs336.00
-[2026-09-07 12:54:28] [INFO] [VALID_BREAKOUT] SAKAR: Confirmed breakout at Rs1093.05, RVOL 1.59x | breakout_id=d5d948cc8a opportunity=69.2 backfilled=heuristic
-[2026-09-07 12:54:33] [INFO] [VALID_BREAKOUT] TNPL: Confirmed breakout at Rs162.77, RVOL 6.36x | breakout_id=feca121cb6 opportunity=45.1 backfilled=heuristic
+[2026-09-07 12:54:28] [INFO] [VALID_BREAKOUT] SAKAR: Confirmed breakout at Rs1093.05, RVOL 1.59x
+[2026-09-07 12:54:33] [INFO] [VALID_BREAKOUT] TNPL: Confirmed breakout at Rs162.77, RVOL 6.36x
 [2026-09-07 12:56:35] [CRITICAL] [STOP_BREACHED] GREAVESCOT: Stop breached at Rs192.70
 [2026-09-07 13:02:05] [CRITICAL] [STOP_BREACHED] WENDT: Stop breached at Rs8276.50
-[2026-09-07 13:03:43] [INFO] [TARGET_1_HIT] STAR: Reached Target 1 (Rs1172.42) at Rs1174.90 | breakout_id=4acca3761b opportunity=72.1 backfilled=heuristic
+[2026-09-07 13:03:43] [INFO] [TARGET_1_HIT] STAR: Reached Target 1 (Rs1172.42) at Rs1174.90
 [2026-09-07 13:09:24] [CRITICAL] [STOP_BREACHED] CONFIPET: Stop breached at Rs82.00
 [2026-09-07 13:11:35] [CRITICAL] [STOP_BREACHED] GRAPHITE: Stop breached at Rs718.95
 [2026-09-07 13:11:36] [CRITICAL] [STOP_BREACHED] VENUSPIPES: Stop breached at Rs1765.90
 [2026-09-07 13:18:24] [CRITICAL] [STOP_BREACHED] FOSECOIND: Stop breached at Rs6121.50
 [2026-09-07 13:21:54] [CRITICAL] [STOP_BREACHED] GOKEX: Stop breached at Rs775.80
-[2026-09-07 13:23:42] [INFO] [VALID_BREAKOUT] VISHNU: Confirmed breakout at Rs730.50, RVOL 2.93x | breakout_id=031a73d2a1 opportunity=57.4 backfilled=heuristic
+[2026-09-07 13:23:42] [INFO] [VALID_BREAKOUT] VISHNU: Confirmed breakout at Rs730.50, RVOL 2.93x
 [2026-09-07 13:32:14] [CRITICAL] [STOP_BREACHED] JSL: Stop breached at Rs728.35
 [2026-09-07 13:37:27] [CRITICAL] [STOP_BREACHED] PAYTM: Stop breached at Rs1646.80
 [2026-09-07 13:40:50] [CRITICAL] [STOP_BREACHED] IIFL: Stop breached at Rs647.15
-[2026-09-07 13:44:04] [INFO] [VALID_BREAKOUT] RISHABH: Confirmed breakout at Rs805.45, RVOL 1.95x | breakout_id=ad9ffd57fb opportunity=62.0 backfilled=heuristic
-[2026-09-07 14:04:46] [INFO] [VALID_BREAKOUT] GPTHEALTH: Confirmed breakout at Rs160.00, RVOL 1.91x | breakout_id=7406ae5f56 opportunity=55.1 backfilled=heuristic
-[2026-09-07 14:04:58] [INFO] [VALID_BREAKOUT] SMLMAH: Confirmed breakout at Rs6352.00, RVOL 1.5x | breakout_id=7ba91cb587 opportunity=54.5 backfilled=heuristic
-[2026-09-07 14:08:33] [INFO] [VALID_BREAKOUT] ARFIN: Confirmed breakout at Rs98.36, RVOL 1.66x | breakout_id=4dc4e2fdfc opportunity=66.7 backfilled=heuristic
+[2026-09-07 13:44:04] [INFO] [VALID_BREAKOUT] RISHABH: Confirmed breakout at Rs805.45, RVOL 1.95x
+[2026-09-07 14:04:46] [INFO] [VALID_BREAKOUT] GPTHEALTH: Confirmed breakout at Rs160.00, RVOL 1.91x
+[2026-09-07 14:04:58] [INFO] [VALID_BREAKOUT] SMLMAH: Confirmed breakout at Rs6352.00, RVOL 1.5x
+[2026-09-07 14:08:33] [INFO] [VALID_BREAKOUT] ARFIN: Confirmed breakout at Rs98.36, RVOL 1.66x
 [2026-09-07 14:15:46] [CRITICAL] [STOP_BREACHED] ALKYLAMINE: Stop breached at Rs2004.00
 [2026-09-08 12:39:36] [CRITICAL] [STOP_BREACHED] SCHAEFFLER: Stop breached at Rs3955.00
 [2026-09-08 12:39:36] [CRITICAL] [STOP_BREACHED] DELHIVERY: Stop breached at Rs456.45
@@ -3204,7 +3204,7 @@
 [2026-09-08 12:39:40] [CRITICAL] [STOP_BREACHED] SPARC: Stop breached at Rs203.78
 [2026-09-08 12:39:40] [CRITICAL] [STOP_BREACHED] GRWRHITECH: Stop breached at Rs6957.50
 [2026-09-08 12:39:40] [CRITICAL] [STOP_BREACHED] RAILTEL: Stop breached at Rs265.90
-[2026-09-08 12:39:40] [INFO] [VALID_BREAKOUT] SUNDRMFAST: Confirmed breakout at Rs1268.00, RVOL 1.97x | breakout_id=0b4a6660e5 opportunity=75.5 backfilled=heuristic
+[2026-09-08 12:39:40] [INFO] [VALID_BREAKOUT] SUNDRMFAST: Confirmed breakout at Rs1268.00, RVOL 1.97x
 [2026-09-08 12:39:40] [CRITICAL] [STOP_BREACHED] LT: Stop breached at Rs3970.20
 [2026-09-08 12:39:40] [CRITICAL] [STOP_BREACHED] BATAINDIA: Stop breached at Rs662.40
 [2026-09-08 12:39:40] [CRITICAL] [STOP_BREACHED] JUBLFOOD: Stop breached at Rs480.60
@@ -3290,7 +3290,7 @@
 [2026-09-08 12:39:42] [CRITICAL] [STOP_BREACHED] NOCIL: Stop breached at Rs173.42
 [2026-09-08 12:39:42] [CRITICAL] [STOP_BREACHED] EICHERMOT: Stop breached at Rs7702.00
 [2026-09-08 12:39:42] [CRITICAL] [STOP_BREACHED] ANGELONE: Stop breached at Rs298.80
-[2026-09-08 12:39:42] [INFO] [VALID_BREAKOUT] WHEELS: Confirmed breakout at Rs1975.40, RVOL 1.59x | breakout_id=0e28afdc3f opportunity=69.8 backfilled=heuristic
+[2026-09-08 12:39:42] [INFO] [VALID_BREAKOUT] WHEELS: Confirmed breakout at Rs1975.40, RVOL 1.59x
 [2026-09-08 12:39:42] [CRITICAL] [STOP_BREACHED] SDBL: Stop breached at Rs73.46
 [2026-09-08 12:39:42] [CRITICAL] [STOP_BREACHED] ABDL: Stop breached at Rs595.00
 [2026-09-08 12:39:42] [CRITICAL] [STOP_BREACHED] 360ONE: Stop breached at Rs1110.40
@@ -3305,7 +3305,7 @@
 [2026-09-08 12:39:42] [CRITICAL] [STOP_BREACHED] ZENSARTECH: Stop breached at Rs451.40
 [2026-09-08 12:39:42] [CRITICAL] [STOP_BREACHED] MAZDOCK: Stop breached at Rs2468.50
 [2026-09-08 12:39:42] [CRITICAL] [STOP_BREACHED] KIMS: Stop breached at Rs769.00
-[2026-09-08 12:39:42] [CRITICAL] [STOP_BREACHED] AFCONS: Stop breached at Rs284.60 | breakout_id=c54f6277d3 opportunity=47.9 backfilled=heuristic
+[2026-09-08 12:39:42] [CRITICAL] [STOP_BREACHED] AFCONS: Stop breached at Rs284.60
 [2026-09-08 12:39:42] [CRITICAL] [STOP_BREACHED] KPITTECH: Stop breached at Rs560.35
 [2026-09-08 12:39:42] [CRITICAL] [STOP_BREACHED] DBL: Stop breached at Rs391.80
 [2026-09-08 12:39:42] [CRITICAL] [STOP_BREACHED] ASIANPAINT: Stop breached at Rs2493.20
@@ -3513,7 +3513,7 @@
 [2026-09-08 12:39:48] [CRITICAL] [STOP_BREACHED] PICCADIL: Stop breached at Rs619.25
 [2026-09-08 12:39:48] [CRITICAL] [STOP_BREACHED] HINDZINC: Stop breached at Rs595.50
 [2026-09-08 12:39:48] [CRITICAL] [STOP_BREACHED] EIEL: Stop breached at Rs199.25
-[2026-09-08 12:39:48] [INFO] [VALID_BREAKOUT] UNIMECH: Confirmed breakout at Rs1589.50, RVOL 2.62x | breakout_id=6fd77f3027 opportunity=59.7 backfilled=heuristic
+[2026-09-08 12:39:48] [INFO] [VALID_BREAKOUT] UNIMECH: Confirmed breakout at Rs1589.50, RVOL 2.62x
 [2026-09-08 12:39:48] [CRITICAL] [STOP_BREACHED] NATIONALUM: Stop breached at Rs371.70
 [2026-09-08 12:39:48] [CRITICAL] [STOP_BREACHED] NATCOPHARM: Stop breached at Rs830.45
 [2026-09-08 12:39:48] [CRITICAL] [STOP_BREACHED] SUZLON: Stop breached at Rs45.45
@@ -3618,7 +3618,7 @@
 [2026-09-08 12:39:52] [CRITICAL] [STOP_BREACHED] SWSOLAR: Stop breached at Rs185.17
 [2026-09-08 12:39:52] [CRITICAL] [STOP_BREACHED] IRCON: Stop breached at Rs117.10
 [2026-09-08 12:39:52] [CRITICAL] [STOP_BREACHED] LUMAXTECH: Stop breached at Rs1952.30
-[2026-09-08 12:39:52] [CRITICAL] [STOP_BREACHED] ARFIN: Stop breached at Rs92.44 | breakout_id=4dc4e2fdfc opportunity=66.7 backfilled=heuristic
+[2026-09-08 12:39:52] [CRITICAL] [STOP_BREACHED] ARFIN: Stop breached at Rs92.44
 [2026-09-08 12:39:52] [CRITICAL] [STOP_BREACHED] MEDIASSIST: Stop breached at Rs332.95
 [2026-09-08 12:39:52] [CRITICAL] [STOP_BREACHED] TATACHEM: Stop breached at Rs608.00
 [2026-09-08 12:39:52] [CRITICAL] [STOP_BREACHED] SHAILY: Stop breached at Rs3376.00
@@ -3679,14 +3679,14 @@
 [2026-09-08 12:44:49] [CRITICAL] [STOP_BREACHED] ZYDUSLIFE: Stop breached at Rs1153.30
 [2026-09-08 12:50:34] [CRITICAL] [STOP_BREACHED] GRASIM: Stop breached at Rs3289.50
 [2026-09-08 12:56:08] [CRITICAL] [STOP_BREACHED] COCHINSHIP: Stop breached at Rs1525.10
-[2026-09-08 12:59:18] [INFO] [VALID_BREAKOUT] HARSHA: Confirmed breakout at Rs466.75, RVOL 6.08x | breakout_id=164272cf3d opportunity=64.1 backfilled=heuristic
-[2026-09-08 13:05:11] [INFO] [VALID_BREAKOUT] ARVIND: Confirmed breakout at Rs581.65, RVOL 10.69x | breakout_id=2640ef4253 opportunity=72.2 backfilled=heuristic
+[2026-09-08 12:59:18] [INFO] [VALID_BREAKOUT] HARSHA: Confirmed breakout at Rs466.75, RVOL 6.08x
+[2026-09-08 13:05:11] [INFO] [VALID_BREAKOUT] ARVIND: Confirmed breakout at Rs581.65, RVOL 10.69x
 [2026-09-08 13:08:25] [CRITICAL] [STOP_BREACHED] IIFL: Stop breached at Rs645.75
 [2026-09-08 13:11:18] [CRITICAL] [STOP_BREACHED] FINCABLES: Stop breached at Rs1292.20
 [2026-09-08 13:11:26] [CRITICAL] [STOP_BREACHED] SFL: Stop breached at Rs686.45
 [2026-09-08 13:14:14] [CRITICAL] [STOP_BREACHED] ANDHRSUGAR: Stop breached at Rs98.35
 [2026-09-08 13:16:51] [CRITICAL] [STOP_BREACHED] SARDAEN: Stop breached at Rs518.30
-[2026-09-08 13:22:26] [INFO] [VALID_BREAKOUT] VENUSPIPES: Confirmed breakout at Rs1966.90, RVOL 3.52x | breakout_id=13d1c29c9a opportunity=57.6 backfilled=heuristic
+[2026-09-08 13:22:26] [INFO] [VALID_BREAKOUT] VENUSPIPES: Confirmed breakout at Rs1966.90, RVOL 3.52x
 [2026-09-08 13:24:15] [CRITICAL] [STOP_BREACHED] BLUESTARCO: Stop breached at Rs1475.50
 [2026-09-08 13:25:54] [CRITICAL] [STOP_BREACHED] VIJAYA: Stop breached at Rs1502.10
 [2026-09-08 13:32:13] [CRITICAL] [STOP_BREACHED] MUFIN: Stop breached at Rs136.25
@@ -3695,17 +3695,17 @@
 [2026-09-08 13:41:43] [CRITICAL] [STOP_BREACHED] VMART: Stop breached at Rs825.00
 [2026-09-08 13:43:14] [CRITICAL] [STOP_BREACHED] HEIDELBERG: Stop breached at Rs159.44
 [2026-09-08 13:45:25] [CRITICAL] [STOP_BREACHED] GREAVESCOT: Stop breached at Rs193.28
-[2026-09-08 13:45:33] [INFO] [VALID_BREAKOUT] JAMNAAUTO: Confirmed breakout at Rs129.29, RVOL 2.07x | breakout_id=c6596fc005 opportunity=54.4 backfilled=heuristic
+[2026-09-08 13:45:33] [INFO] [VALID_BREAKOUT] JAMNAAUTO: Confirmed breakout at Rs129.29, RVOL 2.07x
 [2026-09-08 13:48:15] [CRITICAL] [STOP_BREACHED] PCBL: Stop breached at Rs323.65
 [2026-09-08 13:48:23] [CRITICAL] [STOP_BREACHED] PARADEEP: Stop breached at Rs160.20
-[2026-09-08 13:51:04] [INFO] [TARGET_1_HIT] WHEELS: Reached Target 1 (Rs2034.39) at Rs2037.80 | breakout_id=0e28afdc3f opportunity=69.8 backfilled=heuristic
+[2026-09-08 13:51:04] [INFO] [TARGET_1_HIT] WHEELS: Reached Target 1 (Rs2034.39) at Rs2037.80
 [2026-09-08 13:56:56] [CRITICAL] [STOP_BREACHED] TEXRAIL: Stop breached at Rs117.97
 [2026-09-08 13:56:57] [CRITICAL] [STOP_BREACHED] EIHOTEL: Stop breached at Rs294.05
-[2026-09-08 13:59:31] [INFO] [VALID_BREAKOUT] AEROFLEX: Confirmed breakout at Rs573.50, RVOL 2.04x | breakout_id=144d4189d0 opportunity=61.3 backfilled=heuristic
+[2026-09-08 13:59:31] [INFO] [VALID_BREAKOUT] AEROFLEX: Confirmed breakout at Rs573.50, RVOL 2.04x
 [2026-09-08 13:59:44] [CRITICAL] [STOP_BREACHED] SUPREMEIND: Stop breached at Rs3554.10
 [2026-09-08 14:07:56] [CRITICAL] [STOP_BREACHED] BLUESTONE: Stop breached at Rs867.10
 [2026-09-08 14:11:20] [CRITICAL] [STOP_BREACHED] SIS: Stop breached at Rs428.00
-[2026-09-08 14:12:58] [INFO] [VALID_BREAKOUT] BANDHANBNK: Confirmed breakout at Rs170.26, RVOL 1.6x | breakout_id=a323c7fffb opportunity=50.4 backfilled=heuristic
+[2026-09-08 14:12:58] [INFO] [VALID_BREAKOUT] BANDHANBNK: Confirmed breakout at Rs170.26, RVOL 1.6x
 [2026-09-08 14:16:33] [CRITICAL] [STOP_BREACHED] KMEW: Stop breached at Rs2963.70
 [2026-09-09 09:19:24] [CRITICAL] [STOP_BREACHED] SCHAEFFLER: Stop breached at Rs3920.00
 [2026-09-09 09:19:24] [CRITICAL] [STOP_BREACHED] DELHIVERY: Stop breached at Rs450.65
@@ -3713,7 +3713,7 @@
 [2026-09-09 09:19:24] [CRITICAL] [STOP_BREACHED] POLICYBZR: Stop breached at Rs1793.30
 [2026-09-09 09:19:24] [CRITICAL] [STOP_BREACHED] AMBER: Stop breached at Rs7319.50
 [2026-09-09 09:19:24] [CRITICAL] [STOP_BREACHED] CDSL: Stop breached at Rs1377.20
-[2026-09-09 09:19:24] [CRITICAL] [STOP_BREACHED] BANDHANBNK: Stop breached at Rs169.30 | breakout_id=a323c7fffb opportunity=50.4 backfilled=heuristic
+[2026-09-09 09:19:24] [CRITICAL] [STOP_BREACHED] BANDHANBNK: Stop breached at Rs169.30
 [2026-09-09 09:19:24] [CRITICAL] [STOP_BREACHED] MMTC: Stop breached at Rs63.07
 [2026-09-09 09:19:24] [CRITICAL] [STOP_BREACHED] NAUKRI: Stop breached at Rs1265.90
 [2026-09-09 09:19:24] [CRITICAL] [STOP_BREACHED] PRESTIGE: Stop breached at Rs1548.80
@@ -3801,7 +3801,7 @@
 [2026-09-09 09:19:26] [CRITICAL] [STOP_BREACHED] AXISBANK: Stop breached at Rs1236.80
 [2026-09-09 09:19:26] [CRITICAL] [STOP_BREACHED] APOLLOTYRE: Stop breached at Rs414.50
 [2026-09-09 09:19:26] [CRITICAL] [STOP_BREACHED] SPARC: Stop breached at Rs202.54
-[2026-09-09 09:19:26] [CRITICAL] [STOP_BREACHED] CASTROLIND: Stop breached at Rs188.76 | breakout_id=2c19256710 opportunity=67.6 backfilled=heuristic
+[2026-09-09 09:19:26] [CRITICAL] [STOP_BREACHED] CASTROLIND: Stop breached at Rs188.76
 [2026-09-09 09:19:26] [CRITICAL] [STOP_BREACHED] ICICIBANK: Stop breached at Rs1388.70
 [2026-09-09 09:19:26] [CRITICAL] [STOP_BREACHED] LTF: Stop breached at Rs308.75
 [2026-09-09 09:19:26] [CRITICAL] [STOP_BREACHED] RELIANCE: Stop breached at Rs1281.00
@@ -4271,7 +4271,7 @@
 [2026-09-09 09:19:40] [CRITICAL] [STOP_BREACHED] AVANTIFEED: Stop breached at Rs824.75
 [2026-09-09 09:19:40] [CRITICAL] [STOP_BREACHED] TIIL: Stop breached at Rs3166.50
 [2026-09-09 09:19:40] [CRITICAL] [STOP_BREACHED] BHARATFORG: Stop breached at Rs1991.00
-[2026-09-09 09:19:40] [CRITICAL] [STOP_BREACHED] CUB: Stop breached at Rs233.16 | breakout_id=ca65a5da9f opportunity=63.9 backfilled=heuristic
+[2026-09-09 09:19:40] [CRITICAL] [STOP_BREACHED] CUB: Stop breached at Rs233.16
 [2026-09-09 09:19:40] [CRITICAL] [STOP_BREACHED] TARIL: Stop breached at Rs296.70
 [2026-09-09 09:19:40] [CRITICAL] [STOP_BREACHED] HCG: Stop breached at Rs693.80
 [2026-09-09 09:19:40] [CRITICAL] [STOP_BREACHED] J&KBANK: Stop breached at Rs146.42
@@ -4294,62 +4294,62 @@
 [2026-09-09 09:21:09] [CRITICAL] [STOP_BREACHED] HEIDELBERG: Stop breached at Rs159.80
 [2026-09-09 09:21:09] [CRITICAL] [STOP_BREACHED] THOMASCOOK: Stop breached at Rs108.60
 [2026-09-09 09:21:11] [CRITICAL] [STOP_BREACHED] RICOAUTO: Stop breached at Rs130.85
-[2026-09-09 09:21:11] [CRITICAL] [STOP_BREACHED] BALAMINES: Stop breached at Rs2440.40 | breakout_id=b58798008f opportunity=58.8 backfilled=heuristic
+[2026-09-09 09:21:11] [CRITICAL] [STOP_BREACHED] BALAMINES: Stop breached at Rs2440.40
 [2026-09-09 09:21:12] [CRITICAL] [STOP_BREACHED] PARADEEP: Stop breached at Rs159.31
-[2026-09-09 09:21:12] [CRITICAL] [STOP_BREACHED] SAKAR: Stop breached at Rs1120.00 | breakout_id=5aa9284df8 opportunity=70.9 backfilled=heuristic
+[2026-09-09 09:21:12] [CRITICAL] [STOP_BREACHED] SAKAR: Stop breached at Rs1120.00
 [2026-09-09 09:21:14] [CRITICAL] [STOP_BREACHED] TEXRAIL: Stop breached at Rs117.45
 [2026-09-09 09:22:48] [CRITICAL] [STOP_BREACHED] ANANTRAJ: Stop breached at Rs616.40
 [2026-09-09 09:24:20] [CRITICAL] [STOP_BREACHED] SENORES: Stop breached at Rs1489.00
 [2026-09-09 09:25:45] [CRITICAL] [STOP_BREACHED] UNOMINDA: Stop breached at Rs1227.60
 [2026-09-09 09:27:20] [CRITICAL] [STOP_BREACHED] NAZARA: Stop breached at Rs363.15
-[2026-09-09 09:28:55] [INFO] [VALID_BREAKOUT] ARVIND: Confirmed breakout at Rs589.00, RVOL 1.51x | breakout_id=fb8c5778a5 opportunity=70.4 backfilled=heuristic
+[2026-09-09 09:28:55] [INFO] [VALID_BREAKOUT] ARVIND: Confirmed breakout at Rs589.00, RVOL 1.51x
 [2026-09-09 09:33:36] [INFO] [TARGET_1_HIT] GRAPHITE: Reached Target 1 (Rs834.03) at Rs836.00
-[2026-09-09 09:35:02] [CRITICAL] [STOP_BREACHED] SIRCA: Stop breached at Rs432.40 | breakout_id=f95179094c opportunity=50.5 backfilled=heuristic
+[2026-09-09 09:35:02] [CRITICAL] [STOP_BREACHED] SIRCA: Stop breached at Rs432.40
 [2026-09-09 09:36:37] [CRITICAL] [STOP_BREACHED] GNA: Stop breached at Rs548.30
 [2026-09-09 09:38:58] [CRITICAL] [STOP_BREACHED] HYUNDAI: Stop breached at Rs2200.00
 [2026-09-09 09:41:22] [CRITICAL] [STOP_BREACHED] LINCOLN: Stop breached at Rs634.00
 [2026-09-09 09:44:24] [CRITICAL] [STOP_BREACHED] KOTAKBANK: Stop breached at Rs417.70
 [2026-09-09 09:46:58] [CRITICAL] [STOP_BREACHED] NH: Stop breached at Rs1882.10
 [2026-09-09 09:50:14] [CRITICAL] [STOP_BREACHED] MONTECARLO: Stop breached at Rs556.05
-[2026-09-09 09:54:18] [INFO] [VALID_BREAKOUT] GPIL: Confirmed breakout at Rs249.63, RVOL 4.42x | breakout_id=92a0c2f470 opportunity=56.8 backfilled=heuristic
-[2026-09-09 10:00:14] [INFO] [VALID_BREAKOUT] FCL: Confirmed breakout at Rs60.34, RVOL 1.8x | breakout_id=00e7b27083 opportunity=62.1 backfilled=heuristic
+[2026-09-09 09:54:18] [INFO] [VALID_BREAKOUT] GPIL: Confirmed breakout at Rs249.63, RVOL 4.42x
+[2026-09-09 10:00:14] [INFO] [VALID_BREAKOUT] FCL: Confirmed breakout at Rs60.34, RVOL 1.8x
 [2026-09-09 10:03:10] [CRITICAL] [STOP_BREACHED] GLENMARK: Stop breached at Rs2441.10
 [2026-09-09 10:05:50] [CRITICAL] [STOP_BREACHED] JNKINDIA: Stop breached at Rs435.05
 [2026-09-09 10:05:58] [CRITICAL] [STOP_BREACHED] NPST: Stop breached at Rs1656.80
 [2026-09-09 10:08:21] [CRITICAL] [STOP_BREACHED] CARERATING: Stop breached at Rs1714.20
-[2026-09-09 10:10:22] [CRITICAL] [STOP_BREACHED] SUNDRMFAST: Stop breached at Rs1228.50 | breakout_id=0b4a6660e5 opportunity=75.5 backfilled=heuristic
+[2026-09-09 10:10:22] [CRITICAL] [STOP_BREACHED] SUNDRMFAST: Stop breached at Rs1228.50
 [2026-09-09 10:11:54] [CRITICAL] [STOP_BREACHED] SPIC: Stop breached at Rs70.40
 [2026-09-09 10:13:23] [CRITICAL] [STOP_BREACHED] ABSLAMC: Stop breached at Rs1016.10
-[2026-09-09 10:14:57] [INFO] [VALID_BREAKOUT] RISHABH: Confirmed breakout at Rs846.60, RVOL 1.53x | breakout_id=488bfb6dff opportunity=63.1 backfilled=heuristic
-[2026-09-09 10:14:57] [INFO] [VALID_BREAKOUT] ELLEN: Confirmed breakout at Rs348.35, RVOL 1.68x | breakout_id=8bd86e531d opportunity=41.3 backfilled=heuristic
-[2026-09-09 10:24:55] [INFO] [VALID_BREAKOUT] ADANIPORTS: Confirmed breakout at Rs1761.00, RVOL 1.75x | breakout_id=a7777c26dd opportunity=64.3 backfilled=heuristic
+[2026-09-09 10:14:57] [INFO] [VALID_BREAKOUT] RISHABH: Confirmed breakout at Rs846.60, RVOL 1.53x
+[2026-09-09 10:14:57] [INFO] [VALID_BREAKOUT] ELLEN: Confirmed breakout at Rs348.35, RVOL 1.68x
+[2026-09-09 10:24:55] [INFO] [VALID_BREAKOUT] ADANIPORTS: Confirmed breakout at Rs1761.00, RVOL 1.75x
 [2026-09-09 10:26:36] [CRITICAL] [STOP_BREACHED] NEOGEN: Stop breached at Rs2232.00
 [2026-09-09 10:29:40] [CRITICAL] [STOP_BREACHED] AETHER: Stop breached at Rs1636.80
 [2026-09-09 10:32:40] [CRITICAL] [STOP_BREACHED] NLCINDIA: Stop breached at Rs271.80
 [2026-09-09 10:34:19] [CRITICAL] [STOP_BREACHED] INGERRAND: Stop breached at Rs4750.10
-[2026-09-09 10:37:25] [INFO] [VALID_BREAKOUT] NOCIL: Confirmed breakout at Rs187.81, RVOL 2.25x | breakout_id=49c1816c75 opportunity=49.4 backfilled=heuristic
+[2026-09-09 10:37:25] [INFO] [VALID_BREAKOUT] NOCIL: Confirmed breakout at Rs187.81, RVOL 2.25x
 [2026-09-09 10:40:31] [CRITICAL] [STOP_BREACHED] KSB: Stop breached at Rs808.10
-[2026-09-09 10:45:21] [CRITICAL] [STOP_BREACHED] RELIGARE: Stop breached at Rs249.49 | breakout_id=37f0ef3644 opportunity=49.5 backfilled=heuristic
+[2026-09-09 10:45:21] [CRITICAL] [STOP_BREACHED] RELIGARE: Stop breached at Rs249.49
 [2026-09-09 10:50:09] [CRITICAL] [STOP_BREACHED] VIJAYA: Stop breached at Rs1511.20
-[2026-09-09 10:56:30] [INFO] [VALID_BREAKOUT] WOCKPHARMA: Confirmed breakout at Rs2254.80, RVOL 1.69x | breakout_id=718e589b7c opportunity=65.5 backfilled=heuristic
-[2026-09-09 10:58:00] [INFO] [VALID_BREAKOUT] BANCOINDIA: Confirmed breakout at Rs642.15, RVOL 4.3x | breakout_id=2bf95845e8 opportunity=60.8 backfilled=heuristic
+[2026-09-09 10:56:30] [INFO] [VALID_BREAKOUT] WOCKPHARMA: Confirmed breakout at Rs2254.80, RVOL 1.69x
+[2026-09-09 10:58:00] [INFO] [VALID_BREAKOUT] BANCOINDIA: Confirmed breakout at Rs642.15, RVOL 4.3x
 [2026-09-09 11:03:00] [CRITICAL] [STOP_BREACHED] ANANDRATHI: Stop breached at Rs2195.70
-[2026-09-09 11:04:39] [INFO] [VALID_BREAKOUT] ASAHIINDIA: Confirmed breakout at Rs975.95, RVOL 11.7x | breakout_id=1ba57e97ec opportunity=69.2 backfilled=heuristic
+[2026-09-09 11:04:39] [INFO] [VALID_BREAKOUT] ASAHIINDIA: Confirmed breakout at Rs975.95, RVOL 11.7x
 [2026-09-09 11:09:35] [CRITICAL] [STOP_BREACHED] PPLPHARMA: Stop breached at Rs220.05
-[2026-09-09 11:13:34] [INFO] [VALID_BREAKOUT] SANATHAN: Confirmed breakout at Rs483.20, RVOL 1.89x | breakout_id=55a4df4e37 opportunity=44.1 backfilled=heuristic
+[2026-09-09 11:13:34] [INFO] [VALID_BREAKOUT] SANATHAN: Confirmed breakout at Rs483.20, RVOL 1.89x
 [2026-09-09 11:18:51] [CRITICAL] [STOP_BREACHED] CRISIL: Stop breached at Rs4678.20
-[2026-09-09 11:19:02] [INFO] [VALID_BREAKOUT] APOLLO: Confirmed breakout at Rs427.70, RVOL 1.62x | breakout_id=669e820a0d opportunity=69.4 backfilled=heuristic
+[2026-09-09 11:19:02] [INFO] [VALID_BREAKOUT] APOLLO: Confirmed breakout at Rs427.70, RVOL 1.62x
 [2026-09-09 11:20:59] [CRITICAL] [STOP_BREACHED] HOMEFIRST: Stop breached at Rs1200.80
-[2026-09-09 11:29:17] [INFO] [VALID_BREAKOUT] CONFIPET: Confirmed breakout at Rs89.34, RVOL 3.45x | breakout_id=67ff4a5827 opportunity=68.2 backfilled=heuristic
-[2026-09-09 11:29:18] [INFO] [VALID_BREAKOUT] CHENNPETRO: Confirmed breakout at Rs1564.00, RVOL 2.24x | breakout_id=e821273842 opportunity=65.2 backfilled=heuristic
+[2026-09-09 11:29:17] [INFO] [VALID_BREAKOUT] CONFIPET: Confirmed breakout at Rs89.34, RVOL 3.45x
+[2026-09-09 11:29:18] [INFO] [VALID_BREAKOUT] CHENNPETRO: Confirmed breakout at Rs1564.00, RVOL 2.24x
 [2026-09-09 11:52:15] [CRITICAL] [STOP_BREACHED] TEXINFRA: Stop breached at Rs116.63
 [2026-09-09 12:04:58] [CRITICAL] [STOP_BREACHED] GUJTHEM: Stop breached at Rs435.65
-[2026-09-09 14:52:21] [INFO] [VALID_BREAKOUT] MRPL: Confirmed breakout at Rs186.30, RVOL 1.98x | breakout_id=cc0723912d opportunity=65.8 backfilled=heuristic
-[2026-09-09 14:52:24] [CRITICAL] [STOP_BREACHED] ACMESOLAR: Stop breached at Rs403.50 | breakout_id=74ed3a89a3 opportunity=64.3 backfilled=heuristic
+[2026-09-09 14:52:21] [INFO] [VALID_BREAKOUT] MRPL: Confirmed breakout at Rs186.30, RVOL 1.98x
+[2026-09-09 14:52:24] [CRITICAL] [STOP_BREACHED] ACMESOLAR: Stop breached at Rs403.50
 [2026-09-09 14:52:25] [CRITICAL] [STOP_BREACHED] ACE: Stop breached at Rs1123.70
 [2026-09-09 14:52:26] [CRITICAL] [STOP_BREACHED] ELGIEQUIP: Stop breached at Rs619.60
 [2026-09-09 14:52:27] [CRITICAL] [STOP_BREACHED] CARTRADE: Stop breached at Rs3038.50
-[2026-09-09 14:52:28] [INFO] [VALID_BREAKOUT] INDNIPPON: Confirmed breakout at Rs1291.00, RVOL 3.39x | breakout_id=2d66c1ca45 opportunity=61.1 backfilled=heuristic
+[2026-09-09 14:52:28] [INFO] [VALID_BREAKOUT] INDNIPPON: Confirmed breakout at Rs1291.00, RVOL 3.39x
 [2026-09-10 09:56:58] [CRITICAL] [STOP_BREACHED] DELHIVERY: Stop breached at Rs446.85
 [2026-09-10 09:56:58] [CRITICAL] [STOP_BREACHED] FORTIS: Stop breached at Rs912.75
 [2026-09-10 09:56:58] [CRITICAL] [STOP_BREACHED] POLICYBZR: Stop breached at Rs1792.30
@@ -4931,7 +4931,7 @@
 [2026-09-10 09:58:05] [CRITICAL] [STOP_BREACHED] GRMOVER: Stop breached at Rs87.92
 [2026-09-10 09:58:05] [CRITICAL] [STOP_BREACHED] CUB: Stop breached at Rs231.21
 [2026-09-10 09:58:05] [CRITICAL] [STOP_BREACHED] NELCO: Stop breached at Rs961.00
-[2026-09-10 09:58:06] [CRITICAL] [STOP_BREACHED] ADANIPORTS: Stop breached at Rs1767.40 | breakout_id=a7777c26dd opportunity=64.3 backfilled=heuristic
+[2026-09-10 09:58:06] [CRITICAL] [STOP_BREACHED] ADANIPORTS: Stop breached at Rs1767.40
 [2026-09-10 09:58:06] [CRITICAL] [STOP_BREACHED] AFFLE: Stop breached at Rs1591.70
 [2026-09-10 09:58:06] [CRITICAL] [STOP_BREACHED] GLAXO: Stop breached at Rs2914.50
 [2026-09-10 09:58:06] [CRITICAL] [STOP_BREACHED] ANANTRAJ: Stop breached at Rs609.35
@@ -4964,45 +4964,45 @@
 [2026-09-10 10:03:49] [CRITICAL] [STOP_BREACHED] KRBL: Stop breached at Rs427.65
 [2026-09-10 10:06:18] [CRITICAL] [STOP_BREACHED] LALPATHLAB: Stop breached at Rs1912.00
 [2026-09-10 10:09:04] [CRITICAL] [STOP_BREACHED] ATGL: Stop breached at Rs608.05
-[2026-09-10 10:12:16] [CRITICAL] [STOP_BREACHED] JKPAPER: Stop breached at Rs408.25 | breakout_id=04755e6428 opportunity=59.3 backfilled=heuristic
+[2026-09-10 10:12:16] [CRITICAL] [STOP_BREACHED] JKPAPER: Stop breached at Rs408.25
 [2026-09-10 10:14:55] [CRITICAL] [STOP_BREACHED] HOMEFIRST: Stop breached at Rs1200.00
 [2026-09-10 10:15:16] [CRITICAL] [STOP_BREACHED] CLEAN: Stop breached at Rs838.50
 [2026-09-10 10:15:21] [CRITICAL] [STOP_BREACHED] MSTCLTD: Stop breached at Rs747.00
 [2026-09-10 10:23:38] [CRITICAL] [STOP_BREACHED] JUBLINGREA: Stop breached at Rs672.00
 [2026-09-10 10:23:39] [CRITICAL] [STOP_BREACHED] TEXRAIL: Stop breached at Rs117.62
 [2026-09-10 10:24:00] [CRITICAL] [STOP_BREACHED] YATRA: Stop breached at Rs114.66
-[2026-09-10 10:26:00] [CRITICAL] [STOP_BREACHED] BANCOINDIA: Stop breached at Rs629.50 | breakout_id=2bf95845e8 opportunity=60.8 backfilled=heuristic
+[2026-09-10 10:26:00] [CRITICAL] [STOP_BREACHED] BANCOINDIA: Stop breached at Rs629.50
 [2026-09-10 10:26:05] [CRITICAL] [STOP_BREACHED] RKFORGE: Stop breached at Rs728.20
 [2026-09-10 10:29:18] [CRITICAL] [STOP_BREACHED] ACE: Stop breached at Rs1116.80
-[2026-09-10 10:29:22] [INFO] [VALID_BREAKOUT] RPPINFRA: Confirmed breakout at Rs64.15, RVOL 1.54x | breakout_id=4bead61d35 opportunity=23.0 backfilled=heuristic
+[2026-09-10 10:29:22] [INFO] [VALID_BREAKOUT] RPPINFRA: Confirmed breakout at Rs64.15, RVOL 1.54x
 [2026-09-10 10:33:01] [CRITICAL] [STOP_BREACHED] ASIANPAINT: Stop breached at Rs2476.20
-[2026-09-10 10:33:08] [INFO] [VALID_BREAKOUT] SUNDRMFAST: Confirmed breakout at Rs1313.00, RVOL 1.82x | breakout_id=8e663096b7 opportunity=62.5 backfilled=heuristic
+[2026-09-10 10:33:08] [INFO] [VALID_BREAKOUT] SUNDRMFAST: Confirmed breakout at Rs1313.00, RVOL 1.82x
 [2026-09-10 10:39:32] [CRITICAL] [STOP_BREACHED] CARERATING: Stop breached at Rs1719.20
-[2026-09-10 10:39:36] [INFO] [VALID_BREAKOUT] WENDT: Confirmed breakout at Rs8656.00, RVOL 15.45x | breakout_id=13fab86b2e opportunity=55.0 backfilled=heuristic
-[2026-09-10 10:49:24] [INFO] [VALID_BREAKOUT] KROSS: Confirmed breakout at Rs232.74, RVOL 1.86x | breakout_id=3aaa6ccc73 opportunity=67.7 backfilled=heuristic
-[2026-09-10 10:51:17] [CRITICAL] [STOP_BREACHED] APOLLO: Stop breached at Rs410.50 | breakout_id=669e820a0d opportunity=69.4 backfilled=heuristic
-[2026-09-10 10:59:33] [CRITICAL] [STOP_BREACHED] ARVIND: Stop breached at Rs573.15 | breakout_id=2640ef4253 opportunity=72.2 backfilled=heuristic
+[2026-09-10 10:39:36] [INFO] [VALID_BREAKOUT] WENDT: Confirmed breakout at Rs8656.00, RVOL 15.45x
+[2026-09-10 10:49:24] [INFO] [VALID_BREAKOUT] KROSS: Confirmed breakout at Rs232.74, RVOL 1.86x
+[2026-09-10 10:51:17] [CRITICAL] [STOP_BREACHED] APOLLO: Stop breached at Rs410.50
+[2026-09-10 10:59:33] [CRITICAL] [STOP_BREACHED] ARVIND: Stop breached at Rs573.15
 [2026-09-10 11:08:34] [CRITICAL] [STOP_BREACHED] PNGJL: Stop breached at Rs605.65
-[2026-09-10 11:14:00] [INFO] [VALID_BREAKOUT] NRBBEARING: Confirmed breakout at Rs499.25, RVOL 7.62x | breakout_id=a26bc96b61 opportunity=68.6 backfilled=heuristic
-[2026-09-10 11:19:29] [INFO] [VALID_BREAKOUT] MANAKCOAT: Confirmed breakout at Rs132.35, RVOL 2.79x | breakout_id=22e2498bd9 opportunity=44.8 backfilled=heuristic
+[2026-09-10 11:14:00] [INFO] [VALID_BREAKOUT] NRBBEARING: Confirmed breakout at Rs499.25, RVOL 7.62x
+[2026-09-10 11:19:29] [INFO] [VALID_BREAKOUT] MANAKCOAT: Confirmed breakout at Rs132.35, RVOL 2.79x
 [2026-09-10 11:23:07] [CRITICAL] [STOP_BREACHED] TATASTEEL: Stop breached at Rs186.50
 [2026-09-10 11:23:10] [CRITICAL] [STOP_BREACHED] HINDZINC: Stop breached at Rs603.40
-[2026-09-10 11:28:31] [INFO] [VALID_BREAKOUT] NOCIL: Confirmed breakout at Rs197.14, RVOL 4.65x | breakout_id=508ffc9d03 opportunity=51.5 backfilled=heuristic
+[2026-09-10 11:28:31] [INFO] [VALID_BREAKOUT] NOCIL: Confirmed breakout at Rs197.14, RVOL 4.65x
 [2026-09-10 11:35:36] [CRITICAL] [STOP_BREACHED] SINDHUTRAD: Stop breached at Rs24.06
 [2026-09-10 11:35:43] [CRITICAL] [STOP_BREACHED] SMARTWORKS: Stop breached at Rs540.60
 [2026-09-10 11:37:23] [CRITICAL] [STOP_BREACHED] EXICOM: Stop breached at Rs176.00
-[2026-09-10 11:42:58] [CRITICAL] [STOP_BREACHED] MRPL: Stop breached at Rs177.72 | breakout_id=cc0723912d opportunity=65.8 backfilled=heuristic
-[2026-09-10 11:46:29] [INFO] [VALID_BREAKOUT] PAISALO: Confirmed breakout at Rs82.31, RVOL 4.43x | breakout_id=4443644c70 opportunity=62.5 backfilled=heuristic
-[2026-09-10 11:55:10] [INFO] [VALID_BREAKOUT] PRSMJOHNSN: Confirmed breakout at Rs114.87, RVOL 9.59x | breakout_id=55485a6d64 opportunity=49.7 backfilled=heuristic
-[2026-09-10 12:22:53] [INFO] [VALID_BREAKOUT] ABSLAMC: Confirmed breakout at Rs1080.10, RVOL 1.93x | breakout_id=d06b8b2a6e opportunity=67.9 backfilled=heuristic
+[2026-09-10 11:42:58] [CRITICAL] [STOP_BREACHED] MRPL: Stop breached at Rs177.72
+[2026-09-10 11:46:29] [INFO] [VALID_BREAKOUT] PAISALO: Confirmed breakout at Rs82.31, RVOL 4.43x
+[2026-09-10 11:55:10] [INFO] [VALID_BREAKOUT] PRSMJOHNSN: Confirmed breakout at Rs114.87, RVOL 9.59x
+[2026-09-10 12:22:53] [INFO] [VALID_BREAKOUT] ABSLAMC: Confirmed breakout at Rs1080.10, RVOL 1.93x
 [2026-09-10 12:30:59] [CRITICAL] [STOP_BREACHED] NLCINDIA: Stop breached at Rs272.35
 [2026-09-10 12:34:28] [CRITICAL] [STOP_BREACHED] IIFLCAPS: Stop breached at Rs337.80
 [2026-09-10 12:42:35] [CRITICAL] [STOP_BREACHED] APLLTD: Stop breached at Rs822.25
 [2026-09-10 12:46:02] [CRITICAL] [STOP_BREACHED] BANDHANBNK: Stop breached at Rs170.27
-[2026-09-10 12:47:51] [INFO] [VALID_BREAKOUT] SMCGLOBAL: Confirmed breakout at Rs88.51, RVOL 61.28x | breakout_id=8c859a9156 opportunity=56.0 backfilled=heuristic
+[2026-09-10 12:47:51] [INFO] [VALID_BREAKOUT] SMCGLOBAL: Confirmed breakout at Rs88.51, RVOL 61.28x
 [2026-09-10 12:49:45] [CRITICAL] [STOP_BREACHED] MANYAVAR: Stop breached at Rs573.60
 [2026-09-10 13:27:36] [CRITICAL] [STOP_BREACHED] LTFOODS: Stop breached at Rs444.05
-[2026-09-10 13:29:40] [INFO] [VALID_BREAKOUT] NEOGEN: Confirmed breakout at Rs2393.40, RVOL 3.2x | breakout_id=22c0da7ccb opportunity=65.0 backfilled=heuristic
+[2026-09-10 13:29:40] [INFO] [VALID_BREAKOUT] NEOGEN: Confirmed breakout at Rs2393.40, RVOL 3.2x
 [2026-09-10 13:49:21] [CRITICAL] [STOP_BREACHED] HYUNDAI: Stop breached at Rs2199.50
 [2026-09-10 13:51:10] [CRITICAL] [STOP_BREACHED] ADFFOODS: Stop breached at Rs271.50
 [2026-09-10 13:56:28] [CRITICAL] [STOP_BREACHED] RITCO: Stop breached at Rs309.20
@@ -5010,14 +5010,14 @@
 [2026-09-10 14:38:54] [CRITICAL] [STOP_BREACHED] PNB: Stop breached at Rs116.40
 [2026-09-10 14:42:35] [CRITICAL] [STOP_BREACHED] JSL: Stop breached at Rs762.80
 [2026-09-10 14:48:03] [CRITICAL] [STOP_BREACHED] BLSE: Stop breached at Rs314.00
-[2026-09-10 14:50:00] [INFO] [VALID_BREAKOUT] SHAREINDIA: Confirmed breakout at Rs201.98, RVOL 1.58x | breakout_id=6e653c1b38 opportunity=61.7 backfilled=heuristic
+[2026-09-10 14:50:00] [INFO] [VALID_BREAKOUT] SHAREINDIA: Confirmed breakout at Rs201.98, RVOL 1.58x
 [2026-09-10 15:01:11] [CRITICAL] [STOP_BREACHED] HAL: Stop breached at Rs4931.60
 [2026-09-10 15:12:23] [CRITICAL] [STOP_BREACHED] COCHINSHIP: Stop breached at Rs1523.00
 [2026-09-10 15:14:13] [CRITICAL] [STOP_BREACHED] BHEL: Stop breached at Rs428.10
 [2026-09-10 15:14:17] [CRITICAL] [STOP_BREACHED] ALICON: Stop breached at Rs736.15
-[2026-09-10 15:19:33] [INFO] [VALID_BREAKOUT] KINGFA: Confirmed breakout at Rs6226.00, RVOL 1.52x | breakout_id=89be1b7c05 opportunity=70.8 backfilled=heuristic
-[2026-09-10 15:23:08] [CRITICAL] [STOP_BREACHED] JINDRILL: Stop breached at Rs650.20 | breakout_id=088b759aba opportunity=61.5 backfilled=heuristic
-[2026-09-10 15:26:40] [CRITICAL] [STOP_BREACHED] MANAKCOAT: Stop breached at Rs123.60 | breakout_id=22e2498bd9 opportunity=44.8 backfilled=heuristic
+[2026-09-10 15:19:33] [INFO] [VALID_BREAKOUT] KINGFA: Confirmed breakout at Rs6226.00, RVOL 1.52x
+[2026-09-10 15:23:08] [CRITICAL] [STOP_BREACHED] JINDRILL: Stop breached at Rs650.20
+[2026-09-10 15:26:40] [CRITICAL] [STOP_BREACHED] MANAKCOAT: Stop breached at Rs123.60
 [2026-09-11 11:59:40] [CRITICAL] [STOP_BREACHED] SCHAEFFLER: Stop breached at Rs3927.90
 [2026-09-11 11:59:40] [CRITICAL] [STOP_BREACHED] KSB: Stop breached at Rs802.60
 [2026-09-11 11:59:40] [CRITICAL] [STOP_BREACHED] ASIANPAINT: Stop breached at Rs2460.30
@@ -5130,7 +5130,7 @@
 [2026-09-11 11:59:47] [CRITICAL] [STOP_BREACHED] LTTS: Stop breached at Rs3349.40
 [2026-09-11 11:59:47] [CRITICAL] [STOP_BREACHED] HDFCBANK: Stop breached at Rs685.25
 [2026-09-11 11:59:47] [CRITICAL] [STOP_BREACHED] JUBLFOOD: Stop breached at Rs471.30
-[2026-09-11 11:59:47] [CRITICAL] [STOP_BREACHED] PRSMJOHNSN: Stop breached at Rs113.20 | breakout_id=55485a6d64 opportunity=49.7 backfilled=heuristic
+[2026-09-11 11:59:47] [CRITICAL] [STOP_BREACHED] PRSMJOHNSN: Stop breached at Rs113.20
 [2026-09-11 11:59:47] [CRITICAL] [STOP_BREACHED] DLF: Stop breached at Rs636.60
 [2026-09-11 11:59:47] [CRITICAL] [STOP_BREACHED] WAAREEENER: Stop breached at Rs2540.70
 [2026-09-11 11:59:47] [CRITICAL] [STOP_BREACHED] IFBIND: Stop breached at Rs1272.90
@@ -5385,7 +5385,7 @@
 [2026-09-11 12:00:19] [CRITICAL] [STOP_BREACHED] RALLIS: Stop breached at Rs202.48
 [2026-09-11 12:00:20] [CRITICAL] [STOP_BREACHED] CHOLAHLDNG: Stop breached at Rs1513.00
 [2026-09-11 12:00:20] [CRITICAL] [STOP_BREACHED] ACE: Stop breached at Rs1109.80
-[2026-09-11 12:00:20] [CRITICAL] [STOP_BREACHED] FCL: Stop breached at Rs57.46 | breakout_id=38280474b7 opportunity=63.1 backfilled=heuristic
+[2026-09-11 12:00:20] [CRITICAL] [STOP_BREACHED] FCL: Stop breached at Rs57.46
 [2026-09-11 12:00:20] [CRITICAL] [STOP_BREACHED] SUBROS: Stop breached at Rs703.55
 [2026-09-11 12:00:20] [CRITICAL] [STOP_BREACHED] ROLEXRINGS: Stop breached at Rs170.87
 [2026-09-11 12:00:20] [CRITICAL] [STOP_BREACHED] PCBL: Stop breached at Rs329.00
@@ -5502,7 +5502,7 @@
 [2026-09-11 12:00:33] [CRITICAL] [STOP_BREACHED] NATIONALUM: Stop breached at Rs357.80
 [2026-09-11 12:00:33] [CRITICAL] [STOP_BREACHED] JGCHEM: Stop breached at Rs588.75
 [2026-09-11 12:00:33] [CRITICAL] [STOP_BREACHED] HYUNDAI: Stop breached at Rs2190.80
-[2026-09-11 12:00:33] [CRITICAL] [STOP_BREACHED] ABSLAMC: Stop breached at Rs1096.00 | breakout_id=d06b8b2a6e opportunity=67.9 backfilled=heuristic
+[2026-09-11 12:00:33] [CRITICAL] [STOP_BREACHED] ABSLAMC: Stop breached at Rs1096.00
 [2026-09-11 12:00:33] [CRITICAL] [STOP_BREACHED] ELGIEQUIP: Stop breached at Rs618.90
 [2026-09-11 12:00:33] [CRITICAL] [STOP_BREACHED] LTM: Stop breached at Rs4304.00
 [2026-09-11 12:00:33] [CRITICAL] [STOP_BREACHED] ADOR: Stop breached at Rs1609.60
@@ -5538,7 +5538,7 @@
 [2026-09-11 12:00:36] [CRITICAL] [STOP_BREACHED] STYLAMIND: Stop breached at Rs3344.30
 [2026-09-11 12:00:37] [CRITICAL] [STOP_BREACHED] SPORTKING: Stop breached at Rs213.83
 [2026-09-11 12:00:37] [CRITICAL] [STOP_BREACHED] SMARTWORKS: Stop breached at Rs532.05
-[2026-09-11 12:00:37] [CRITICAL] [STOP_BREACHED] SMCGLOBAL: Stop breached at Rs85.70 | breakout_id=8c859a9156 opportunity=56.0 backfilled=heuristic
+[2026-09-11 12:00:37] [CRITICAL] [STOP_BREACHED] SMCGLOBAL: Stop breached at Rs85.70
 [2026-09-11 12:00:37] [CRITICAL] [STOP_BREACHED] SHAILY: Stop breached at Rs3275.00
 [2026-09-11 12:00:37] [CRITICAL] [STOP_BREACHED] VESUVIUS: Stop breached at Rs414.20
 [2026-09-11 12:00:37] [CRITICAL] [STOP_BREACHED] REFEX: Stop breached at Rs270.50
@@ -5585,7 +5585,7 @@
 [2026-09-11 12:00:42] [CRITICAL] [STOP_BREACHED] ECLERX: Stop breached at Rs1906.80
 [2026-09-11 12:00:42] [CRITICAL] [STOP_BREACHED] VMM: Stop breached at Rs101.60
 [2026-09-11 12:00:42] [CRITICAL] [STOP_BREACHED] TINNARUBR: Stop breached at Rs1035.15
-[2026-09-11 12:00:42] [CRITICAL] [STOP_BREACHED] HARSHA: Stop breached at Rs445.75 | breakout_id=164272cf3d opportunity=64.1 backfilled=heuristic
+[2026-09-11 12:00:42] [CRITICAL] [STOP_BREACHED] HARSHA: Stop breached at Rs445.75
 [2026-09-11 12:00:43] [CRITICAL] [STOP_BREACHED] INDIASHLTR: Stop breached at Rs660.05
 [2026-09-11 12:00:43] [CRITICAL] [STOP_BREACHED] THERMAX: Stop breached at Rs3669.00
 [2026-09-11 12:00:43] [CRITICAL] [STOP_BREACHED] EMBDL: Stop breached at Rs55.63
@@ -5663,31 +5663,31 @@
 [2026-09-11 12:03:12] [CRITICAL] [STOP_BREACHED] NH: Stop breached at Rs1879.90
 [2026-09-11 12:06:20] [CRITICAL] [STOP_BREACHED] EVEREADY: Stop breached at Rs359.30
 [2026-09-11 12:08:53] [CRITICAL] [STOP_BREACHED] CRISIL: Stop breached at Rs4692.80
-[2026-09-11 12:09:16] [INFO] [VALID_BREAKOUT] RACLGEAR: Confirmed breakout at Rs1742.00, RVOL 20.47x | breakout_id=6f9d6b9bd7 opportunity=55.5 backfilled=heuristic
+[2026-09-11 12:09:16] [INFO] [VALID_BREAKOUT] RACLGEAR: Confirmed breakout at Rs1742.00, RVOL 20.47x
 [2026-09-11 12:11:50] [CRITICAL] [STOP_BREACHED] IDFCFIRSTB: Stop breached at Rs86.24
 [2026-09-11 12:14:40] [CRITICAL] [STOP_BREACHED] ETERNAL: Stop breached at Rs322.25
 [2026-09-11 12:15:12] [CRITICAL] [STOP_BREACHED] GLAND: Stop breached at Rs2902.80
-[2026-09-11 12:20:35] [INFO] [VALID_BREAKOUT] VENKEYS: Confirmed breakout at Rs1767.90, RVOL 11.19x | breakout_id=c5788ed3f6 opportunity=56.7 backfilled=heuristic
-[2026-09-11 12:33:29] [INFO] [VALID_BREAKOUT] BLUESTARCO: Confirmed breakout at Rs1561.40, RVOL 3.42x | breakout_id=737d192f54 opportunity=35.4 backfilled=heuristic
+[2026-09-11 12:20:35] [INFO] [VALID_BREAKOUT] VENKEYS: Confirmed breakout at Rs1767.90, RVOL 11.19x
+[2026-09-11 12:33:29] [INFO] [VALID_BREAKOUT] BLUESTARCO: Confirmed breakout at Rs1561.40, RVOL 3.42x
 [2026-09-11 12:35:14] [CRITICAL] [STOP_BREACHED] AEGISVOPAK: Stop breached at Rs294.20
-[2026-09-11 12:38:32] [CRITICAL] [STOP_BREACHED] GPIL: Stop breached at Rs244.15 | breakout_id=92a0c2f470 opportunity=56.8 backfilled=heuristic
+[2026-09-11 12:38:32] [CRITICAL] [STOP_BREACHED] GPIL: Stop breached at Rs244.15
 [2026-09-11 12:49:56] [CRITICAL] [STOP_BREACHED] OIL: Stop breached at Rs495.50
-[2026-09-11 12:53:00] [INFO] [VALID_BREAKOUT] YESBANK: Confirmed breakout at Rs23.10, RVOL 4.72x | breakout_id=d8eda6c3ce opportunity=64.2 backfilled=heuristic
+[2026-09-11 12:53:00] [INFO] [VALID_BREAKOUT] YESBANK: Confirmed breakout at Rs23.10, RVOL 4.72x
 [2026-09-11 12:53:04] [CRITICAL] [STOP_BREACHED] LALPATHLAB: Stop breached at Rs1913.40
-[2026-09-11 12:53:08] [INFO] [VALID_BREAKOUT] WABAG: Confirmed breakout at Rs2259.40, RVOL 2.78x | breakout_id=1918923875 opportunity=57.9 backfilled=heuristic
-[2026-09-11 13:15:50] [INFO] [VALID_BREAKOUT] LAURUSLABS: Confirmed breakout at Rs1970.60, RVOL 1.69x | breakout_id=5706bfff4c opportunity=71.2 backfilled=heuristic
+[2026-09-11 12:53:08] [INFO] [VALID_BREAKOUT] WABAG: Confirmed breakout at Rs2259.40, RVOL 2.78x
+[2026-09-11 13:15:50] [INFO] [VALID_BREAKOUT] LAURUSLABS: Confirmed breakout at Rs1970.60, RVOL 1.69x
 [2026-09-11 13:27:40] [CRITICAL] [STOP_BREACHED] MAHABANK: Stop breached at Rs83.75
 [2026-09-11 13:35:41] [CRITICAL] [STOP_BREACHED] ONGC: Stop breached at Rs233.86
 [2026-09-11 13:55:59] [CRITICAL] [STOP_BREACHED] POLICYBZR: Stop breached at Rs1799.00
-[2026-09-11 13:58:39] [INFO] [VALID_BREAKOUT] FILATEX: Confirmed breakout at Rs85.44, RVOL 1.54x | breakout_id=e9d3b5beda opportunity=55.8 backfilled=heuristic
+[2026-09-11 13:58:39] [INFO] [VALID_BREAKOUT] FILATEX: Confirmed breakout at Rs85.44, RVOL 1.54x
 [2026-09-11 14:16:49] [CRITICAL] [STOP_BREACHED] NAZARA: Stop breached at Rs363.30
 [2026-09-11 14:21:40] [CRITICAL] [STOP_BREACHED] NAVINFLUOR: Stop breached at Rs8616.00
 [2026-09-11 14:35:00] [CRITICAL] [STOP_BREACHED] CLEAN: Stop breached at Rs839.40
-[2026-09-11 14:44:49] [INFO] [VALID_BREAKOUT] FIVESTAR: Confirmed breakout at Rs555.50, RVOL 1.56x | breakout_id=ba6d286eba opportunity=60.0 backfilled=heuristic
-[2026-09-11 14:56:26] [CRITICAL] [STOP_BREACHED] IOLCP: Stop breached at Rs198.10 | breakout_id=e5db6af9bd opportunity=61.0 backfilled=heuristic
+[2026-09-11 14:44:49] [INFO] [VALID_BREAKOUT] FIVESTAR: Confirmed breakout at Rs555.50, RVOL 1.56x
+[2026-09-11 14:56:26] [CRITICAL] [STOP_BREACHED] IOLCP: Stop breached at Rs198.10
 [2026-09-11 15:01:31] [CRITICAL] [STOP_BREACHED] KAJARIACER: Stop breached at Rs1223.50
-[2026-09-11 15:04:00] [INFO] [VALID_BREAKOUT] BLACKBUCK: Confirmed breakout at Rs628.70, RVOL 5.28x | breakout_id=2cf3db735f opportunity=61.9 backfilled=heuristic
-[2026-09-11 15:14:30] [INFO] [VALID_BREAKOUT] PAYTM: Confirmed breakout at Rs1819.70, RVOL 3.12x | breakout_id=37b87fe275 opportunity=61.1 backfilled=heuristic
+[2026-09-11 15:04:00] [INFO] [VALID_BREAKOUT] BLACKBUCK: Confirmed breakout at Rs628.70, RVOL 5.28x
+[2026-09-11 15:14:30] [INFO] [VALID_BREAKOUT] PAYTM: Confirmed breakout at Rs1819.70, RVOL 3.12x
 [2026-09-11 15:20:47] [CRITICAL] [STOP_BREACHED] METROPOLIS: Stop breached at Rs584.20
 [2026-09-11 15:24:20] [CRITICAL] [STOP_BREACHED] GMRP&UI: Stop breached at Rs93.82
 [2026-09-14 11:12:28] [CRITICAL] [STOP_BREACHED] KSB: Stop breached at Rs802.00
@@ -5712,7 +5712,7 @@
 [2026-09-14 11:12:29] [CRITICAL] [STOP_BREACHED] BANKBEES: Stop breached at Rs587.25
 [2026-09-14 11:12:29] [CRITICAL] [STOP_BREACHED] MANKIND: Stop breached at Rs2280.00
 [2026-09-14 11:12:29] [CRITICAL] [STOP_BREACHED] HOMEFIRST: Stop breached at Rs1185.00
-[2026-09-14 11:12:29] [INFO] [TARGET_1_HIT] SHAREINDIA: Reached Target 1 (Rs163.75) at Rs198.12 | breakout_id=6e653c1b38 opportunity=61.7 backfilled=heuristic
+[2026-09-14 11:12:29] [INFO] [TARGET_1_HIT] SHAREINDIA: Reached Target 1 (Rs163.75) at Rs198.12
 [2026-09-14 11:12:29] [INFO] [TARGET_2_HIT] SHAREINDIA: Reached Target 2 (Rs175.69) at Rs198.12
 [2026-09-14 11:12:29] [CRITICAL] [STOP_BREACHED] BEL: Stop breached at Rs404.35
 [2026-09-14 11:12:29] [CRITICAL] [STOP_BREACHED] V2RETAIL: Stop breached at Rs217.95
@@ -6537,7 +6537,7 @@
 [2026-09-15 11:42:08] [CRITICAL] [STOP_BREACHED] WAAREEENER: Stop breached at Rs2589.20
 [2026-09-15 11:42:08] [CRITICAL] [STOP_BREACHED] GNFC: Stop breached at Rs547.30
 [2026-09-15 11:42:08] [CRITICAL] [STOP_BREACHED] NIFTYBEES: Stop breached at Rs266.55
-[2026-09-15 11:42:08] [CRITICAL] [STOP_BREACHED] WOCKPHARMA: Stop breached at Rs2099.40 | breakout_id=ef54871fc1 opportunity=59.6 backfilled=heuristic
+[2026-09-15 11:42:08] [CRITICAL] [STOP_BREACHED] WOCKPHARMA: Stop breached at Rs2099.40
 [2026-09-15 11:42:08] [CRITICAL] [STOP_BREACHED] APTUS: Stop breached at Rs242.80
 [2026-09-15 11:42:08] [CRITICAL] [STOP_BREACHED] BBL: Stop breached at Rs2246.80
 [2026-09-15 11:42:08] [CRITICAL] [STOP_BREACHED] HDFCBANK: Stop breached at Rs721.20
@@ -6663,12 +6663,12 @@
 [2026-09-15 11:42:14] [CRITICAL] [STOP_BREACHED] EXIDEIND: Stop breached at Rs413.40
 [2026-09-15 11:42:14] [CRITICAL] [STOP_BREACHED] FINOPB: Stop breached at Rs137.86
 [2026-09-15 11:42:14] [CRITICAL] [STOP_BREACHED] PHOENIXLTD: Stop breached at Rs1866.30
-[2026-09-15 11:42:14] [CRITICAL] [STOP_BREACHED] YESBANK: Stop breached at Rs23.13 | breakout_id=d8eda6c3ce opportunity=64.2 backfilled=heuristic
+[2026-09-15 11:42:14] [CRITICAL] [STOP_BREACHED] YESBANK: Stop breached at Rs23.13
 [2026-09-15 11:42:14] [CRITICAL] [STOP_BREACHED] POLYPLEX: Stop breached at Rs1110.00
 [2026-09-15 11:42:14] [CRITICAL] [STOP_BREACHED] ONGC: Stop breached at Rs235.79
 [2026-09-15 11:42:14] [CRITICAL] [STOP_BREACHED] CGPOWER: Stop breached at Rs869.35
 [2026-09-15 11:42:14] [CRITICAL] [STOP_BREACHED] SIS: Stop breached at Rs419.45
-[2026-09-15 11:42:14] [CRITICAL] [STOP_BREACHED] AEROFLEX: Stop breached at Rs507.60 | breakout_id=6b107cb48b opportunity=61.5 backfilled=heuristic
+[2026-09-15 11:42:14] [CRITICAL] [STOP_BREACHED] AEROFLEX: Stop breached at Rs507.60
 [2026-09-15 11:42:14] [CRITICAL] [STOP_BREACHED] IKS: Stop breached at Rs1791.80
 [2026-09-15 11:42:14] [CRITICAL] [STOP_BREACHED] NTPC: Stop breached at Rs328.70
 [2026-09-15 11:42:14] [CRITICAL] [STOP_BREACHED] KALYANKJIL: Stop breached at Rs610.50
@@ -6798,7 +6798,7 @@
 [2026-09-15 11:42:18] [CRITICAL] [STOP_BREACHED] NILKAMAL: Stop breached at Rs2028.00
 [2026-09-15 11:42:18] [CRITICAL] [STOP_BREACHED] POONAWALLA: Stop breached at Rs438.55
 [2026-09-15 11:42:18] [CRITICAL] [STOP_BREACHED] CROMPTON: Stop breached at Rs228.40
-[2026-09-15 11:42:18] [CRITICAL] [STOP_BREACHED] FIVESTAR: Stop breached at Rs545.50 | breakout_id=ba6d286eba opportunity=60.0 backfilled=heuristic
+[2026-09-15 11:42:18] [CRITICAL] [STOP_BREACHED] FIVESTAR: Stop breached at Rs545.50
 [2026-09-15 11:42:19] [CRITICAL] [STOP_BREACHED] SANDHAR: Stop breached at Rs617.45
 [2026-09-15 11:42:19] [CRITICAL] [STOP_BREACHED] CENTENKA: Stop breached at Rs557.80
 [2026-09-15 11:42:19] [CRITICAL] [STOP_BREACHED] APOLLO: Stop breached at Rs397.45
@@ -6911,7 +6911,7 @@
 [2026-09-15 11:42:23] [CRITICAL] [STOP_BREACHED] AURIONPRO: Stop breached at Rs715.45
 [2026-09-15 11:42:24] [CRITICAL] [STOP_BREACHED] CARERATING: Stop breached at Rs1639.00
 [2026-09-15 11:42:24] [CRITICAL] [STOP_BREACHED] OPTIEMUS: Stop breached at Rs593.50
-[2026-09-15 11:42:24] [CRITICAL] [STOP_BREACHED] KINGFA: Stop breached at Rs5825.00 | breakout_id=89be1b7c05 opportunity=70.8 backfilled=heuristic
+[2026-09-15 11:42:24] [CRITICAL] [STOP_BREACHED] KINGFA: Stop breached at Rs5825.00
 [2026-09-15 11:42:24] [CRITICAL] [STOP_BREACHED] MEDANTA: Stop breached at Rs1424.50
 [2026-09-15 11:42:24] [CRITICAL] [STOP_BREACHED] UNICHEMLAB: Stop breached at Rs538.35
 [2026-09-15 11:42:24] [CRITICAL] [STOP_BREACHED] SOBHA: Stop breached at Rs1205.70
@@ -7036,24 +7036,24 @@
 [2026-09-15 11:42:38] [CRITICAL] [STOP_BREACHED] PURVA: Stop breached at Rs210.01
 [2026-09-15 11:45:31] [CRITICAL] [STOP_BREACHED] AZAD: Stop breached at Rs2794.70
 [2026-09-15 11:45:41] [CRITICAL] [STOP_BREACHED] MANAKCOAT: Stop breached at Rs125.89
-[2026-09-15 11:45:44] [INFO] [VALID_BREAKOUT] TATAINVEST: Confirmed breakout at Rs726.15, RVOL 1.63x | breakout_id=f0c42ca028 opportunity=45.2 backfilled=heuristic
-[2026-09-15 11:45:44] [INFO] [VALID_BREAKOUT] WENDT: Confirmed breakout at Rs9088.50, RVOL 5.99x | breakout_id=39f51d8ab7 opportunity=45.6 backfilled=heuristic
+[2026-09-15 11:45:44] [INFO] [VALID_BREAKOUT] TATAINVEST: Confirmed breakout at Rs726.15, RVOL 1.63x
+[2026-09-15 11:45:44] [INFO] [VALID_BREAKOUT] WENDT: Confirmed breakout at Rs9088.50, RVOL 5.99x
 [2026-09-15 11:45:45] [CRITICAL] [STOP_BREACHED] FOSECOIND: Stop breached at Rs6153.50
-[2026-09-15 11:50:09] [INFO] [VALID_BREAKOUT] RATNAMANI: Confirmed breakout at Rs2743.00, RVOL 1.78x | breakout_id=cf432ca0fe opportunity=49.5 backfilled=heuristic
+[2026-09-15 11:50:09] [INFO] [VALID_BREAKOUT] RATNAMANI: Confirmed breakout at Rs2743.00, RVOL 1.78x
 [2026-09-15 11:51:52] [CRITICAL] [STOP_BREACHED] EXICOM: Stop breached at Rs175.73
 [2026-09-15 11:51:58] [CRITICAL] [STOP_BREACHED] THEJO: Stop breached at Rs2189.00
-[2026-09-15 12:00:06] [CRITICAL] [STOP_BREACHED] ASAHIINDIA: Stop breached at Rs962.00 | breakout_id=1ba57e97ec opportunity=69.2 backfilled=heuristic
-[2026-09-15 12:00:12] [INFO] [VALID_BREAKOUT] ROSSTECH: Confirmed breakout at Rs1300.00, RVOL 1.88x | breakout_id=22205cdc5b opportunity=62.2 backfilled=heuristic
+[2026-09-15 12:00:06] [CRITICAL] [STOP_BREACHED] ASAHIINDIA: Stop breached at Rs962.00
+[2026-09-15 12:00:12] [INFO] [VALID_BREAKOUT] ROSSTECH: Confirmed breakout at Rs1300.00, RVOL 1.88x
 [2026-09-15 12:13:05] [CRITICAL] [STOP_BREACHED] ICIL: Stop breached at Rs437.75
-[2026-09-15 12:21:31] [INFO] [VALID_BREAKOUT] ANDHRSUGAR: Confirmed breakout at Rs95.53, RVOL 2.04x | breakout_id=1360c151eb opportunity=62.6 backfilled=heuristic
-[2026-09-15 12:24:27] [INFO] [VALID_BREAKOUT] AXISCADES: Confirmed breakout at Rs1760.00, RVOL 1.61x | breakout_id=d4ee0b4c9c opportunity=50.9 backfilled=heuristic
+[2026-09-15 12:21:31] [INFO] [VALID_BREAKOUT] ANDHRSUGAR: Confirmed breakout at Rs95.53, RVOL 2.04x
+[2026-09-15 12:24:27] [INFO] [VALID_BREAKOUT] AXISCADES: Confirmed breakout at Rs1760.00, RVOL 1.61x
 [2026-09-15 12:41:24] [CRITICAL] [STOP_BREACHED] ELGIEQUIP: Stop breached at Rs621.60
 [2026-09-15 12:46:49] [CRITICAL] [STOP_BREACHED] COALINDIA: Stop breached at Rs422.40
 [2026-09-15 13:00:10] [CRITICAL] [STOP_BREACHED] AARTIDRUGS: Stop breached at Rs432.50
-[2026-09-15 13:02:01] [CRITICAL] [STOP_BREACHED] BLUESTARCO: Stop breached at Rs1500.80 | breakout_id=737d192f54 opportunity=35.4 backfilled=heuristic
-[2026-09-15 13:19:05] [INFO] [VALID_BREAKOUT] GENUSPOWER: Confirmed breakout at Rs311.55, RVOL 1.75x | breakout_id=268023c1c5 opportunity=60.3 backfilled=heuristic
+[2026-09-15 13:02:01] [CRITICAL] [STOP_BREACHED] BLUESTARCO: Stop breached at Rs1500.80
+[2026-09-15 13:19:05] [INFO] [VALID_BREAKOUT] GENUSPOWER: Confirmed breakout at Rs311.55, RVOL 1.75x
 [2026-09-15 13:19:10] [CRITICAL] [STOP_BREACHED] STARCEMENT: Stop breached at Rs188.05
-[2026-09-15 13:34:11] [CRITICAL] [STOP_BREACHED] RBLBANK: Stop breached at Rs406.20 | breakout_id=ae79eb22f3 opportunity=75.4 backfilled=heuristic
+[2026-09-15 13:34:11] [CRITICAL] [STOP_BREACHED] RBLBANK: Stop breached at Rs406.20
 [2026-09-15 13:34:12] [CRITICAL] [STOP_BREACHED] TATAPOWER: Stop breached at Rs365.80
 [2026-09-15 13:34:14] [CRITICAL] [STOP_BREACHED] GRANULES: Stop breached at Rs875.70
 [2026-09-15 13:34:16] [CRITICAL] [STOP_BREACHED] CARTRADE: Stop breached at Rs3061.10
@@ -7061,32 +7061,32 @@
 [2026-09-15 13:39:56] [CRITICAL] [STOP_BREACHED] ORIENTHOT: Stop breached at Rs139.75
 [2026-09-15 13:40:12] [CRITICAL] [STOP_BREACHED] ACUTAAS: Stop breached at Rs3312.30
 [2026-09-15 13:45:53] [CRITICAL] [STOP_BREACHED] SHYAMMETL: Stop breached at Rs1060.30
-[2026-09-15 14:03:12] [INFO] [VALID_BREAKOUT] SILVERTUC: Confirmed breakout at Rs153.30, RVOL 2.41x | breakout_id=6d11e6f180 opportunity=9.4 backfilled=heuristic
-[2026-09-15 14:04:50] [INFO] [VALID_BREAKOUT] KIRIINDUS: Confirmed breakout at Rs524.15, RVOL 3.38x | breakout_id=941828353f opportunity=46.3 backfilled=heuristic
+[2026-09-15 14:03:12] [INFO] [VALID_BREAKOUT] SILVERTUC: Confirmed breakout at Rs153.30, RVOL 2.41x
+[2026-09-15 14:04:50] [INFO] [VALID_BREAKOUT] KIRIINDUS: Confirmed breakout at Rs524.15, RVOL 3.38x
 [2026-09-15 14:13:19] [CRITICAL] [STOP_BREACHED] PANACEABIO: Stop breached at Rs379.50
 [2026-09-15 14:13:28] [CRITICAL] [STOP_BREACHED] GODREJAGRO: Stop breached at Rs653.35
 [2026-09-15 14:15:04] [CRITICAL] [STOP_BREACHED] SHARDAMOTR: Stop breached at Rs930.80
 [2026-09-15 14:16:50] [CRITICAL] [STOP_BREACHED] NPST: Stop breached at Rs1641.00
 [2026-09-15 14:20:02] [CRITICAL] [STOP_BREACHED] ANANDRATHI: Stop breached at Rs2192.80
-[2026-09-15 14:20:05] [CRITICAL] [STOP_BREACHED] GANDHAR: Stop breached at Rs266.75 | breakout_id=f10cb4b315 opportunity=70.3 backfilled=heuristic
+[2026-09-15 14:20:05] [CRITICAL] [STOP_BREACHED] GANDHAR: Stop breached at Rs266.75
 [2026-09-15 14:21:39] [CRITICAL] [STOP_BREACHED] TALBROAUTO: Stop breached at Rs427.80
 [2026-09-15 14:23:24] [CRITICAL] [STOP_BREACHED] SANSERA: Stop breached at Rs3954.50
 [2026-09-15 14:25:01] [CRITICAL] [STOP_BREACHED] NAZARA: Stop breached at Rs360.35
 [2026-09-15 14:36:45] [CRITICAL] [STOP_BREACHED] AUROPHARMA: Stop breached at Rs1657.10
 [2026-09-15 14:47:52] [CRITICAL] [STOP_BREACHED] PERSISTENT: Stop breached at Rs5492.50
-[2026-09-15 14:49:29] [INFO] [VALID_BREAKOUT] MCX: Confirmed breakout at Rs3183.20, RVOL 1.65x | breakout_id=9382dc26ac opportunity=64.2 backfilled=heuristic
-[2026-09-15 14:49:29] [INFO] [VALID_BREAKOUT] MARKSANS: Confirmed breakout at Rs316.55, RVOL 1.59x | breakout_id=75ab1ec082 opportunity=61.1 backfilled=heuristic
+[2026-09-15 14:49:29] [INFO] [VALID_BREAKOUT] MCX: Confirmed breakout at Rs3183.20, RVOL 1.65x
+[2026-09-15 14:49:29] [INFO] [VALID_BREAKOUT] MARKSANS: Confirmed breakout at Rs316.55, RVOL 1.59x
 [2026-09-15 14:52:47] [CRITICAL] [STOP_BREACHED] VARROC: Stop breached at Rs841.00
 [2026-09-15 14:57:25] [CRITICAL] [STOP_BREACHED] IPCALAB: Stop breached at Rs1937.90
 [2026-09-15 15:07:11] [CRITICAL] [STOP_BREACHED] NYKAA: Stop breached at Rs337.85
-[2026-09-15 15:08:44] [INFO] [VALID_BREAKOUT] PARAGMILK: Confirmed breakout at Rs251.45, RVOL 2.19x | breakout_id=bbe0bc527d opportunity=46.6 backfilled=heuristic
+[2026-09-15 15:08:44] [INFO] [VALID_BREAKOUT] PARAGMILK: Confirmed breakout at Rs251.45, RVOL 2.19x
 [2026-09-15 15:15:42] [CRITICAL] [STOP_BREACHED] INDHOTEL: Stop breached at Rs710.85
 [2026-09-15 15:15:50] [CRITICAL] [STOP_BREACHED] ADANIPORTS: Stop breached at Rs1721.00
-[2026-09-15 15:29:41] [INFO] [VALID_BREAKOUT] NIVABUPA: Confirmed breakout at Rs82.44, RVOL 9.36x | breakout_id=056615974e opportunity=66.1 backfilled=heuristic
-[2026-09-15 15:29:41] [INFO] [VALID_BREAKOUT] SHAREINDIA: Confirmed breakout at Rs198.44, RVOL 2.79x | breakout_id=4f40b3287c opportunity=53.7 backfilled=heuristic
+[2026-09-15 15:29:41] [INFO] [VALID_BREAKOUT] NIVABUPA: Confirmed breakout at Rs82.44, RVOL 9.36x
+[2026-09-15 15:29:41] [INFO] [VALID_BREAKOUT] SHAREINDIA: Confirmed breakout at Rs198.44, RVOL 2.79x
 [2026-09-16 11:07:08] [CRITICAL] [STOP_BREACHED] CREDITACC: Stop breached at Rs1395.70
 [2026-09-16 11:07:08] [CRITICAL] [STOP_BREACHED] NH: Stop breached at Rs1831.10
-[2026-09-16 11:07:08] [CRITICAL] [STOP_BREACHED] NIVABUPA: Stop breached at Rs80.18 | breakout_id=056615974e opportunity=66.1 backfilled=heuristic
+[2026-09-16 11:07:08] [CRITICAL] [STOP_BREACHED] NIVABUPA: Stop breached at Rs80.18
 [2026-09-16 11:07:08] [CRITICAL] [STOP_BREACHED] SUNDARMFIN: Stop breached at Rs4670.20
 [2026-09-16 11:07:08] [CRITICAL] [STOP_BREACHED] JSWDULUX: Stop breached at Rs3090.60
 [2026-09-16 11:07:08] [CRITICAL] [STOP_BREACHED] SAGILITY: Stop breached at Rs45.28
@@ -7096,13 +7096,13 @@
 [2026-09-16 11:07:08] [CRITICAL] [STOP_BREACHED] KAJARIACER: Stop breached at Rs1208.40
 [2026-09-16 11:07:08] [INFO] [TARGET_1_HIT] COMSYN: Reached Target 1 (Rs208.46) at Rs290.15
 [2026-09-16 11:07:08] [INFO] [TARGET_2_HIT] COMSYN: Reached Target 2 (Rs232.14) at Rs290.15
-[2026-09-16 11:07:08] [INFO] [VALID_BREAKOUT] COMSYN: Confirmed breakout at Rs290.15, RVOL 1.62x | breakout_id=f76479d0ac opportunity=69.2 backfilled=heuristic
+[2026-09-16 11:07:08] [INFO] [VALID_BREAKOUT] COMSYN: Confirmed breakout at Rs290.15, RVOL 1.62x
 [2026-09-16 11:07:08] [INFO] [TARGET_1_HIT] OAL: Reached Target 1 (Rs449.29) at Rs496.45
 [2026-09-16 11:07:08] [CRITICAL] [STOP_BREACHED] KKCL: Stop breached at Rs489.70
 [2026-09-16 11:07:08] [CRITICAL] [STOP_BREACHED] LTFOODS: Stop breached at Rs414.30
 [2026-09-16 11:07:08] [CRITICAL] [STOP_BREACHED] MANKIND: Stop breached at Rs2282.60
 [2026-09-16 11:07:08] [INFO] [TARGET_1_HIT] SHREEPUSHK: Reached Target 1 (Rs478.60) at Rs487.30
-[2026-09-16 11:07:08] [INFO] [TARGET_1_HIT] SHAREINDIA: Reached Target 1 (Rs166.29) at Rs191.72 | breakout_id=4f40b3287c opportunity=53.7 backfilled=heuristic
+[2026-09-16 11:07:08] [INFO] [TARGET_1_HIT] SHAREINDIA: Reached Target 1 (Rs166.29) at Rs191.72
 [2026-09-16 11:07:08] [INFO] [TARGET_2_HIT] SHAREINDIA: Reached Target 2 (Rs179.50) at Rs191.72
 [2026-09-16 11:07:08] [CRITICAL] [STOP_BREACHED] HOMEFIRST: Stop breached at Rs1181.30
 [2026-09-16 11:07:08] [CRITICAL] [STOP_BREACHED] PNGJL: Stop breached at Rs604.10
@@ -7135,7 +7135,7 @@
 [2026-09-16 11:07:09] [CRITICAL] [STOP_BREACHED] AGIIL: Stop breached at Rs270.30
 [2026-09-16 11:07:09] [CRITICAL] [STOP_BREACHED] CUMMINSIND: Stop breached at Rs4960.00
 [2026-09-16 11:07:09] [CRITICAL] [STOP_BREACHED] SYNGENE: Stop breached at Rs380.90
-[2026-09-16 11:07:09] [INFO] [TARGET_1_HIT] MCX: Reached Target 1 (Rs3023.71) at Rs3101.90 | breakout_id=9382dc26ac opportunity=64.2 backfilled=heuristic
+[2026-09-16 11:07:09] [INFO] [TARGET_1_HIT] MCX: Reached Target 1 (Rs3023.71) at Rs3101.90
 [2026-09-16 11:07:09] [CRITICAL] [STOP_BREACHED] SOMANYCERA: Stop breached at Rs547.40
 [2026-09-16 11:07:09] [CRITICAL] [STOP_BREACHED] GAIL: Stop breached at Rs170.06
 [2026-09-16 11:07:09] [CRITICAL] [STOP_BREACHED] NBCC: Stop breached at Rs81.16
@@ -7150,10 +7150,10 @@
 [2026-09-16 11:07:09] [CRITICAL] [STOP_BREACHED] MOSCHIP: Stop breached at Rs198.00
 [2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] CANBK: Stop breached at Rs123.33
 [2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] FINEORG: Stop breached at Rs5117.50
-[2026-09-16 11:07:10] [INFO] [TARGET_1_HIT] MARKSANS: Reached Target 1 (Rs294.79) at Rs316.90 | breakout_id=75ab1ec082 opportunity=61.1 backfilled=heuristic
+[2026-09-16 11:07:10] [INFO] [TARGET_1_HIT] MARKSANS: Reached Target 1 (Rs294.79) at Rs316.90
 [2026-09-16 11:07:10] [INFO] [TARGET_2_HIT] MARKSANS: Reached Target 2 (Rs316.27) at Rs316.90
 [2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] FINPIPE: Stop breached at Rs151.16
-[2026-09-16 11:07:10] [INFO] [TARGET_1_HIT] PARAGMILK: Reached Target 1 (Rs255.02) at Rs256.70 | breakout_id=bbe0bc527d opportunity=46.6 backfilled=heuristic
+[2026-09-16 11:07:10] [INFO] [TARGET_1_HIT] PARAGMILK: Reached Target 1 (Rs255.02) at Rs256.70
 [2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] ORIENTHOT: Stop breached at Rs138.82
 [2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] RITES: Stop breached at Rs205.52
 [2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] GARUDA: Stop breached at Rs174.80
@@ -7162,11 +7162,11 @@
 [2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] LTTS: Stop breached at Rs3331.60
 [2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] MGL: Stop breached at Rs1065.60
 [2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] SOUTHBANK: Stop breached at Rs45.24
-[2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] WENDT: Stop breached at Rs8516.00 | breakout_id=13fab86b2e opportunity=55.0 backfilled=heuristic
-[2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] TNPL: Stop breached at Rs150.51 | breakout_id=feca121cb6 opportunity=45.1 backfilled=heuristic
+[2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] WENDT: Stop breached at Rs8516.00
+[2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] TNPL: Stop breached at Rs150.51
 [2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] FDC: Stop breached at Rs353.20
 [2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] IOC: Stop breached at Rs133.68
-[2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] IONEXCHANG: Stop breached at Rs425.90 | breakout_id=f7ebe4901d opportunity=43.6 backfilled=heuristic
+[2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] IONEXCHANG: Stop breached at Rs425.90
 [2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] TATAELXSI: Stop breached at Rs3395.70
 [2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] HUDCO: Stop breached at Rs170.48
 [2026-09-16 11:07:10] [CRITICAL] [STOP_BREACHED] CIPLA: Stop breached at Rs1361.80
@@ -7187,7 +7187,7 @@
 [2026-09-16 11:07:11] [CRITICAL] [STOP_BREACHED] PSPPROJECT: Stop breached at Rs816.70
 [2026-09-16 11:07:11] [CRITICAL] [STOP_BREACHED] SWSOLAR: Stop breached at Rs177.35
 [2026-09-16 11:07:11] [CRITICAL] [STOP_BREACHED] MAHLIFE: Stop breached at Rs343.55
-[2026-09-16 11:07:11] [CRITICAL] [STOP_BREACHED] KROSS: Stop breached at Rs227.76 | breakout_id=3aaa6ccc73 opportunity=67.7 backfilled=heuristic
+[2026-09-16 11:07:11] [CRITICAL] [STOP_BREACHED] KROSS: Stop breached at Rs227.76
 [2026-09-16 11:07:11] [CRITICAL] [STOP_BREACHED] PARACABLES: Stop breached at Rs61.00
 [2026-09-16 11:07:11] [CRITICAL] [STOP_BREACHED] GLENMARK: Stop breached at Rs2380.00
 [2026-09-16 11:07:11] [CRITICAL] [STOP_BREACHED] PTC: Stop breached at Rs153.21
@@ -7200,7 +7200,7 @@
 [2026-09-16 11:07:11] [CRITICAL] [STOP_BREACHED] DATAMATICS: Stop breached at Rs761.75
 [2026-09-16 11:07:11] [CRITICAL] [STOP_BREACHED] INDGN: Stop breached at Rs568.75
 [2026-09-16 11:07:11] [CRITICAL] [STOP_BREACHED] CENTRALBK: Stop breached at Rs30.52
-[2026-09-16 11:07:11] [CRITICAL] [STOP_BREACHED] LAURUSLABS: Stop breached at Rs1871.00 | breakout_id=5706bfff4c opportunity=71.2 backfilled=heuristic
+[2026-09-16 11:07:11] [CRITICAL] [STOP_BREACHED] LAURUSLABS: Stop breached at Rs1871.00
 [2026-09-16 11:07:11] [CRITICAL] [STOP_BREACHED] KIRLOSBROS: Stop breached at Rs1738.70
 [2026-09-16 11:07:11] [CRITICAL] [STOP_BREACHED] PIDILITIND: Stop breached at Rs1539.50
 [2026-09-16 11:07:11] [CRITICAL] [STOP_BREACHED] LTF: Stop breached at Rs298.00
@@ -7284,7 +7284,7 @@
 [2026-09-16 11:07:13] [CRITICAL] [STOP_BREACHED] IFBIND: Stop breached at Rs1257.00
 [2026-09-16 11:07:13] [CRITICAL] [STOP_BREACHED] NFL: Stop breached at Rs66.18
 [2026-09-16 11:07:13] [CRITICAL] [STOP_BREACHED] AMBER: Stop breached at Rs6919.50
-[2026-09-16 11:07:13] [INFO] [TARGET_1_HIT] BLACKBUCK: Reached Target 1 (Rs604.78) at Rs607.25 | breakout_id=2cf3db735f opportunity=61.9 backfilled=heuristic
+[2026-09-16 11:07:13] [INFO] [TARGET_1_HIT] BLACKBUCK: Reached Target 1 (Rs604.78) at Rs607.25
 [2026-09-16 11:07:13] [CRITICAL] [STOP_BREACHED] POLYMED: Stop breached at Rs1711.10
 [2026-09-16 11:07:13] [CRITICAL] [STOP_BREACHED] CONCOR: Stop breached at Rs488.30
 [2026-09-16 11:07:13] [CRITICAL] [STOP_BREACHED] BALKRISIND: Stop breached at Rs2111.10
@@ -7472,7 +7472,7 @@
 [2026-09-16 11:07:18] [CRITICAL] [STOP_BREACHED] FACT: Stop breached at Rs754.05
 [2026-09-16 11:07:18] [CRITICAL] [STOP_BREACHED] MPSLTD: Stop breached at Rs2571.00
 [2026-09-16 11:07:18] [CRITICAL] [STOP_BREACHED] IRCTC: Stop breached at Rs451.20
-[2026-09-16 11:07:18] [CRITICAL] [STOP_BREACHED] ANDHRSUGAR: Stop breached at Rs92.87 | breakout_id=1360c151eb opportunity=62.6 backfilled=heuristic
+[2026-09-16 11:07:18] [CRITICAL] [STOP_BREACHED] ANDHRSUGAR: Stop breached at Rs92.87
 [2026-09-16 11:07:18] [CRITICAL] [STOP_BREACHED] ZAGGLE: Stop breached at Rs178.23
 [2026-09-16 11:07:19] [CRITICAL] [STOP_BREACHED] JUSTDIAL: Stop breached at Rs656.80
 [2026-09-16 11:07:19] [CRITICAL] [STOP_BREACHED] AEROFLEX: Stop breached at Rs466.15
@@ -7503,7 +7503,7 @@
 [2026-09-16 11:07:19] [CRITICAL] [STOP_BREACHED] TVSSCS: Stop breached at Rs127.17
 [2026-09-16 11:07:19] [CRITICAL] [STOP_BREACHED] ANANDRATHI: Stop breached at Rs2187.10
 [2026-09-16 11:07:19] [CRITICAL] [STOP_BREACHED] TCS: Stop breached at Rs2228.00
-[2026-09-16 11:07:19] [CRITICAL] [STOP_BREACHED] RATNAMANI: Stop breached at Rs2683.00 | breakout_id=cf432ca0fe opportunity=49.5 backfilled=heuristic
+[2026-09-16 11:07:19] [CRITICAL] [STOP_BREACHED] RATNAMANI: Stop breached at Rs2683.00
 [2026-09-16 11:07:19] [CRITICAL] [STOP_BREACHED] ARVSMART: Stop breached at Rs560.25
 [2026-09-16 11:07:19] [CRITICAL] [STOP_BREACHED] VERANDA: Stop breached at Rs217.06
 [2026-09-16 11:07:19] [CRITICAL] [STOP_BREACHED] GAEL: Stop breached at Rs157.11
@@ -7677,7 +7677,7 @@
 [2026-09-16 11:07:24] [CRITICAL] [STOP_BREACHED] ASKAUTOLTD: Stop breached at Rs612.00
 [2026-09-16 11:07:24] [CRITICAL] [STOP_BREACHED] HDFCAMC: Stop breached at Rs2406.10
 [2026-09-16 11:07:24] [CRITICAL] [STOP_BREACHED] NILKAMAL: Stop breached at Rs1931.50
-[2026-09-16 11:07:24] [CRITICAL] [STOP_BREACHED] MAITHANALL: Stop breached at Rs995.45 | breakout_id=3152bf4c4b opportunity=59.3 backfilled=heuristic
+[2026-09-16 11:07:24] [CRITICAL] [STOP_BREACHED] MAITHANALL: Stop breached at Rs995.45
 [2026-09-16 11:07:24] [CRITICAL] [STOP_BREACHED] NIITLTD: Stop breached at Rs86.87
 [2026-09-16 11:07:24] [CRITICAL] [STOP_BREACHED] GIPCL: Stop breached at Rs185.39
 [2026-09-16 11:07:24] [CRITICAL] [STOP_BREACHED] HSCL: Stop breached at Rs650.30
@@ -7688,7 +7688,7 @@
 [2026-09-16 11:07:24] [CRITICAL] [STOP_BREACHED] JASH: Stop breached at Rs489.60
 [2026-09-16 11:07:24] [CRITICAL] [STOP_BREACHED] MAHABANK: Stop breached at Rs80.45
 [2026-09-16 11:07:24] [CRITICAL] [STOP_BREACHED] MUTHOOTFIN: Stop breached at Rs2789.00
-[2026-09-16 11:07:24] [CRITICAL] [STOP_BREACHED] VENKEYS: Stop breached at Rs1660.00 | breakout_id=c5788ed3f6 opportunity=56.7 backfilled=heuristic
+[2026-09-16 11:07:24] [CRITICAL] [STOP_BREACHED] VENKEYS: Stop breached at Rs1660.00
 [2026-09-16 11:07:24] [CRITICAL] [STOP_BREACHED] DEEPAKNTR: Stop breached at Rs1565.10
 [2026-09-16 11:07:24] [CRITICAL] [STOP_BREACHED] AJAXENGG: Stop breached at Rs566.05
 [2026-09-16 11:07:24] [CRITICAL] [STOP_BREACHED] OIL: Stop breached at Rs483.75
@@ -7729,7 +7729,7 @@
 [2026-09-16 11:07:25] [CRITICAL] [STOP_BREACHED] NITCO: Stop breached at Rs85.75
 [2026-09-16 11:07:25] [CRITICAL] [STOP_BREACHED] ZYDUSWELL: Stop breached at Rs548.30
 [2026-09-16 11:07:25] [CRITICAL] [STOP_BREACHED] PNBGILTS: Stop breached at Rs77.75
-[2026-09-16 11:07:25] [CRITICAL] [STOP_BREACHED] GENUSPOWER: Stop breached at Rs298.25 | breakout_id=268023c1c5 opportunity=60.3 backfilled=heuristic
+[2026-09-16 11:07:25] [CRITICAL] [STOP_BREACHED] GENUSPOWER: Stop breached at Rs298.25
 [2026-09-16 11:07:25] [CRITICAL] [STOP_BREACHED] NIITMTS: Stop breached at Rs226.16
 [2026-09-16 11:07:25] [CRITICAL] [STOP_BREACHED] TITAGARH: Stop breached at Rs796.45
 [2026-09-16 11:07:25] [CRITICAL] [STOP_BREACHED] RAILTEL: Stop breached at Rs253.30
@@ -7837,28 +7837,28 @@
 [2026-09-16 11:09:03] [CRITICAL] [STOP_BREACHED] BANDHANBNK: Stop breached at Rs171.19
 [2026-09-16 11:22:10] [CRITICAL] [STOP_BREACHED] MAXHEALTH: Stop breached at Rs1033.10
 [2026-09-16 11:22:13] [CRITICAL] [STOP_BREACHED] WCIL: Stop breached at Rs88.81
-[2026-09-16 11:24:37] [INFO] [TARGET_1_HIT] KIRIINDUS: Reached Target 1 (Rs509.01) at Rs509.20 | breakout_id=941828353f opportunity=46.3 backfilled=heuristic
+[2026-09-16 11:24:37] [INFO] [TARGET_1_HIT] KIRIINDUS: Reached Target 1 (Rs509.01) at Rs509.20
 [2026-09-16 11:31:02] [CRITICAL] [STOP_BREACHED] KNRCON: Stop breached at Rs120.63
-[2026-09-16 11:38:25] [INFO] [VALID_BREAKOUT] HMAAGRO: Confirmed breakout at Rs22.62, RVOL 1.74x | breakout_id=b68a75805d opportunity=29.5 backfilled=heuristic
+[2026-09-16 11:38:25] [INFO] [VALID_BREAKOUT] HMAAGRO: Confirmed breakout at Rs22.62, RVOL 1.74x
 [2026-09-16 11:50:34] [CRITICAL] [STOP_BREACHED] GRPLTD: Stop breached at Rs1942.00
 [2026-09-16 11:57:03] [CRITICAL] [STOP_BREACHED] ZOTA: Stop breached at Rs1102.80
-[2026-09-16 11:59:37] [INFO] [VALID_BREAKOUT] DIFFNKG: Confirmed breakout at Rs424.15, RVOL 2.05x | breakout_id=56ab4d7115 opportunity=47.2 backfilled=heuristic
+[2026-09-16 11:59:37] [INFO] [VALID_BREAKOUT] DIFFNKG: Confirmed breakout at Rs424.15, RVOL 2.05x
 [2026-09-16 12:12:24] [CRITICAL] [STOP_BREACHED] ANTHEM: Stop breached at Rs928.15
 [2026-09-16 12:21:33] [CRITICAL] [STOP_BREACHED] ARIHANTCAP: Stop breached at Rs80.74
-[2026-09-16 12:36:32] [INFO] [VALID_BREAKOUT] OAL: Confirmed breakout at Rs503.05, RVOL 1.72x | breakout_id=a0307380d1 opportunity=56.4 backfilled=heuristic
-[2026-09-16 12:48:30] [INFO] [VALID_BREAKOUT] WESTLIFE: Confirmed breakout at Rs551.70, RVOL 6.03x | breakout_id=4e640c8e87 opportunity=31.2 backfilled=heuristic
+[2026-09-16 12:36:32] [INFO] [VALID_BREAKOUT] OAL: Confirmed breakout at Rs503.05, RVOL 1.72x
+[2026-09-16 12:48:30] [INFO] [VALID_BREAKOUT] WESTLIFE: Confirmed breakout at Rs551.70, RVOL 6.03x
 [2026-09-16 13:00:57] [CRITICAL] [STOP_BREACHED] ANGELONE: Stop breached at Rs293.65
-[2026-09-16 13:07:43] [INFO] [VALID_BREAKOUT] SOLARA: Confirmed breakout at Rs720.60, RVOL 1.82x | breakout_id=29b99a9a39 opportunity=48.2 backfilled=heuristic
+[2026-09-16 13:07:43] [INFO] [VALID_BREAKOUT] SOLARA: Confirmed breakout at Rs720.60, RVOL 1.82x
 [2026-09-16 13:07:43] [INFO] [TARGET_2_HIT] MCX: Reached Target 2 (Rs3187.88) at Rs3191.50
-[2026-09-16 13:07:43] [INFO] [VALID_BREAKOUT] MCX: Confirmed breakout at Rs3191.50, RVOL 2.6x | breakout_id=ee1212eb29 opportunity=63.7 backfilled=heuristic
-[2026-09-16 13:07:45] [INFO] [VALID_BREAKOUT] BLACKBUCK: Confirmed breakout at Rs610.00, RVOL 2.72x | breakout_id=3d27843026 opportunity=46.8 backfilled=heuristic
-[2026-09-16 13:09:42] [INFO] [VALID_BREAKOUT] ROSSTECH: Confirmed breakout at Rs1318.00, RVOL 5.56x | breakout_id=0889c960d2 opportunity=59.9 backfilled=heuristic
-[2026-09-16 13:13:09] [INFO] [VALID_BREAKOUT] AXISCADES: Confirmed breakout at Rs1698.90, RVOL 1.6x | breakout_id=035a48c482 opportunity=54.7 backfilled=heuristic
-[2026-09-16 13:19:37] [INFO] [VALID_BREAKOUT] PARAGMILK: Confirmed breakout at Rs261.25, RVOL 19.13x | breakout_id=18a5eea36f opportunity=42.1 backfilled=heuristic
-[2026-09-16 13:38:43] [INFO] [VALID_BREAKOUT] SHREEPUSHK: Confirmed breakout at Rs502.70, RVOL 4.58x | breakout_id=8319732cb8 opportunity=53.1 backfilled=heuristic
-[2026-09-16 13:42:11] [INFO] [TARGET_1_HIT] HMAAGRO: Reached Target 1 (Rs22.87) at Rs22.89 | breakout_id=b68a75805d opportunity=29.5 backfilled=heuristic
-[2026-09-16 13:57:17] [INFO] [VALID_BREAKOUT] FOSECOIND: Confirmed breakout at Rs6744.00, RVOL 24.02x | breakout_id=d15967efa2 opportunity=54.1 backfilled=heuristic
-[2026-09-16 14:34:00] [INFO] [VALID_BREAKOUT] SHAREINDIA: Confirmed breakout at Rs197.62, RVOL 8.37x | breakout_id=ecd7bc068a opportunity=54.1 backfilled=heuristic
-[2026-09-16 14:58:26] [INFO] [VALID_BREAKOUT] KIRIINDUS: Confirmed breakout at Rs512.90, RVOL 1.62x | breakout_id=d3a1830f3d opportunity=48.0 backfilled=heuristic
-[2026-09-16 14:58:26] [INFO] [VALID_BREAKOUT] BECTORFOOD: Confirmed breakout at Rs220.01, RVOL 1.72x | breakout_id=f0f6ad0b48 opportunity=29.4 backfilled=heuristic
+[2026-09-16 13:07:43] [INFO] [VALID_BREAKOUT] MCX: Confirmed breakout at Rs3191.50, RVOL 2.6x
+[2026-09-16 13:07:45] [INFO] [VALID_BREAKOUT] BLACKBUCK: Confirmed breakout at Rs610.00, RVOL 2.72x
+[2026-09-16 13:09:42] [INFO] [VALID_BREAKOUT] ROSSTECH: Confirmed breakout at Rs1318.00, RVOL 5.56x
+[2026-09-16 13:13:09] [INFO] [VALID_BREAKOUT] AXISCADES: Confirmed breakout at Rs1698.90, RVOL 1.6x
+[2026-09-16 13:19:37] [INFO] [VALID_BREAKOUT] PARAGMILK: Confirmed breakout at Rs261.25, RVOL 19.13x
+[2026-09-16 13:38:43] [INFO] [VALID_BREAKOUT] SHREEPUSHK: Confirmed breakout at Rs502.70, RVOL 4.58x
+[2026-09-16 13:42:11] [INFO] [TARGET_1_HIT] HMAAGRO: Reached Target 1 (Rs22.87) at Rs22.89
+[2026-09-16 13:57:17] [INFO] [VALID_BREAKOUT] FOSECOIND: Confirmed breakout at Rs6744.00, RVOL 24.02x
+[2026-09-16 14:34:00] [INFO] [VALID_BREAKOUT] SHAREINDIA: Confirmed breakout at Rs197.62, RVOL 8.37x
+[2026-09-16 14:58:26] [INFO] [VALID_BREAKOUT] KIRIINDUS: Confirmed breakout at Rs512.90, RVOL 1.62x
+[2026-09-16 14:58:26] [INFO] [VALID_BREAKOUT] BECTORFOOD: Confirmed breakout at Rs220.01, RVOL 1.72x
 [2026-09-16 15:16:30] [CRITICAL] [STOP_BREACHED] INDUSTOWER: Stop breached at Rs376.00
