@@ -45,7 +45,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from core.config import DB_PATH, PARQUET_CACHE_DIR
 from core.Live_Price_Engine import LivePriceEngine
 from core.Execution_State_Machine import evaluate_trade
-from core.notifications import send_alert
+from core.notifications import send_alert, register_new_breakout, get_active_breakout
 from core.technical_indicators import get_technical_context, compute_weekly_rvol, compute_atr
 import math
 
@@ -1127,13 +1127,21 @@ def run_live_monitor(total_capital, risk_pct=0.5):
             # no matter how long it accumulated. Reuses the exact same
             # send_alert() mechanism and deduplication from #56.
             if t1_hit_now and not bool(t1_hit_prev):
+                active = get_active_breakout(ticker)
                 send_alert("TARGET_1_HIT", ticker, "INFO",
-                           f"Reached Target 1 (Rs{target_1_check:.2f}) at Rs{price:.2f}")
+                           f"Reached Target 1 (Rs{target_1_check:.2f}) at Rs{price:.2f}",
+                           breakout_id=active["breakout_id"] if active else None,
+                           pattern=active["pattern"] if active else None,
+                           score=active["score"] if active else None)
 
             target_2_check = float(row.get("target_2", 0))
             if target_2_check > 0 and price >= target_2_check:
+                active = get_active_breakout(ticker)
                 send_alert("TARGET_2_HIT", ticker, "INFO",
-                           f"Reached Target 2 (Rs{target_2_check:.2f}) at Rs{price:.2f}")
+                           f"Reached Target 2 (Rs{target_2_check:.2f}) at Rs{price:.2f}",
+                           breakout_id=active["breakout_id"] if active else None,
+                           pattern=active["pattern"] if active else None,
+                           score=active["score"] if active else None)
 
 
             counters[new_state]=counters.get(
@@ -1172,12 +1180,22 @@ def run_live_monitor(total_capital, risk_pct=0.5):
                 )
 
                 if new_state == "VALID_BREAKOUT":
+                    breakout_id = register_new_breakout(
+                        ticker, row.get("pattern"), row.get("composite_score")
+                    )
                     send_alert("VALID_BREAKOUT", ticker, "INFO",
-                               f"Confirmed breakout at Rs{price:.2f}, RVOL {rvol}x")
+                               f"Confirmed breakout at Rs{price:.2f}, RVOL {rvol}x",
+                               breakout_id=breakout_id,
+                               pattern=row.get("pattern"),
+                               score=row.get("composite_score"))
 
                 if new_state == "STOP_BREACHED":
+                    active = get_active_breakout(ticker)
                     send_alert("STOP_BREACHED", ticker, "CRITICAL",
-                               f"Stop breached at Rs{price:.2f}")
+                               f"Stop breached at Rs{price:.2f}",
+                               breakout_id=active["breakout_id"] if active else None,
+                               pattern=active["pattern"] if active else None,
+                               score=active["score"] if active else None)
 
 
 
