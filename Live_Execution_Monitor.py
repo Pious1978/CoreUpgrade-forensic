@@ -443,6 +443,54 @@ def update_states(updates):
 # ================================================================
 
 
+DECISION_TIER_ACT = 65
+DECISION_TIER_WATCH = 40
+
+
+def compute_decision_score(score, distance):
+    """
+    Real, direct feedback: too much noise across many candidates,
+    need a faster way to decide focus vs skip. Score-driven, no hard
+    exclusion rules, per direct preference - extension is folded INTO
+    the score as a real, proportional penalty, rather than shown only
+    as a separate, easy-to-miss warning that the score itself ignores
+    (confirmed directly: SOLARA scored 41.5 despite being 41% past
+    its pivot - the raw conviction score alone doesn't reflect this
+    at all).
+
+    HONEST, DELIBERATE SCOPING: only uses distance-from-pivot, since
+    that's already cheaply computed for every candidate on the board.
+    Fundamentals/execution-risk checks (Stock_Lookup.py's
+    fetch_quick_fundamentals, compute_execution_risk) are live,
+    per-ticker yfinance calls - genuinely too expensive to run across
+    ~788 candidates every 60-second cycle, the same constraint that
+    forced the staged design in Market_Weakness_Opportunity_Scanner.py
+    earlier tonight. Not included here for that reason, not an
+    oversight.
+    """
+
+    penalty = 0.0
+
+    if distance is not None and distance > EXTENSION_REJECT_PCT:
+        # Real, direct, capped penalty - proportional to how far past
+        # the threshold, capped so a genuinely high-scoring stock
+        # isn't zeroed out purely for being extended.
+        penalty = min(30.0, (distance - EXTENSION_REJECT_PCT) * 2.0)
+
+    return round(max(0.0, score - penalty), 1)
+
+
+def compute_decision_tier(decision_score):
+    """Real, direct classification - the actual payoff: ACT/WATCH/SKIP, not a number requiring interpretation."""
+
+    if decision_score >= DECISION_TIER_ACT:
+        return "ACT"
+    elif decision_score >= DECISION_TIER_WATCH:
+        return "WATCH"
+    else:
+        return "SKIP"
+
+
 def calculate_conviction_score(
         rs_percentile,
         delivery_score,
@@ -1410,6 +1458,33 @@ def run_live_monitor(total_capital, risk_pct=0.5):
         print(
             f"Capital      : Rs{total_capital:,.0f}"
         )
+
+        # Real, direct feedback: too much noise reading full detail per
+        # ticker across many candidates, need a faster way to decide
+        # focus vs skip. A condensed, one-line-per-ticker view, sorted
+        # by a real, extension-aware decision score - not the raw
+        # conviction score alone, which (confirmed directly with
+        # SOLARA) doesn't reflect an extension warning at all.
+        decision_rows = []
+        for x in active_board:
+            d_score = compute_decision_score(x["score"], x.get("distance"))
+            tier = compute_decision_tier(d_score)
+            decision_rows.append({"ticker": x["ticker"], "tier": tier, "score": d_score, "raw_score": x["score"]})
+
+        decision_rows.sort(key=lambda r: -r["score"])
+
+        act_count = sum(1 for r in decision_rows if r["tier"] == "ACT")
+        watch_count = sum(1 for r in decision_rows if r["tier"] == "WATCH")
+        skip_count = sum(1 for r in decision_rows if r["tier"] == "SKIP")
+
+        print()
+        print(f"DECISION BOARD  (ACT: {act_count}  WATCH: {watch_count}  SKIP: {skip_count})")
+        print("-" * 66)
+        for r in decision_rows[:15]:
+            flag = " (extension-penalized)" if r["score"] < r["raw_score"] else ""
+            print(f"  {r['tier']:<6} {r['ticker']:<14} {r['score']:>5.1f}{flag}")
+        if len(decision_rows) > 15:
+            print(f"  ... +{len(decision_rows) - 15} more")
 
 
         if position_results:
