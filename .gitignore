@@ -1,4 +1,4 @@
-# Python
+ï»¿# Python
 __pycache__/
 *.py[cod]
 .pytest_cache/
@@ -12,6 +12,8 @@ target/
 market_cache/
 parquet_cache/
 parquet_cache_archive_yahoo/
+HistoricalBhavcopies/
+NSE_EQ.csv
 *.db
 *.sqlite
 *.sqlite3
@@ -31,15 +33,5 @@ parquet_cache_archive_yahoo/
 .DS_Store
 Thumbs.db
 
-# Forensic shell artifacts — excluded from working repository
-+
-bool
-dict
-Dict[str
-findstr
-powershell
-python
-set
-str
-Terminal
-Tuple[Type[EmpiricalTheorem]
+# Kite Connect session cache
+.kite_session.json
