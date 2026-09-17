@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Rust build artifacts
+target/
+
+# Local/runtime market data
+market_cache/
+parquet_cache/
+parquet_cache_archive_yahoo/
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment / credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Kite Connect session cache - contains today's live access_token,
+# an active, immediately-usable credential, at least as sensitive as
+# the API secret itself.
+.kite_session.json
