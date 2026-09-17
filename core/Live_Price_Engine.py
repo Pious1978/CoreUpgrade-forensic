@@ -1,5 +1,5 @@
 """
-Live_Price_Engine.py
+core/Live_Price_Engine.py
 ---------------------------------------------------------
 Real-Time Intraday Price + RVOL Engine
 """
@@ -7,10 +7,33 @@ Real-Time Intraday Price + RVOL Engine
 import yfinance as yf
 import pandas as pd
 import time
+import logging
+
+# Real, direct fix: "possibly delisted; no price data found" is
+# yfinance's own generic, hardcoded message printed on ANY failed
+# download - it fires for rate-limiting, transient Yahoo-side issues,
+# or thin intraday coverage on recent listings, just as often as an
+# actual delisting. It's misleading noise, not a real diagnostic -
+# confirmed directly by KOTAKBANK (one of NSE's most liquid, actively
+# traded stocks) appearing in this list. Silenced at the source
+# (yfinance's own logger) rather than filtered after printing.
+logging.getLogger("yfinance").setLevel(logging.CRITICAL)
 
 
 MAX_RETRIES = 3
 RETRY_BASE_DELAY_SECONDS = 1.5
+
+# Real, direct fix for tickers that fail persistently, cycle after
+# cycle (confirmed directly: the same ~10 tickers failed identically
+# across three consecutive 60-second cycles) - after this many
+# consecutive failures, stop retrying every single cycle and cool down
+# instead, periodically re-checking rather than wasting 3 full retries
+# with real, growing delays on a ticker that's very likely to fail
+# again regardless.
+CONSECUTIVE_FAILURE_COOLDOWN_THRESHOLD = 3
+COOLDOWN_SECONDS = 600  # 10 minutes - long enough to skip wasted retries, short enough to recover once the real issue (rate limit, transient outage) clears
+
+_failure_state = {}  # ticker -> {"consecutive_failures": int, "cooldown_until": float or None}
 
 
 class LivePriceEngine:
@@ -20,6 +43,16 @@ class LivePriceEngine:
     def get_live_quote(ticker):
 
         start=time.time()
+
+        state = _failure_state.get(ticker)
+        if state and state.get("cooldown_until") and time.time() < state["cooldown_until"]:
+            # Real, direct skip - this ticker has failed
+            # CONSECUTIVE_FAILURE_COOLDOWN_THRESHOLD times in a row
+            # recently; no point spending 3 more real, delayed retries
+            # on it right now. Returns the same honest "ERROR" result
+            # a failed download would have given, just without the
+            # wasted time and noisy repeated attempts.
+            return LivePriceEngine.empty(ticker, round(time.time()-start, 2))
 
         symbol = (
             ticker
@@ -51,10 +84,7 @@ class LivePriceEngine:
                         time.sleep(RETRY_BASE_DELAY_SECONDS * (attempt + 1))
                         continue
 
-                    return LivePriceEngine.empty(
-                        ticker,
-                        latency
-                    )
+                    return LivePriceEngine._record_failure_and_return_empty(ticker, start)
 
 
                 if isinstance(df.columns,pd.MultiIndex):
@@ -153,6 +183,12 @@ class LivePriceEngine:
 
 
 
+                # Real, direct reset - a successful fetch means whatever
+                # was causing earlier failures has cleared, so this
+                # ticker gets a clean slate rather than staying flagged.
+                if ticker in _failure_state:
+                    del _failure_state[ticker]
+
                 return {
 
                     "ticker":ticker,
@@ -186,6 +222,24 @@ class LivePriceEngine:
                     time.sleep(RETRY_BASE_DELAY_SECONDS * (attempt + 1))
                     continue
 
+        return LivePriceEngine._record_failure_and_return_empty(ticker, start)
+
+
+
+    @staticmethod
+    def _record_failure_and_return_empty(ticker, start):
+        """
+        Real, single, shared tracking point for BOTH genuine failure
+        paths (an empty DataFrame, or a raised exception) - after
+        CONSECUTIVE_FAILURE_COOLDOWN_THRESHOLD real, final failures in
+        a row, this ticker cools down instead of being retried every
+        single cycle.
+        """
+
+        state = _failure_state.setdefault(ticker, {"consecutive_failures": 0, "cooldown_until": None})
+        state["consecutive_failures"] += 1
+        if state["consecutive_failures"] >= CONSECUTIVE_FAILURE_COOLDOWN_THRESHOLD:
+            state["cooldown_until"] = time.time() + COOLDOWN_SECONDS
 
         return LivePriceEngine.empty(
             ticker,

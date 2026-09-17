@@ -2329,6 +2329,8 @@ def lookup(ticker, capital=None, risk_pct=None):
                 angle_note = "  (steep, ideal trend angle)"
             elif angle >= 20:
                 angle_note = "  (moderate angle)"
+            elif angle >= 10:
+                angle_note = "  (mild angle)"
             elif angle > 0:
                 angle_note = "  (shallow angle)"
         print(f"  EMA Slope        : {slope['note']}")
