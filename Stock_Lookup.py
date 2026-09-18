@@ -25,6 +25,7 @@ not just ones already in the system.
 """
 
 import sqlite3
+import math
 import pandas as pd
 
 from core.config import DB_PATH
@@ -1836,6 +1837,33 @@ def compute_growth_cagr(ticker):
         return None
 
 
+def _safe_float(value):
+    """
+    Real, direct fix for a confirmed live crash: yfinance's own .info
+    dict can return a non-numeric type (a string like "Infinity", or
+    something else malformed) for fields that are supposed to be
+    numeric - confirmed directly via a real TypeError when
+    statistics.median() tried to sort a list containing both floats
+    and a string trailingPE value from a peer ticker. Returns a clean
+    float, or None if the value genuinely isn't a valid, finite number
+    - never lets a bad type OR a meaningless infinite/NaN value slip
+    through silently. (Caught directly by testing: float("Infinity")
+    itself succeeds in Python, returning inf - not an exception - so
+    isfinite() is checked explicitly, not just a NaN comparison.)
+    """
+
+    if value is None:
+        return None
+
+    try:
+        result = float(value)
+        if not math.isfinite(result):
+            return None
+        return result
+    except (TypeError, ValueError):
+        return None
+
+
 def fetch_quick_fundamentals(ticker):
     """
     Fast, single-call fundamentals context for a spiking stock - NOT the
@@ -1860,23 +1888,23 @@ def fetch_quick_fundamentals(ticker):
             return None
 
         return {
-            "trailing_pe": info.get("trailingPE"),
-            "forward_pe": info.get("forwardPE"),
-            "price_to_book": info.get("priceToBook"),
-            "debt_to_equity": info.get("debtToEquity"),
-            "profit_margin": info.get("profitMargins"),
-            "roe": info.get("returnOnEquity"),
+            "trailing_pe": _safe_float(info.get("trailingPE")),
+            "forward_pe": _safe_float(info.get("forwardPE")),
+            "price_to_book": _safe_float(info.get("priceToBook")),
+            "debt_to_equity": _safe_float(info.get("debtToEquity")),
+            "profit_margin": _safe_float(info.get("profitMargins")),
+            "roe": _safe_float(info.get("returnOnEquity")),
             # Added for the fundamentals-based Value Zone - all from this
             # same .info call, zero extra API cost
-            "current_price": info.get("currentPrice") or info.get("regularMarketPrice"),
-            "fifty_two_week_high": info.get("fiftyTwoWeekHigh"),
-            "fifty_two_week_low": info.get("fiftyTwoWeekLow"),
-            "peg_ratio": info.get("pegRatio"),
+            "current_price": _safe_float(info.get("currentPrice")) or _safe_float(info.get("regularMarketPrice")),
+            "fifty_two_week_high": _safe_float(info.get("fiftyTwoWeekHigh")),
+            "fifty_two_week_low": _safe_float(info.get("fiftyTwoWeekLow")),
+            "peg_ratio": _safe_float(info.get("pegRatio")),
             # Added for the valuation comparison (P/E, P/B, EV/EBITDA vs
             # sector average) - all from this same .info call, zero
             # extra API cost
-            "enterprise_value": info.get("enterpriseValue"),
-            "ebitda": info.get("ebitda"),
+            "enterprise_value": _safe_float(info.get("enterpriseValue")),
+            "ebitda": _safe_float(info.get("ebitda")),
         }
 
     except Exception:
