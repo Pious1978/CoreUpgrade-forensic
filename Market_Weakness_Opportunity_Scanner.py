@@ -54,7 +54,18 @@ CURRENT_NIFTY_LEVEL = 23400
 
 NIFTY_DECLINE_SCENARIOS = [-0.05, -0.10, -0.15]
 
-STAGE1_MIN_RS_63D_PCT = 0.0
+# Real, direct fix: confirmed via direct code inspection that the
+# previous STAGE1_MIN_RS_63D_PCT = 0.0 had NO upper bound at all,
+# combined with sorting descending by rel_return_63d - this meant the
+# scanner was finding and ranking the most extreme momentum LEADERS
+# first (some 244% 63D relative returns observed in a real run),
+# the exact opposite of a "weakness opportunity" scanner's stated
+# purpose. Restored to the originally documented design: a genuine
+# 5%-40% band (real, modest relative strength - resilient, but not
+# already massively extended), ranked by lowest drawdown (a real,
+# already-computed field that was never actually used for sorting).
+STAGE1_MIN_RS_63D_PCT = 5.0
+STAGE1_MAX_RS_63D_PCT = 40.0
 STAGE1_TOP_N = 60
 
 
@@ -129,7 +140,7 @@ def stage1_technical_prefilter(universe=None):
             if not rel_perf or rel_perf.get(63) is None:
                 continue
 
-            if rel_perf[63] <= STAGE1_MIN_RS_63D_PCT:
+            if rel_perf[63] <= STAGE1_MIN_RS_63D_PCT or rel_perf[63] > STAGE1_MAX_RS_63D_PCT:
                 continue
 
             tech = compute_technical_features(ticker)
@@ -153,8 +164,14 @@ def stage1_technical_prefilter(universe=None):
         except Exception:
             continue
 
-    candidates.sort(key=lambda c: c["rel_return_63d"], reverse=True)
-    print(f"[+] Stage 1 complete: {len(candidates)} stocks show genuine relative-strength leadership")
+    # Real, direct fix: sort by lowest drawdown (the most resilient
+    # names within the real 5%-40% relative-strength band), not by
+    # raw rel_return_63d descending - restores the originally
+    # documented "ranked by lowest drawdown" design. A candidate with
+    # a genuinely missing drawdown value sorts last, not first, since
+    # a missing value should never be treated as "best."
+    candidates.sort(key=lambda c: c["drawdown"] if c["drawdown"] is not None else float("inf"))
+    print(f"[+] Stage 1 complete: {len(candidates)} stocks show genuine, moderate relative strength ({STAGE1_MIN_RS_63D_PCT}%-{STAGE1_MAX_RS_63D_PCT}% band), ranked by lowest drawdown")
     return candidates[:STAGE1_TOP_N]
 
 
