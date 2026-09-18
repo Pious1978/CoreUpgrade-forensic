@@ -8574,3 +8574,15 @@
 [2026-09-18 12:06:41] [INFO] [VALID_BREAKOUT] HMAAGRO: Confirmed breakout at Rs23.74, RVOL 3.4x | breakout_id=5fa39006a0 pattern=Reversal_Exhaustion score=1.0
 [2026-09-18 12:08:13] [INFO] [VALID_BREAKOUT] BPCL: Confirmed breakout at Rs311.90, RVOL 1.9x | breakout_id=f45eaf5182 pattern=Cup_and_Handle score=1.0
 [2026-09-18 12:08:13] [INFO] [VALID_BREAKOUT] CASTROLIND: Confirmed breakout at Rs194.77, RVOL 2.49x | breakout_id=5c437229d0 pattern=Cup_and_Handle score=1.0
+[2026-09-18 12:34:43] [CRITICAL] [STOP_BREACHED] TATACOMM: Stop breached at Rs1755.90
+[2026-09-18 12:34:43] [CRITICAL] [STOP_BREACHED] PNGJL: Stop breached at Rs604.75
+[2026-09-18 12:34:45] [INFO] [VALID_BREAKOUT] BLACKBUCK: Confirmed breakout at Rs627.90, RVOL 2.11x | breakout_id=656409331f pattern=Reversal_Exhaustion score=1.0
+[2026-09-18 12:34:45] [CRITICAL] [STOP_BREACHED] ZYDUSLIFE: Stop breached at Rs1157.00
+[2026-09-18 12:34:48] [CRITICAL] [STOP_BREACHED] GRANULES: Stop breached at Rs875.80
+[2026-09-18 12:34:49] [CRITICAL] [STOP_BREACHED] CGCL: Stop breached at Rs268.95
+[2026-09-18 12:34:49] [INFO] [VALID_BREAKOUT] SAMBHV: Confirmed breakout at Rs143.27, RVOL 1.95x | breakout_id=eb646068b6 pattern=Consolidation score=1.0
+[2026-09-18 12:39:25] [CRITICAL] [STOP_BREACHED] INDUSTOWER: Stop breached at Rs376.85
+[2026-09-18 12:48:52] [INFO] [VALID_BREAKOUT] BECTORFOOD: Confirmed breakout at Rs221.00, RVOL 1.54x | breakout_id=7cabf754f2 pattern=Reversal_Exhaustion score=1.0
+[2026-09-18 12:50:46] [CRITICAL] [STOP_BREACHED] IGPL: Stop breached at Rs557.05
+[2026-09-18 12:52:21] [INFO] [VALID_BREAKOUT] EIHOTEL: Confirmed breakout at Rs306.90, RVOL 1.89x | breakout_id=b29a83cea5 pattern=Reversal_Exhaustion score=1.0
+[2026-09-18 12:53:51] [INFO] [VALID_BREAKOUT] SCHAEFFLER: Confirmed breakout at Rs4102.90, RVOL 2.05x | breakout_id=443289ad18 pattern=Cup_and_Handle score=1.0
