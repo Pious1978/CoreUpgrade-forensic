@@ -323,6 +323,78 @@ def fetch_kite_live_prices(tickers):
 # ================================================================
 
 
+def scan_live_momentum_movers(threshold_pct=6.0, batch_size=200):
+    """
+    Real, direct fix for a genuine, structural gap flagged directly:
+    every other use of live Kite data (fetch_kite_live_prices above)
+    only ever checks prices for tickers ALREADY known to the system -
+    either open positions or last night's overnight scan candidates.
+    A stock moving 6-16% TODAY that wasn't already on that list could
+    never be flagged, no matter how it moved - not a bug, a capability
+    that never existed until now.
+
+    Scans the FULL, real NSE_EQ.csv universe (~2500 stocks, the same
+    universe every other scanner in this pipeline already uses) via
+    genuinely live Kite quotes, batched (not one call per stock) to
+    keep this fast and well within any reasonable API-call budget.
+
+    Real, direct fallback: if Kite isn't configured or the connection
+    fails, returns an empty list - the rest of the monitor keeps
+    working normally.
+    """
+
+    try:
+        from core.kite_client import get_kite_client
+        kite = get_kite_client()
+    except Exception:
+        return []
+
+    try:
+        from Sector_Strength_Ranker import load_universe
+        universe = load_universe()
+    except Exception:
+        return []
+
+    if not universe:
+        return []
+
+    movers = []
+
+    for i in range(0, len(universe), batch_size):
+        batch = universe[i:i + batch_size]
+        symbols = [f"NSE:{t}" for t in batch]
+
+        try:
+            quotes = kite.quote(symbols)
+        except Exception:
+            # Real, direct handling: one bad batch (a transient network
+            # issue, a rate limit) shouldn't abort the whole scan -
+            # skip it and keep going with the remaining batches.
+            continue
+
+        for symbol, data in quotes.items():
+            ticker = symbol.replace("NSE:", "")
+            last_price = data.get("last_price")
+            prev_close = data.get("ohlc", {}).get("close")
+
+            if not last_price or not prev_close or prev_close <= 0:
+                continue
+
+            pct_change = round((last_price - prev_close) / prev_close * 100, 2)
+
+            if abs(pct_change) >= threshold_pct:
+                movers.append({
+                    "ticker": ticker,
+                    "last_price": last_price,
+                    "prev_close": prev_close,
+                    "pct_change": pct_change,
+                })
+
+    movers.sort(key=lambda m: -abs(m["pct_change"]))
+
+    return movers
+
+
 def fetch_open_positions(conn):
     """
     Reads real, actually-held positions from trade_journal (status=
@@ -1503,6 +1575,22 @@ def run_live_monitor(total_capital, risk_pct=0.5):
             print(f"  {r['tier']:<6} {r['ticker']:<14} {r['score']:>5.1f}{flag}")
         if len(decision_rows) > 15:
             print(f"  ... +{len(decision_rows) - 15} more")
+
+        # Real, direct fix for the genuine gap flagged directly: stocks
+        # moving 6-16% TODAY, independent of last night's overnight
+        # scan, were never checked anywhere in this system before now.
+        live_movers = scan_live_momentum_movers(threshold_pct=6.0)
+        print()
+        print(f"LIVE MOMENTUM MOVERS - full universe, live, right now (threshold: 6%)")
+        print("-" * 66)
+        if live_movers:
+            for m in live_movers[:15]:
+                direction = "+" if m["pct_change"] >= 0 else ""
+                print(f"  {m['ticker']:<14} Rs{m['last_price']:<10.2f} {direction}{m['pct_change']:.2f}%")
+            if len(live_movers) > 15:
+                print(f"  ... +{len(live_movers) - 15} more")
+        else:
+            print("  None found this cycle, or Kite unavailable right now.")
 
 
         if position_results:
